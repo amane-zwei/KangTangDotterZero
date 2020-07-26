@@ -35,10 +35,7 @@ public class menuItemView extends View  {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
-//                Navigation.openTestFragment(((AppCompatActivity)view.getContext()).getSupportFragmentManager());
-                new TestDialog().show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "test_tag");
-//        Navigation.openTestFragment(((AppCompatActivity)view.getContext()).getSupportFragmentManager());
-//                KTDZDialogFragment.show(getContext(), 1, TestFragment.get());
+                new TestFragment().show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "test_tag");
             }
         });
     }

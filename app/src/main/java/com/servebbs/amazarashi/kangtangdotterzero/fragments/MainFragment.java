@@ -13,9 +13,6 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-
-        TestFragment.get();
-
     }
 
     @Override

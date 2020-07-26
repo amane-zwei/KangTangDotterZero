@@ -1,149 +1,81 @@
 package com.servebbs.amazarashi.kangtangdotterzero.fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import androidx.annotation.IdRes;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotRectView;
+import androidx.fragment.app.DialogFragment;
 
-public class KTDZDialogFragment extends Fragment {
-
-    public static void show(Context context, @IdRes int containerViewId, KTDZDialogFragment fragment) {
-        FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
-
-        fragmentManager.beginTransaction()
-                .add(containerViewId, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
-    }
+public class KTDZDialogFragment extends DialogFragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        FrameLayout frameLayout = new FrameLayout(inflater.getContext());
-        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-        {
-            View backView = createBackView(inflater.getContext());
-            backView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            backView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dismiss();
-                }
-            });
-            frameLayout.addView(backView);
-        }
-        {
-            View mainView = createLayoutView(inflater.getContext());
-            mainView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            frameLayout.addView(mainView);
-        }
-
-        return frameLayout;
+    public Dialog onCreateDialog(Bundle bundle) {
+        Dialog dialog = new Dialog(getActivity());
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        // フルスクリーン
+        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        dialog.setContentView(createMainView(getContext()));
+        // 背景を透明にする
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        return dialog;
     }
 
-    public void dismiss() {
-        assert getFragmentManager() != null;
-        getFragmentManager().popBackStack();
-    }
-
-    public View createBackView(Context context) {
+    public View createContentView(Context context) {
         return new View(context) {
             @Override
             public void onDraw(Canvas canvas) {
-                canvas.drawColor(0x80000000);
+                canvas.drawColor(0xffffa0af);
+            }
+
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                setMeasuredDimension(
+                        MeasureSpec.getSize(widthMeasureSpec),256
+                );
             }
         };
     }
 
     public View createMainView(Context context) {
-        return new View(context);
-    }
+        RelativeLayout relativeLayout = new RelativeLayout(context);
+        relativeLayout.setLayoutParams(
+                new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                )
+        );
 
-    public LinearLayout createButtonListView(Context context) {
-        LinearLayout buttonsView = createBase(context, LinearLayout.HORIZONTAL);
+        LinearLayout mainLayout = new LinearLayout(context);
         {
-            View button = createButtonView(context);
-            buttonsView.addView(setLayout(button, 8, 0, ViewGroup.LayoutParams.MATCH_PARENT));
-        }
-        return buttonsView;
-    }
-
-    public ViewGroup createLayoutView(Context context) {
-        LinearLayout vertical = createBase(context, LinearLayout.VERTICAL);
-
-        vertical.addView(setLayout(new View(context), 2, 0, 0));
-        {
-            LinearLayout horizontal = createBase(context, LinearLayout.HORIZONTAL);
-            horizontal.addView(setLayout(new View(context), 1, 0, 0));
-            horizontal.addView(setLayout(createMainView(context), 30, 0, ViewGroup.LayoutParams.MATCH_PARENT));
-            horizontal.addView(setLayout(new View(context), 1, 0, 0));
-
-            vertical.addView(setLayout(horizontal, 26, ViewGroup.LayoutParams.MATCH_PARENT, 0));
-        }
-        vertical.addView(setLayout(createButtonListView(context), 4, ViewGroup.LayoutParams.MATCH_PARENT, 0));
-
-        return vertical;
-    }
-
-    public RelativeLayout createButtonView(Context context) {
-        RelativeLayout layout = new RelativeLayout(context);
-
-        {
-            RelativeLayout button = new RelativeLayout(context) {
-                @Override
-                public void dispatchDraw(Canvas canvas) {
-                    DotRectView.drawFrame(canvas, 0xff000000, 0xffffffff);
-                    super.dispatchDraw(canvas);
-                }
-            };
-            {
-                TextView text = new TextView(context);
-                text.setText("hogehoge");
-                text.setTextSize(50f);
-                text.setPadding(8,8,8,8);
-                RelativeLayout.LayoutParams textparams = new RelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                textparams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                button.addView(text, textparams);
-            }
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.CENTER_IN_PARENT);
-            layout.addView(button, params);
+            View contentView = createContentView(context);
+            mainLayout.addView(contentView);
         }
 
-        return layout;
-    }
+        {
+            Button button = new Button(context);
+            button.setText("sample");
+            mainLayout.addView(button);
+        }
 
-    public static LinearLayout createBase(Context context, int orientation) {
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(orientation);
-        return layout;
-    }
-
-    public static View setLayout(View view, int weight, int width, int height) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
-        params.weight = weight;
-        view.setLayoutParams(params);
-        return view;
+        RelativeLayout.LayoutParams mainParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        mainParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        mainLayout.setLayoutParams(mainParams);
+        mainLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        relativeLayout.addView(mainLayout);
+        return relativeLayout;
     }
 }
