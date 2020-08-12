@@ -33,19 +33,7 @@ public class KTDZDialogFragment extends DialogFragment {
     }
 
     public View createContentView(Context context) {
-        return new View(context) {
-            @Override
-            public void onDraw(Canvas canvas) {
-                canvas.drawColor(0xffffa0af);
-            }
-
-            @Override
-            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                setMeasuredDimension(
-                        MeasureSpec.getSize(widthMeasureSpec), 256
-                );
-            }
-        };
+        return new View(context);
     }
 
     public View createButtonAreaView(Context context) {
@@ -96,7 +84,7 @@ public class KTDZDialogFragment extends DialogFragment {
             View contentView = createContentView(context);
             contentView.setLayoutParams(
                     new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT
                     )
             );

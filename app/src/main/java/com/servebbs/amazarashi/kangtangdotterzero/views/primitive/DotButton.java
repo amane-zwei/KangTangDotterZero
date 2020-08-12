@@ -17,7 +17,7 @@ public class DotButton extends androidx.appcompat.widget.AppCompatButton {
 
         StateListDrawable stateListDrawable = new StateListDrawable();
         stateListDrawable.addState(new int[]{android.R.attr.state_focused}, new DotButtonDrawable(0xffa000));
-        stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, new DotButtonDrawable(0xff0000));
+        stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, new DotButtonDrawable(0xffa000));
         stateListDrawable.addState(new int[0], new DotButtonDrawable(0xffffff));
         setBackground(stateListDrawable);
     }

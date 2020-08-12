@@ -10,23 +10,15 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.servebbs.amazarashi.kangtangdotterzero.R;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotRectView;
 
 public class TestFragment extends KTDZDialogFragment {
     @Override
     public View createContentView(Context context) {
-        return new View(context) {
-            @Override
-            public void onDraw(Canvas canvas) {
-                canvas.drawColor(0xffffffff);
-            }
-            @Override
-            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                setMeasuredDimension(
-                        MeasureSpec.getSize(widthMeasureSpec),256
-                );
-            }
-        };
+        ARGBColorPicker argbColorPicker = new ARGBColorPicker(context);
+        argbColorPicker.setColor(0xfff0a080);
+        return argbColorPicker;
     }
 //    private static TestFragment instance = new TestFragment();
 //    public static TestFragment get() {
