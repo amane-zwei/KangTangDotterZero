@@ -20,6 +20,7 @@ import android.view.WindowManager;
 
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.TestFragment;
+import com.servebbs.amazarashi.kangtangdotterzero.fragments.dialogs.ColorPickerDialog;
 
 public class menuItemView extends View  {
 
@@ -35,7 +36,7 @@ public class menuItemView extends View  {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
-                new TestFragment().show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "test_tag");
+                new ColorPickerDialog().show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "test_tag");
             }
         });
     }
