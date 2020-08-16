@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
+import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.util.Navigation;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ScreenSize.init(this);
 
 //        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 

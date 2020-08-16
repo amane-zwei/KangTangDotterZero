@@ -31,7 +31,6 @@ public class ARGBColorPicker extends LinearLayout {
         super(context);
 
         setOrientation(LinearLayout.VERTICAL);
-        setBackgroundColor(0xffffffff);
         setDividerDrawable(divider);
         setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
 
