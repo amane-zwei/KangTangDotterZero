@@ -92,7 +92,6 @@ public class ARGBColorPicker extends LinearLayout {
 
             setOrientation(LinearLayout.HORIZONTAL);
             setGravity(Gravity.CENTER_HORIZONTAL);
-            setWeightSum(100);
             setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
             setFocusableInTouchMode(true);
             {
@@ -118,7 +117,7 @@ public class ARGBColorPicker extends LinearLayout {
                                 0,
                                 ViewGroup.LayoutParams.MATCH_PARENT
                         );
-                layoutParams.weight = 85;
+                layoutParams.weight = 1;
                 seekBar.setLayoutParams(layoutParams);
                 addView(seekBar);
             }

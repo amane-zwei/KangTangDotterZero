@@ -6,9 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import androidx.appcompat.widget.LinearLayoutCompat;
-
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
+import com.servebbs.amazarashi.kangtangdotterzero.util.DisplayMetricsUtil;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ColorSelector;
 
@@ -30,6 +29,8 @@ public class ColorPickerDialog extends KTDZDialogFragment {
         public ColorPickerDialogView(Context context) {
             super(context);
 
+            final int padding = DisplayMetricsUtil.calcPixel(context, 10);
+
             setOrientation(LinearLayout.VERTICAL);
             setDividerDrawable(divider);
             setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
@@ -47,12 +48,12 @@ public class ColorPickerDialog extends KTDZDialogFragment {
             {
                 ARGBColorPicker argbColorPicker = new ARGBColorPicker(context);
                 argbColorPicker.setColor(0xfff0a080);
-                argbColorPicker.setLayoutParams(
-                        new LinearLayoutCompat.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                        )
+                argbColorPicker.setPadding(padding, padding, padding, padding);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
                 );
+                argbColorPicker.setLayoutParams(layoutParams);
                 addView(argbColorPicker);
             }
         }

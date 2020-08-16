@@ -2,7 +2,6 @@ package com.servebbs.amazarashi.kangtangdotterzero.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,10 +11,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
+import com.servebbs.amazarashi.kangtangdotterzero.util.DisplayMetricsUtil;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotButton;
 
 public class KTDZDialogFragment extends DialogFragment {
@@ -37,80 +37,78 @@ public class KTDZDialogFragment extends DialogFragment {
     }
 
     public View createButtonAreaView(Context context) {
-        final int margin = (int)(context.getResources().getDisplayMetrics().density * 10 + 0.5f);
+        final int margin = DisplayMetricsUtil.calcPixel(context, 10);
+
+        final String[] texts = {"Cancel", "OK"};
 
         LinearLayout buttonAreaLayout = new LinearLayout(context);
         buttonAreaLayout.setOrientation(LinearLayout.HORIZONTAL);
         buttonAreaLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        {
-            DotButton button = new DotButton(context);
-            button.setLayoutParams(
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-            );
-            button.setText("Cancel");
-            buttonAreaLayout.addView(button);
-        }
-        {
+
+        for (int index = 0; index < texts.length; index++) {
             DotButton button = new DotButton(context);
             LinearLayout.LayoutParams layoutParams =
                     new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT
                     );
-            layoutParams.setMargins(margin,0,0,0);
+            layoutParams.setMargins(margin, 0, 0, 0);
             button.setLayoutParams(layoutParams);
-            button.setText("OK");
+            button.setText(texts[index]);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
             buttonAreaLayout.addView(button);
         }
         return buttonAreaLayout;
     }
 
     public View createMainView(Context context) {
-        final int margin = (int)(context.getResources().getDisplayMetrics().density * 10 + 0.5f);
+        final int topMargin = DisplayMetricsUtil.calcPixel(context, 30);
+        final int margin = DisplayMetricsUtil.calcPixel(context, 10);
 
-        RelativeLayout relativeLayout = new RelativeLayout(context);
-//        relativeLayout.setLayoutParams(
-//                new RelativeLayout.LayoutParams(
-//                        ViewGroup.LayoutParams.MATCH_PARENT,
-//                        ViewGroup.LayoutParams.MATCH_PARENT
-//                )
-//        );
+        ConstraintLayout constraintLayout = new ConstraintLayout(context);
 
-        LinearLayout mainLayout = new LinearLayout(context);
+        int contentViewId = View.generateViewId();
+        int buttonAreaViewId = View.generateViewId();
+
         {
             View contentView = createContentView(context);
-            contentView.setLayoutParams(
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
+            contentView.setId(contentViewId);
+            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            mainLayout.addView(contentView);
+            layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
+            layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
+            layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
+            layoutParams.bottomToTop = buttonAreaViewId;
+            layoutParams.topMargin = topMargin;
+            layoutParams.constrainedHeight = true;
+            contentView.setLayoutParams(layoutParams);
+            constraintLayout.addView(contentView);
         }
 
         {
             View buttonAreaView = createButtonAreaView(context);
-            LinearLayout.LayoutParams layoutParams =
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    );
-            layoutParams.setMargins(0,margin,0,0);
+            buttonAreaView.setId(buttonAreaViewId);
+            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
+            layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
+            layoutParams.topToBottom = contentViewId;
+            layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+            layoutParams.topMargin = margin;
+            layoutParams.bottomMargin = topMargin;
             buttonAreaView.setLayoutParams(layoutParams);
-            mainLayout.addView(buttonAreaView);
+            constraintLayout.addView(buttonAreaView);
         }
 
-        RelativeLayout.LayoutParams mainParams = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        mainParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        mainLayout.setLayoutParams(mainParams);
-        mainLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        mainLayout.setOrientation(LinearLayout.VERTICAL);
-        relativeLayout.addView(mainLayout);
-        return relativeLayout;
+        return constraintLayout;
     }
 }
