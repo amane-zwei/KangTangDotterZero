@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.util.Navigation;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         ScreenSize.init(this);
+        DotIcon.init(getResources());
 
 //        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 

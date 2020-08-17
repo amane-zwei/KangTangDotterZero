@@ -11,6 +11,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.util.DisplayMetricsUtil;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ColorSelector;
+import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotScroll;
 
 public class ColorPickerDialog extends KTDZDialogFragment {
     @Override
@@ -30,14 +31,24 @@ public class ColorPickerDialog extends KTDZDialogFragment {
         public ColorPickerDialogView(Context context) {
             super(context);
 
+            final int iconSize = ScreenSize.getIconSize();
             final int padding = ScreenSize.getPadding();
 
             setOrientation(LinearLayout.VERTICAL);
             setBackgroundColor(0xffffffff);
 
             {
+                DotScroll dotScroll = new DotScroll(context);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        iconSize
+                );
+                dotScroll.setLayoutParams(layoutParams);
+                addView(dotScroll);
+            }
+            {
                 ColorSelector colorSelector = new ColorSelector(context);
-                colorSelector.setPadding(padding, padding, padding, padding);
+                colorSelector.setPadding(padding, 0, padding, 0);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         0
@@ -47,13 +58,13 @@ public class ColorPickerDialog extends KTDZDialogFragment {
                 addView(colorSelector);
             }
             {
-                View divider = new View(context);
+                DotScroll dotScroll = new DotScroll(context);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        8
+                        iconSize
                 );
-                divider.setLayoutParams(layoutParams);
-                addView(divider);
+                dotScroll.setLayoutParams(layoutParams);
+                addView(dotScroll);
             }
             {
                 ARGBColorPicker argbColorPicker = new ARGBColorPicker(context);

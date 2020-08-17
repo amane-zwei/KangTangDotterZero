@@ -11,7 +11,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 public class ColorSelector extends GridView {
     public ColorSelector(Context context) {
         super(context);
-        setBackgroundColor(0xffffff00);
+        setBackgroundColor(0xffffffff);
 
         final int iconSize = ScreenSize.getIconSize();
         final int margin = ScreenSize.getMargin();

@@ -13,7 +13,9 @@ import android.widget.SeekBar;
 
 import androidx.appcompat.widget.LinearLayoutCompat;
 
+import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotEditText;
+import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotSeekBar;
 
 public class ARGBColorPicker extends LinearLayout {
     static GradientDrawable divider;
@@ -83,11 +85,13 @@ public class ARGBColorPicker extends LinearLayout {
         };
 
         private DotEditText editText;
-        private SeekBar seekBar;
+        private DotSeekBar seekBar;
         private ARGBColorPicker parent;
 
         public ColorPicker(Context context) {
             super(context);
+
+            final int iconSize = ScreenSize.getIconSize();
 
             setOrientation(LinearLayout.HORIZONTAL);
             setGravity(Gravity.CENTER_HORIZONTAL);
@@ -99,22 +103,21 @@ public class ARGBColorPicker extends LinearLayout {
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editText.setFilters(inputFilters);
                 editText.setGravity(Gravity.CENTER);
-                int size = (int) (editText.getTextSize() * 2);
                 editText.setLayoutParams(
                         new LinearLayoutCompat.LayoutParams(
-                                size,
-                                size
+                                iconSize,
+                                iconSize
                         )
                 );
                 addView(editText);
             }
             {
-                SeekBar seekBar = this.seekBar = new SeekBar(context);
+                SeekBar seekBar = this.seekBar = new DotSeekBar(context);
                 seekBar.setMax(0xff);
                 LinearLayout.LayoutParams layoutParams =
                         new LinearLayout.LayoutParams(
                                 0,
-                                ViewGroup.LayoutParams.MATCH_PARENT
+                                iconSize
                         );
                 layoutParams.weight = 1;
                 seekBar.setLayoutParams(layoutParams);
