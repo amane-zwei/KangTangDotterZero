@@ -17,7 +17,17 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotEditText;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotSeekBar;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 public class ARGBColorPicker extends LinearLayout {
+
+    private static ColorData[] colorData = {
+            new ColorData(0xff808080, 0xffd0d0d0),
+            new ColorData(0xffff0000, 0xffffa0a0),
+            new ColorData(0xff00ff00, 0xffd0ffd0),
+            new ColorData(0xff0000ff, 0xffa0a0ff),
+    };
     static GradientDrawable divider;
 
     static {
@@ -38,7 +48,9 @@ public class ARGBColorPicker extends LinearLayout {
 
         colorPickers = new ColorPicker[4];
         for (int index = 0; index < colorPickers.length; index++) {
+            ColorData data = colorData[index];
             ColorPicker colorPicker = colorPickers[index] = new ColorPicker(context);
+            colorPicker.setBarColor(data.getMainColor(), data.getSubColor());
             colorPicker.parent = this;
             LinearLayout.LayoutParams layoutParams =
                     new LinearLayout.LayoutParams(
@@ -112,7 +124,7 @@ public class ARGBColorPicker extends LinearLayout {
                 addView(editText);
             }
             {
-                SeekBar seekBar = this.seekBar = new DotSeekBar(context);
+                DotSeekBar seekBar = this.seekBar = new DotSeekBar(context);
                 seekBar.setMax(0xff);
                 LinearLayout.LayoutParams layoutParams =
                         new LinearLayout.LayoutParams(
@@ -154,6 +166,10 @@ public class ARGBColorPicker extends LinearLayout {
             });
         }
 
+        public void setBarColor(int mainColor, int subColor) {
+            seekBar.setColor(mainColor, subColor);
+        }
+
         public void setColor(int color) {
             color = normalize(color);
             editText.setText(Integer.toString(color));
@@ -170,5 +186,12 @@ public class ARGBColorPicker extends LinearLayout {
             }
             return Math.min(color, 0xff);
         }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    private static class ColorData {
+        private int mainColor;
+        private int subColor;
     }
 }

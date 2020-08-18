@@ -17,8 +17,9 @@ public class DotScroll extends View {
     @Override
     public void onDraw(Canvas canvas) {
         Paint paint = new Paint();
-        final int width = canvas.getWidth();
-        final int height = canvas.getHeight();
+        final Rect bounds = canvas.getClipBounds();
+        final int width = bounds.width();
+        final int height = bounds.height();
 
         // left
         {
