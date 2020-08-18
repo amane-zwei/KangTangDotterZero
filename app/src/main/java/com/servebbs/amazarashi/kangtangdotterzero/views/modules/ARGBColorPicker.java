@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 
 import androidx.appcompat.widget.LinearLayoutCompat;
 
+import com.servebbs.amazarashi.kangtangdotterzero.drawables.UnderLineDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotEditText;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotSeekBar;
@@ -23,10 +24,10 @@ import lombok.Getter;
 public class ARGBColorPicker extends LinearLayout {
 
     private static ColorData[] colorData = {
-            new ColorData(0xff808080, 0xffd0d0d0),
-            new ColorData(0xffff0000, 0xffffa0a0),
-            new ColorData(0xff00ff00, 0xffd0ffd0),
-            new ColorData(0xff0000ff, 0xffa0a0ff),
+            new ColorData(0xff808080, 0xfff0f0f0),
+            new ColorData(0xffff0000, 0xffffd0d0),
+            new ColorData(0xff00ff00, 0xffe0ffe0),
+            new ColorData(0xff0000ff, 0xffd0d0ff),
     };
     static GradientDrawable divider;
 
@@ -52,6 +53,7 @@ public class ARGBColorPicker extends LinearLayout {
             ColorPicker colorPicker = colorPickers[index] = new ColorPicker(context);
             colorPicker.setBarColor(data.getMainColor(), data.getSubColor());
             colorPicker.parent = this;
+            colorPicker.setBackground(new UnderLineDrawable(0xff000000));
             LinearLayout.LayoutParams layoutParams =
                     new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
