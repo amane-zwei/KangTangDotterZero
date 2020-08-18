@@ -22,7 +22,7 @@ public class DotIcon {
     }
 
     public static final DotIconData seekBar = new DotIconData(32, 0, 32, 16);
-    public static final DotIconData seekBarThumb = new DotIconData(96, 0, 6, 16);
+    public static final DotIconData seekBarThumb = new DotIconData(96, 0, 8, 16);
 
     @Getter
     @AllArgsConstructor

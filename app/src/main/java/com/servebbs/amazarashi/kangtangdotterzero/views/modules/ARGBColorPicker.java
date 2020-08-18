@@ -33,7 +33,7 @@ public class ARGBColorPicker extends LinearLayout {
     static {
         divider = new GradientDrawable();
         divider.setColor(0x00);
-        divider.setSize(0, 8);
+        divider.setSize(0, 2);
     }
 
     private ColorPicker[] colorPickers;
@@ -137,9 +137,9 @@ public class ARGBColorPicker extends LinearLayout {
             }
             this.editText.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
-                public void onFocusChange(View v, boolean hasFocus) {
+                public void onFocusChange(View view, boolean hasFocus) {
                     if (!hasFocus) {
-                        EditText editText = (EditText) v;
+                        EditText editText = (EditText) view;
                         int color = normalize(Integer.parseInt(editText.getText().toString()));
                         seekBar.setProgress(color);
                         editText.setText(Integer.toString(color));

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.servebbs.amazarashi.kangtangdotterzero.R;
+import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 
 public class DotEditText extends androidx.appcompat.widget.AppCompatEditText {
 
@@ -21,7 +22,7 @@ public class DotEditText extends androidx.appcompat.widget.AppCompatEditText {
         super(context);
 
         GradientDrawable gradientDrawable = new GradientDrawable();
-        gradientDrawable.setStroke(2, 0xff000000);
+        gradientDrawable.setStroke(ScreenSize.getIconSize()/16, 0xff000000);
         setBackground(gradientDrawable);
     }
 }

@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,7 +27,7 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
 
         drawable = new DotSeekBarDrawable(getPaddingStart() + getPaddingEnd());
         setProgressDrawable(drawable);
-        setThumb(new DotSeekBarThumbDrawable());
+        setThumb(new GradientDrawable());
     }
 
     public void setColor(int mainColor, int subColor) {
@@ -170,7 +171,6 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
 
         @Override
         public void draw(@NonNull Canvas canvas) {
-            final Rect bounds = canvas.getClipBounds();
             canvas.drawBitmap(
                     DotIcon.getBitmap(),
                     srcRect,
