@@ -158,48 +158,4 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
             return PixelFormat.OPAQUE;
         }
     }
-
-    static class DotSeekBarThumbDrawable extends Drawable {
-
-        private Paint paint;
-        private Rect srcRect;
-
-        public DotSeekBarThumbDrawable() {
-            paint = new Paint();
-            srcRect = DotIcon.seekBarThumb.createRect();
-        }
-
-        @Override
-        public void draw(@NonNull Canvas canvas) {
-            canvas.drawBitmap(
-                    DotIcon.getBitmap(),
-                    srcRect,
-                    getBounds(),
-                    paint);
-        }
-
-        @Override
-        public void setAlpha(int alpha) {
-        }
-
-        @Override
-        public void setColorFilter(@Nullable ColorFilter colorFilter) {
-        }
-
-        @Override
-        public int getOpacity() {
-            return PixelFormat.OPAQUE;
-        }
-
-        @Override
-        public int getIntrinsicWidth() {
-            return ScreenSize.getIconSize() * DotIcon.seekBarThumb.getWidth() / 16;
-        }
-
-        @Override
-        public int getIntrinsicHeight() {
-            return ScreenSize.getIconSize();
-        }
-    }
-
 }
