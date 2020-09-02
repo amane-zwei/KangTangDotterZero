@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.ColorArray;
+import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.ColorList;
 import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.IndexedBitmap;
 
 public class Layer {
@@ -26,13 +26,13 @@ public class Layer {
     public Bitmap getIndexed(){ return indexed.getBitmap(); }
     public Canvas getCanvas(){ return new Canvas(display); }
 
-    public void useIndexed(ColorArray colorArray) {
+    public void useIndexed(ColorList colorList) {
         indexed = IndexedBitmap.createIndexedBitmap(display.getWidth(), display.getHeight());
-        indexed.fromBitmap(display, colorArray);
+        indexed.fromBitmap(display, colorList);
     }
-    public void stopIndexed(ColorArray colorArray) {
+    public void stopIndexed(ColorList colorList) {
         if( indexed != null ) {
-            display = indexed.translateColor(display, colorArray);
+            display = indexed.translateColor(display, colorList);
             indexed = null;
         }
     }
@@ -107,7 +107,7 @@ public class Layer {
         }
         return true;
     }
-    public boolean setIndexedBitmap(Bitmap src, ColorArray colorArray){
+    public boolean setIndexedBitmap(Bitmap src, ColorList colorList){
         if( src==null )
             return false;
 
@@ -119,7 +119,7 @@ public class Layer {
         } catch( java.lang.Exception e){
             return false;
         }
-        this.indexed.fromBitmap(src, colorArray);
+        this.indexed.fromBitmap(src, colorList);
         return true;
     }
 

@@ -1,10 +1,8 @@
 package com.servebbs.amazarashi.kangtangdotterzero.views;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,9 +16,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
-import com.servebbs.amazarashi.kangtangdotterzero.fragments.TestFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.dialogs.ColorPickerDialog;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 
 public class menuItemView extends View  {
 
@@ -36,7 +33,9 @@ public class menuItemView extends View  {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
-                new ColorPickerDialog().show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "test_tag");
+                new ColorPickerDialog()
+                        .attachPalette(Palette.createDefault())
+                        .show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "test_tag");
             }
         });
     }

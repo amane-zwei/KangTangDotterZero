@@ -12,24 +12,30 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 
 public class ColorView extends View {
     private final static Paint paint = new Paint();
+    private final static Rect srcRect = DotIcon.pallet.createRect();
 
-    private int color = 0xffffa0a0;
+    private final Paint basePaint = new Paint();
 
     public ColorView(Context context) {
         super(context);
     }
 
     public void setColor(int color) {
-        this.color = color;
-        setBackgroundColor(color);
+        basePaint.setColor(color);
     }
 
     @Override
     public void onDraw(Canvas canvas) {
-        final Rect srcRect = new Rect(0, 0, 16, 16);
         final Rect dstRect = canvas.getClipBounds();
+        final int dotSize = ScreenSize.getDotSize() * 2;
 
-        canvas.drawColor(color);
+        canvas.drawRect(
+                new Rect(
+                        dstRect.left + dotSize,
+                        dstRect.top + dotSize,
+                        dstRect.right - dotSize,
+                        dstRect.bottom - dotSize),
+                basePaint);
         canvas.drawBitmap(DotIcon.getBitmap(), srcRect, dstRect, paint);
     }
 }

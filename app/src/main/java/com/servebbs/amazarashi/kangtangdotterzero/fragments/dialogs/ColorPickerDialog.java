@@ -4,39 +4,54 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DividerDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ColorSelector;
 
 public class ColorPickerDialog extends KTDZDialogFragment {
+
+    private Palette palette = null;
+    private ColorPickerDialogView contentView = null;
+
+    public ColorPickerDialog attachPalette(Palette palette) {
+        this.palette = palette;
+        if(contentView != null) {
+            contentView.attachPalette(palette);
+        }
+        return this;
+    }
+
     @Override
     public View createContentView(Context context) {
-        return new ColorPickerDialogView(context);
+        this.contentView = new ColorPickerDialogView(context);
+        this.contentView.attachPalette(palette);
+        return contentView;
     }
 
     public static class ColorPickerDialogView extends LinearLayout {
+
+        private ColorSelector colorSelector;
 
         public ColorPickerDialogView(Context context) {
             super(context);
 
             final int iconSize = ScreenSize.getIconSize();
+            final int dotSize = ScreenSize.getDotSize();
             final int padding = ScreenSize.getPadding();
 
             setOrientation(LinearLayout.VERTICAL);
             setBackgroundColor(0xfff0f0f0);
 
             {
-                ColorSelector colorSelector = new ColorSelector(context);
+                ColorSelector colorSelector = this.colorSelector = new ColorSelector(context);
                 colorSelector.setPadding(padding, padding, padding, padding);
-                colorSelector.setBackgroundColor(0xff800080);
-
-                GradientDrawable stroke = new GradientDrawable();
-                stroke.setStroke(iconSize / 16, 0xff000000);
-                colorSelector.setBackground(stroke);
+                colorSelector.setStretchMode(GridView.NO_STRETCH);
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -70,6 +85,10 @@ public class ColorPickerDialog extends KTDZDialogFragment {
                 argbColorPicker.setLayoutParams(layoutParams);
                 addView(argbColorPicker);
             }
+        }
+
+        public void attachPalette(Palette palette) {
+            colorSelector.attachPalette(palette);
         }
     }
 }
