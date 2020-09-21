@@ -3,57 +3,56 @@ package com.servebbs.amazarashi.kangtangdotterzero.views.modules;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
-import com.servebbs.amazarashi.kangtangdotterzero.drawables.CursorDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 
+import lombok.Setter;
+
 public class ColorSelector extends GridView {
 
-    Palette palette = null;
+    private Palette palette = null;
+    @Setter
+    private OnColorSelectListener onColorSelectListener = null;
 
     public ColorSelector(Context context) {
         super(context);
 
         final int iconSize = ScreenSize.getIconSize();
-        final int margin = ScreenSize.getMargin();
-
-        setSelector(new CursorDrawable());
-        setDrawSelectorOnTop(true);
-        setClipToPadding(false);
 
         setNumColumns(GridView.AUTO_FIT);
         setColumnWidth(iconSize);
-        setHorizontalSpacing(margin);
-        setVerticalSpacing(margin);
+        setHorizontalSpacing(0);
+        setVerticalSpacing(0);
 
-        setOnItemSelectedListener(new OnItemSelectedListener() {
+        setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                android.util.Log.d("hogehoge", "on selected:::" + position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                android.util.Log.d("hogehoge", "on nothing:::");
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                palette.setIndex(position);
+                if (onColorSelectListener != null) {
+                    onColorSelectListener.onColorSelect(palette.getColor());
+                }
+                invalidateViews();
             }
         });
-//        setOnItemClickListener(new OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//android.util.Log.d("hogehoge", "on clicked" + position);
-//            }
-//        });
     }
 
     public void attachPalette(Palette palette) {
         this.palette = palette;
         setAdapter(new GridAdapter(palette));
         setSelection(palette.getIndex());
+    }
+
+    public void applyColor(int color) {
+        palette.setColor(color);
+        invalidateViews();
+    }
+
+    public interface OnColorSelectListener {
+        void onColorSelect(int color);
     }
 
     class GridAdapter extends BaseAdapter {
@@ -67,24 +66,23 @@ public class ColorSelector extends GridView {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
+            ColorView colorView;
             if (convertView == null) {
                 final int iconSize = ScreenSize.getIconSize();
 
-                convertView = new ColorView(getContext());
-                convertView.setClickable(false);
-                convertView.setFocusable(false);
-                convertView.setFocusableInTouchMode(false);
+                colorView = new ColorView(getContext());
+                colorView.setPalette(palette);
                 GridView.LayoutParams layoutParams = new GridView.LayoutParams(
                         iconSize,
                         iconSize
                 );
-                convertView.setLayoutParams(layoutParams);
+                colorView.setLayoutParams(layoutParams);
+            } else {
+                colorView = (ColorView) convertView;
             }
+            colorView.setIndex(position);
 
-            ((ColorView) convertView).setColor(palette.getColor(position));
-
-            return convertView;
+            return colorView;
         }
 
         @Override

@@ -1,7 +1,6 @@
 package com.servebbs.amazarashi.kangtangdotterzero.fragments.dialogs;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -37,6 +36,7 @@ public class ColorPickerDialog extends KTDZDialogFragment {
     public static class ColorPickerDialogView extends LinearLayout {
 
         private ColorSelector colorSelector;
+        private ARGBColorPicker argbColorPicker;
 
         public ColorPickerDialogView(Context context) {
             super(context);
@@ -50,6 +50,12 @@ public class ColorPickerDialog extends KTDZDialogFragment {
 
             {
                 ColorSelector colorSelector = this.colorSelector = new ColorSelector(context);
+                colorSelector.setOnColorSelectListener(new ColorSelector.OnColorSelectListener() {
+                    @Override
+                    public void onColorSelect(int color) {
+                        argbColorPicker.applyColor(color);
+                    }
+                });
                 colorSelector.setPadding(padding, padding, padding, padding);
                 colorSelector.setStretchMode(GridView.NO_STRETCH);
 
@@ -75,8 +81,13 @@ public class ColorPickerDialog extends KTDZDialogFragment {
                 addView(divider);
             }
             {
-                ARGBColorPicker argbColorPicker = new ARGBColorPicker(context);
-                argbColorPicker.setColor(0xfff0a080);
+                ARGBColorPicker argbColorPicker = this.argbColorPicker = new ARGBColorPicker(context);
+                argbColorPicker.setOnColorChangeListener(new ARGBColorPicker.OnColorChangeListener() {
+                    @Override
+                    public void onColorChange(int color) {
+                        colorSelector.applyColor(color);
+                    }
+                });
                 argbColorPicker.setPadding(padding, padding, padding, padding);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -89,6 +100,7 @@ public class ColorPickerDialog extends KTDZDialogFragment {
 
         public void attachPalette(Palette palette) {
             colorSelector.attachPalette(palette);
+            argbColorPicker.applyColor(palette.getColor());
         }
     }
 }

@@ -1,23 +1,15 @@
 package com.servebbs.amazarashi.kangtangdotterzero.fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.os.Bundle;
 import android.view.View;
 
-import com.servebbs.amazarashi.kangtangdotterzero.R;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
-import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotRectView;
 
 public class TestFragment extends KTDZDialogFragment {
     @Override
     public View createContentView(Context context) {
         ARGBColorPicker argbColorPicker = new ARGBColorPicker(context);
-        argbColorPicker.setColor(0xfff0a080);
+        argbColorPicker.applyColor(0xfff0a080);
         return argbColorPicker;
     }
 //    private static TestFragment instance = new TestFragment();

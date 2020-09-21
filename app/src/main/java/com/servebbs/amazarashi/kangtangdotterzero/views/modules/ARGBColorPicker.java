@@ -20,6 +20,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotSeekBar;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 public class ARGBColorPicker extends LinearLayout {
 
@@ -38,6 +39,7 @@ public class ARGBColorPicker extends LinearLayout {
     }
 
     private ColorPicker[] colorPickers;
+    @Setter
     private OnColorChangeListener onColorChangeListener;
 
     public ARGBColorPicker(Context context) {
@@ -66,7 +68,7 @@ public class ARGBColorPicker extends LinearLayout {
         onColorChangeListener = null;
     }
 
-    public void setColor(int color) {
+    public void applyColor(int color) {
         for (int index = colorPickers.length - 1; index >= 0; index--) {
             ColorPicker colorPicker = colorPickers[index];
             colorPicker.setColor(color & 0xff);
@@ -77,8 +79,8 @@ public class ARGBColorPicker extends LinearLayout {
     public int getColor() {
         int color = 0;
         for( int index = 0; index < colorPickers.length; index++) {
-            color += colorPickers[index].getColor();
             color <<= 8;
+            color += colorPickers[index].getColor();
         }
         return color;
     }
