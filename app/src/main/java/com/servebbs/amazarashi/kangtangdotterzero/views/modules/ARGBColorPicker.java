@@ -25,10 +25,10 @@ import lombok.Setter;
 public class ARGBColorPicker extends LinearLayout {
 
     private static ColorData[] colorData = {
-            new ColorData(0xff808080, 0xfff0f0f0),
-            new ColorData(0xffff0000, 0xffffd0d0),
-            new ColorData(0xff00ff00, 0xffe0ffe0),
-            new ColorData(0xff0000ff, 0xffd0d0ff),
+            new ColorData(0xff808080, 0xffffffff),
+            new ColorData(0xffff4040, 0xffffffff),
+            new ColorData(0xff40ff40, 0xffffffff),
+            new ColorData(0xff4040ff, 0xffffffff),
     };
     static GradientDrawable divider;
 
