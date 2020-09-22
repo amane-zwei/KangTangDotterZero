@@ -20,6 +20,8 @@ import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotButton;
 
 public class KTDZDialogFragment extends DialogFragment {
 
+    private OnButtonFunction[] onButtonFunctions = new OnButtonFunction[2];
+
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
         Dialog dialog = new Dialog(getActivity());
@@ -36,6 +38,10 @@ public class KTDZDialogFragment extends DialogFragment {
         return new View(context);
     }
 
+    protected void setOnPositiveButton(OnButtonFunction onPositiveButton) {
+        onButtonFunctions[1] = onPositiveButton;
+    }
+
     public View createButtonAreaView(Context context) {
         final int margin = DisplayMetricsUtil.calcPixel(context, 10);
 
@@ -47,6 +53,7 @@ public class KTDZDialogFragment extends DialogFragment {
 
         for (int index = 0; index < texts.length; index++) {
             DotButton button = new DotButton(context);
+            final OnButtonFunction onButtonFunction = onButtonFunctions[index];
             LinearLayout.LayoutParams layoutParams =
                     new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -55,11 +62,11 @@ public class KTDZDialogFragment extends DialogFragment {
             layoutParams.setMargins(margin, 0, 0, 0);
             button.setLayoutParams(layoutParams);
             button.setText(texts[index]);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
+            button.setOnClickListener((View v) -> {
+                if (onButtonFunction != null) {
+                    onButtonFunction.accept();
                 }
+                dismiss();
             });
             buttonAreaLayout.addView(button);
         }
@@ -110,5 +117,10 @@ public class KTDZDialogFragment extends DialogFragment {
         }
 
         return constraintLayout;
+    }
+
+    @FunctionalInterface
+    public interface OnButtonFunction {
+        void accept();
     }
 }

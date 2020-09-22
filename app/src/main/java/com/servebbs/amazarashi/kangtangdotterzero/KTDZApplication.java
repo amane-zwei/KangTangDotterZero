@@ -1,6 +1,7 @@
 package com.servebbs.amazarashi.kangtangdotterzero;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.GlobalContext;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.ProjectContext;
@@ -21,4 +22,8 @@ public class KTDZApplication extends Application {
     }
 
     public ProjectContext getProjectContext() { projectContext.setGlobalContext(globalContext); return projectContext; }
+
+    public static KTDZApplication get(Context context) {
+        return ((KTDZApplication)context.getApplicationContext());
+    }
 }

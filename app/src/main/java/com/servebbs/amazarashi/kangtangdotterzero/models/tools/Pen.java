@@ -14,6 +14,7 @@ public class Pen extends Tool{
 
     private ArrayList<Point> buff = null;
     private Layer layer;
+    private int color;
 
     @Override
     public boolean touch(MotionEvent event, ProjectContext projectContext) {
@@ -23,16 +24,17 @@ public class Pen extends Tool{
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 layer = projectContext.getLayer();
+                color = projectContext.getProject().getPalette().getColor();
                 onDown(x, y);
                 return true;
             case MotionEvent.ACTION_MOVE: onMove(x, y); return true;
             case MotionEvent.ACTION_UP:   onUp(); return true;
         }
         return false;
-    };
+    }
 
     public void onDown(int x, int y){
-        this.buff  = new ArrayList<Point>();
+        this.buff  = new ArrayList<>();
         buff.add(new Point(x, y));
     }
 
@@ -40,13 +42,13 @@ public class Pen extends Tool{
         Point prev = buff.get(buff.size()-1);
         if( x!=prev.x || y!=prev.y ) {
             buff.add(new Point(x, y));
-            innerDraw(layer.getCanvas(), 0xffff0000, new Paint());
-        }
+            innerDraw(layer.getCanvas(), color, new Paint());
+    }
         return true;
     }
 
     public boolean onUp(){
-        innerDraw(layer.getCanvas(), 0xffff0000, new Paint());
+        innerDraw(layer.getCanvas(), color, new Paint());
         return true;
     }
 

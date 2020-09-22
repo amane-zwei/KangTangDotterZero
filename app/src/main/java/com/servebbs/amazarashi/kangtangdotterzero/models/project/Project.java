@@ -1,18 +1,26 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models.project;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
+import com.servebbs.amazarashi.kangtangdotterzero.KTDZApplication;
+
 import java.util.ArrayList;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class Project {
 
     private int width;
     private int height;
-    private int index = 0;
-    private ArrayList<Frame> frames = new ArrayList<Frame>();
+    private int index;
+    private ArrayList<Frame> frames = new ArrayList<>();
     private int backGroundColor;
+    @Getter
+    private Palette palette;
 
     private Bitmap destination;
     private Canvas canvas;
@@ -23,6 +31,7 @@ public class Project {
         addFrame();
         index = 0;
         backGroundColor = 0xffffffff;
+        palette = Palette.createDefault();
 
         destination = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(destination);
@@ -43,5 +52,15 @@ public class Project {
         canvas.drawColor(backGroundColor);
         getFrame().render(canvas);
         return destination;
+    }
+
+    public void applyPalette(Palette palette) {
+        if (!this.palette.equals(palette)) {
+            this.palette = palette;
+        }
+    }
+
+    public static Project get(Context context) {
+        return KTDZApplication.get(context).getProjectContext().getProject();
     }
 }

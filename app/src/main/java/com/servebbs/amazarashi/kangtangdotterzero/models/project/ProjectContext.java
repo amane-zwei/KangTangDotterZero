@@ -8,8 +8,11 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.GlobalContext;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenNormalizer;
 import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Tool;
 
+import lombok.Getter;
+
 public class ProjectContext {
 
+    @Getter
     private Project project = new Project();
     private GlobalContext globalContext;
 

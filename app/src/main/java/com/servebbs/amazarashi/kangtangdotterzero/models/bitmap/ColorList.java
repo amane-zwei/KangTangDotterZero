@@ -43,4 +43,16 @@ public class ColorList {
     }
 
     public boolean canAddColor(){ return array.size() < colorMax; }
+
+    public boolean equals(ColorList colorList) {
+        if (this.size() != colorList.size()) {
+            return false;
+        }
+        for (int index = 0; index < this.size(); index++) {
+            if (!this.array.get(index).equals(colorList.array.get(index))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

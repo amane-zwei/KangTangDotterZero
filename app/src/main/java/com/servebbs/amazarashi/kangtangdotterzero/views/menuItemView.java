@@ -7,19 +7,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-
 import android.view.GestureDetector;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+
+import com.servebbs.amazarashi.kangtangdotterzero.KTDZApplication;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.dialogs.ColorPickerDialog;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 
-public class menuItemView extends View  {
+public class menuItemView extends View {
 
     private GestureDetector gestureDetector;
 
@@ -29,14 +30,12 @@ public class menuItemView extends View  {
 //        this.gestureDetector = new GestureDetector(context, this);
 //        setOnTouchListener(this);
 
-        setOnClickListener(new View.OnClickListener(){
-            @SuppressLint("ResourceType")
-            @Override
-            public void onClick(View view) {
-                new ColorPickerDialog()
-                        .attachPalette(Palette.createDefault())
-                        .show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "test_tag");
-            }
+        setOnClickListener((View view) -> {
+            final Project project = Project.get(getContext());
+            new ColorPickerDialog()
+                    .attachPalette(project.getPalette().clone())
+                    .setOnPositive(project::applyPalette)
+                    .show(((AppCompatActivity) view.getContext()).getSupportFragmentManager(), "test_tag");
         });
     }
 
@@ -87,7 +86,7 @@ public class menuItemView extends View  {
             dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
             // フルスクリーン
             dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-            dialog.setContentView(new View(getContext()){
+            dialog.setContentView(new View(getContext()) {
                 public void onDraw(Canvas canvas) {
                     canvas.drawColor(0xffffffff);
                 }

@@ -3,7 +3,6 @@ package com.servebbs.amazarashi.kangtangdotterzero.fragments.dialogs;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DividerDrawable;
@@ -13,16 +12,24 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ColorSelector;
 
+import lombok.Getter;
+
 public class ColorPickerDialog extends KTDZDialogFragment {
 
+    @Getter
     private Palette palette = null;
     private ColorPickerDialogView contentView = null;
 
     public ColorPickerDialog attachPalette(Palette palette) {
         this.palette = palette;
-        if(contentView != null) {
+        if (contentView != null) {
             contentView.attachPalette(palette);
         }
+        return this;
+    }
+
+    public ColorPickerDialog setOnPositive(OnPositiveButtonListener onPositive) {
+        setOnPositiveButton(() -> onPositive.onPositiveButton(palette));
         return this;
     }
 
@@ -31,6 +38,12 @@ public class ColorPickerDialog extends KTDZDialogFragment {
         this.contentView = new ColorPickerDialogView(context);
         this.contentView.attachPalette(palette);
         return contentView;
+    }
+
+    @FunctionalInterface
+    public interface OnPositiveButtonListener {
+        void onPositiveButton(Palette palette);
+
     }
 
     public static class ColorPickerDialogView extends LinearLayout {
@@ -50,14 +63,8 @@ public class ColorPickerDialog extends KTDZDialogFragment {
 
             {
                 ColorSelector colorSelector = this.colorSelector = new ColorSelector(context);
-                colorSelector.setOnColorSelectListener(new ColorSelector.OnColorSelectListener() {
-                    @Override
-                    public void onColorSelect(int color) {
-                        argbColorPicker.applyColor(color);
-                    }
-                });
+                colorSelector.setOnColorSelectListener((int color) -> argbColorPicker.applyColor(color));
                 colorSelector.setPadding(padding, padding, padding, padding);
-                colorSelector.setStretchMode(GridView.NO_STRETCH);
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -82,12 +89,7 @@ public class ColorPickerDialog extends KTDZDialogFragment {
             }
             {
                 ARGBColorPicker argbColorPicker = this.argbColorPicker = new ARGBColorPicker(context);
-                argbColorPicker.setOnColorChangeListener(new ARGBColorPicker.OnColorChangeListener() {
-                    @Override
-                    public void onColorChange(int color) {
-                        colorSelector.applyColor(color);
-                    }
-                });
+                argbColorPicker.setOnColorChangeListener((int color) -> colorSelector.applyColor(color));
                 argbColorPicker.setPadding(padding, padding, padding, padding);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
