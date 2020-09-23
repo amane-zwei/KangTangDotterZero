@@ -1,7 +1,8 @@
 package com.servebbs.amazarashi.kangtangdotterzero.views.modules;
 
 import android.content.Context;
-import android.graphics.Canvas;
+import android.graphics.drawable.GradientDrawable;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -10,6 +11,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 
 import lombok.Setter;
@@ -29,9 +31,10 @@ public class ColorSelector extends LinearLayout {
         {
             MenuView menuView = new MenuView(context);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    32
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
             );
+            layoutParams.gravity = Gravity.RIGHT;
             menuView.setLayoutParams(layoutParams);
             addView(menuView);
         }
@@ -58,6 +61,11 @@ public class ColorSelector extends LinearLayout {
 
     public void applyColor(int color) {
         palette.setColor(color);
+        colorGridView.invalidateViews();
+    }
+
+    private void minusColor() {
+        palette.removeColor();
         colorGridView.invalidateViews();
     }
 
@@ -90,12 +98,28 @@ public class ColorSelector extends LinearLayout {
         public MenuView(Context context) {
             super(context);
 
+            final int iconSize = ScreenSize.getIconSize();
+            final int dotSize = ScreenSize.getDotSize();
+
             setOrientation(LinearLayout.HORIZONTAL);
-            addView(new View(context) {
-                public void onDraw(Canvas canvas) {
-                    canvas.drawColor(0xffff0000);
-                }
-            });
+            setPadding(0,0,iconSize / 2, 0);
+
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setStroke(dotSize, 0xff000000);
+            gradientDrawable.setColor(0xffc0c0ff);
+            setBackground(gradientDrawable);
+
+            {
+                SimpleIconView iconView = new SimpleIconView(context);
+                iconView.setRect(DotIcon.minusColor.createRect());
+                iconView.setOnClickListener((View view) -> minusColor() );
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        iconSize,
+                        iconSize
+                );
+                iconView.setLayoutParams(layoutParams);
+                addView(iconView);
+            }
         }
     }
 
@@ -131,7 +155,7 @@ public class ColorSelector extends LinearLayout {
             }
 
             if (position == palette.size()) {
-                colorView.setIndex(0);
+                colorView.setIndex(-1);
             } else {
                 colorView.setIndex(position);
             }

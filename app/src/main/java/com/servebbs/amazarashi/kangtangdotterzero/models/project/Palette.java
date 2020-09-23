@@ -37,6 +37,14 @@ public class Palette extends ColorList implements Cloneable {
         setColor(index, color);
     }
 
+    public int removeColor() {
+        int color = removeColor(index);
+        if (index >= size() -1) {
+            index = size() -1;
+        }
+        return color;
+    }
+
     public boolean equals(Palette palette) {
         return this.index == palette.index && super.equals(palette);
     }

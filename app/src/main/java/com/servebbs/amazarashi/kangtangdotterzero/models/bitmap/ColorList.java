@@ -23,9 +23,15 @@ public class ColorList {
         this.array.addAll(src.array);
     }
 
+    public int removeColor(int index) {
+        if (array.size() < 2) {
+            return 0;
+        }
+        return this.array.remove(index);
+    }
+
     public List<Integer> getList(){ return array; }
     public int size(){ return array.size(); }
-    public void clear(){ array.clear(); }
 
     public int getColor(int index) { return array.get(index); }
     public void setColor(int index, int color){ array.set(index, color); }
