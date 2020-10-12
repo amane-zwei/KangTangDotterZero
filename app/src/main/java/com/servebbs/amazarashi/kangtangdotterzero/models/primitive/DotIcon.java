@@ -26,7 +26,10 @@ public class DotIcon {
     public static final DotIconData plusColor = new DotIconData(0, 16, 16, 16);
     public static final DotIconData minusColor = new DotIconData(16, 16, 16, 16);
     public static final DotIconData seekBar = new DotIconData(32, 0, 32, 16);
-    public static final DotIconData seekBarThumb = new DotIconData(96, 0, 8, 16);
+    public static final DotIconData seekBarThumb = new DotIconData(96, 0, 4, 16);
+
+    public static final DotIconData menu = new DotIconData(0, 64, 16, 16);
+    public static final DotIconData colorPicker = new DotIconData(16, 64, 16, 16);
 
     @Getter
     @AllArgsConstructor

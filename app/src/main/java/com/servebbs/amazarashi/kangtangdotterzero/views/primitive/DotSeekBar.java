@@ -19,6 +19,12 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 
 public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
+//    private static Paint black;
+//    static {
+//        black = new Paint();
+//        black.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY));
+//        black.setColor(0xff000000);
+//    }
 
     DotSeekBarDrawable drawable;
 
@@ -65,7 +71,9 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
             final int width = bounds.width();
             final int height = bounds.height();
 
-            final int border = (width - offset) * getLevel() / 10000;
+            final int dotSize = ScreenSize.getDotSize();
+
+            final int border = (width - offset - dotSize * 3) * getLevel() / 10000 + dotSize;
 
             Bitmap tmpBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas tmpCanvas = new Canvas(tmpBitmap);
@@ -80,8 +88,9 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
                     paint
             );
 
-            tmpCanvas.drawRect(0, 0, border, height, mainColorPaint);
+            tmpCanvas.drawRect(dotSize, 0, border, height, mainColorPaint);
             tmpCanvas.drawRect(border, 0, width, height, subColorPaint);
+//            tmpCanvas.drawRect(border - dotSize / 2, 0, border + dotSize / 2, height, black);
 
             {
                 Rect rect = new Rect(0, 0, tmpBitmap.getWidth(), tmpBitmap.getHeight());

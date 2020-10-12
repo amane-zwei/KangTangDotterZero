@@ -24,13 +24,17 @@ public class Pen extends Tool{
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 layer = projectContext.getLayer();
-                color = projectContext.getProject().getPalette().getColor();
+                color = getColor(projectContext);
                 onDown(x, y);
                 return true;
             case MotionEvent.ACTION_MOVE: onMove(x, y); return true;
             case MotionEvent.ACTION_UP:   onUp(); return true;
         }
         return false;
+    }
+
+    public int getColor(ProjectContext context) {
+        return context.getProject().getPalette().getColor();
     }
 
     public void onDown(int x, int y){

@@ -61,6 +61,6 @@ public class Project {
     }
 
     public static Project get(Context context) {
-        return KTDZApplication.get(context).getProjectContext().getProject();
+        return ProjectContext.get(context).getProject();
     }
 }

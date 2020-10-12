@@ -31,8 +31,5 @@ public class MainView extends FrameLayout {
                 Gravity.BOTTOM)
         );
         this.addView(menuView);
-
-        menuItemView iconView = new menuItemView(context);
-        menuView.addItem(iconView);
     }
 }
