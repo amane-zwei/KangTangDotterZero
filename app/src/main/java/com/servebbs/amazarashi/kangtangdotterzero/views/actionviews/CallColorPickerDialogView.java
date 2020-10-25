@@ -7,12 +7,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 
 public class CallColorPickerDialogView extends ActionView {
     public CallColorPickerDialogView(Context context) {
-        super(context);
+        super(context, DotIcon.colorPicker.createRect());
         onClickAction = new CallColorPickerDialogAction();
-    }
-
-    @Override
-    protected RectSupplier supplyRect() {
-        return DotIcon.colorPicker::createRect;
     }
 }

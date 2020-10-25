@@ -28,6 +28,8 @@ public class DotIcon {
     public static final DotIconData seekBar = new DotIconData(32, 0, 32, 16);
     public static final DotIconData seekBarThumb = new DotIconData(96, 0, 4, 16);
 
+    public static final DotIconData pen = new DotIconData(0, 32, 16, 16);
+    public static final DotIconData eraser = new DotIconData(16, 32, 16, 16);
     public static final DotIconData menu = new DotIconData(0, 64, 16, 16);
     public static final DotIconData colorPicker = new DotIconData(16, 64, 16, 16);
 
@@ -49,6 +51,14 @@ public class DotIcon {
 
         public Rect createRect() {
             return new Rect(left, top, getRight(), getBottom());
+        }
+
+        public Rect createRect(int x, int y) {
+            return new Rect(
+                    left + x,
+                    top + y,
+                    getRight() + x,
+                    getBottom() + y);
         }
     }
 }

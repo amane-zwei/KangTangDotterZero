@@ -13,8 +13,14 @@ import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.util.Navigation;
+import com.servebbs.amazarashi.kangtangdotterzero.util.ViewList;
+
+import lombok.Getter;
 
 public class MainActivity extends AppCompatActivity {
+
+    @Getter
+    ViewList toolViews = new ViewList();
 
     @SuppressLint("ResourceType")
     @Override
