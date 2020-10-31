@@ -6,23 +6,29 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.KTDZApplication;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.ProjectContext;
 import com.servebbs.amazarashi.kangtangdotterzero.views.menu.HorizontalMenuView;
 
+import lombok.Getter;
+
 public class MainView extends FrameLayout {
+
+    @Getter
+    private ProjectView projectView;
 
     public MainView(Context context) {
         super(context);
 
-        addPaperView(context);
+        addProjectView(context);
     }
 
-    private void addPaperView(Context context){
-        PaperView paperView = new PaperView(context, ((KTDZApplication)context.getApplicationContext()).getProjectContext());
-        paperView.setLayoutParams(new FrameLayout.LayoutParams(
+    private void addProjectView(Context context){
+        ProjectView projectView = this.projectView = new ProjectView(context, ((KTDZApplication)context.getApplicationContext()).getProjectContext());
+        projectView.setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT)
         );
-        this.addView(paperView);
+        this.addView(projectView);
 
         HorizontalMenuView menuView = new HorizontalMenuView(context);
         menuView.setLayoutParams(new FrameLayout.LayoutParams(

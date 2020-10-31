@@ -5,31 +5,56 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import com.servebbs.amazarashi.kangtangdotterzero.KTDZApplication;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.servebbs.amazarashi.kangtangdotterzero.models.histories.History;
+import com.servebbs.amazarashi.kangtangdotterzero.models.histories.HistoryList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class Project {
+    @JsonIgnore
+    private int id;
 
+    @Getter
     private int width;
+    @Getter
     private int height;
-    private int index;
-    private ArrayList<Frame> frames = new ArrayList<>();
+    @JsonIgnore
+    private int frameIndex;
+    @Getter
+    private final ArrayList<Frame> frames;
+    @Getter
     private int backGroundColor;
     @Getter
     private Palette palette;
 
+    @JsonIgnore
+    private final HistoryList history;
+
+    @JsonIgnore
+    private final Map<Integer, Layer> layerMap;
+
+    @JsonIgnore
     private Bitmap destination;
+    @JsonIgnore
     private Canvas canvas;
 
     public Project() {
+        id = 0;
         width = 64;
         height = 64;
+
+        history = new HistoryList();
+
+        layerMap = new HashMap<>();
+
+        frames = new ArrayList<>();
         addFrame();
-        index = 0;
+        frameIndex = 0;
         backGroundColor = 0xffffffff;
         palette = Palette.createDefault();
 
@@ -37,16 +62,15 @@ public class Project {
         canvas = new Canvas(destination);
     }
 
-    public int getWidth() { return width; }
-    public int getHeight() { return height; }
+    public int generateId() { return id++; }
 
-//    public Bitmap getBitmap() { return bmp; }
-    public Rect getRect() {
+    public Rect createRect() {
         return new Rect(0,0,width,height );
     }
 
-    public Frame getFrame() { return frames.get(index); }
-    public void addFrame() { frames.add(new Frame(width, height)); }
+    @JsonIgnore
+    public Frame getFrame() { return frames.get(frameIndex); }
+    public void addFrame() { frames.add(new Frame(this, width, height)); }
 
     public Bitmap renderBitmap() {
         canvas.drawColor(backGroundColor);
@@ -58,6 +82,41 @@ public class Project {
         if (!this.palette.equals(palette)) {
             this.palette = palette;
         }
+    }
+
+    public void addHistory(History history) {
+        this.history.add(history);
+        Layer layer = layerMap.get(history.getLayerId());
+        if (layer != null) {
+            layer.write(this.history.getIndex());
+        }
+    }
+    public int restoreLayerHistory(int historyIndex) {
+        int maxIndex = 0;
+        for (Layer layer : layerMap.values()) {
+            int tmpIndex = layer.restoreLayerHistory(historyIndex);
+            maxIndex = Math.max(tmpIndex, maxIndex);
+        }
+        return maxIndex;
+    }
+
+    public boolean unRedo(int delta) {
+        return history.applyHistory(this, delta);
+    }
+
+    public void putLayer(Layer layer) {
+        layerMap.put(layer.getId(), layer);
+    }
+    public void removeLayer(Layer layer) {
+        layerMap.remove(layer.getId());
+    }
+    public Layer findLayer(int id) { return layerMap.get(id); }
+
+    public boolean isOut(int x, int y) {
+        int w = getWidth();
+        int h = getHeight();
+
+        return x < 0 || w <= x || y < 0 || h <= y;
     }
 
     public static Project get(Context context) {

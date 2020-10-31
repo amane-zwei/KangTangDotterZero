@@ -7,11 +7,11 @@ import android.view.View;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.ProjectContext;
 
-public class PaperView extends View {
+public class ProjectView extends View {
 
     ProjectContext projectContext;
 
-    public PaperView(Context context, ProjectContext projectContext){
+    public ProjectView(Context context, ProjectContext projectContext){
         super(context);
 
         this.projectContext = projectContext;

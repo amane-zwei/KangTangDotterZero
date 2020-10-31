@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
-                transaction.add(1, new MainFragment());
+                transaction.add(1, new MainFragment(), MainFragment.tag);
                 transaction.commit();
             }
 //            {
@@ -60,9 +60,5 @@ public class MainActivity extends AppCompatActivity {
 //                transaction.commit();
 //            }
         }
-    }
-
-    private void initFragments(){
-        Navigation.gotoMainFragment(getSupportFragmentManager());
     }
 }

@@ -32,6 +32,8 @@ public class DotIcon {
     public static final DotIconData eraser = new DotIconData(16, 32, 16, 16);
     public static final DotIconData menu = new DotIconData(0, 64, 16, 16);
     public static final DotIconData colorPicker = new DotIconData(16, 64, 16, 16);
+    public static final DotIconData undo = new DotIconData(32, 64, 16, 16);
+    public static final DotIconData redo = new DotIconData(48, 64, 16, 16);
 
     @Getter
     @AllArgsConstructor

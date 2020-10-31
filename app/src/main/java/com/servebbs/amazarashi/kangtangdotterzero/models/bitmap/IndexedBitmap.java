@@ -4,11 +4,16 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class IndexedBitmap {
 
+    @Getter
     private Bitmap bitmap;
-
-    public Bitmap getBitmap() { return bitmap; }
 
     public static IndexedBitmap createIndexedBitmap(int width, int height) {
         IndexedBitmap indexedBitmap = new IndexedBitmap();
@@ -52,6 +57,10 @@ public class IndexedBitmap {
             buff[idx] = colorList.findIndex(buff[idx]) << 24;
         }
         bitmap.setPixels(buff, 0, width, 0, 0, width, height);
+    }
+
+    public IndexedBitmap copy() {
+        return new IndexedBitmap(bitmap.copy(Bitmap.Config.ARGB_8888, true));
     }
 
     private void createFromBitmap(Bitmap src, ColorList colorList){

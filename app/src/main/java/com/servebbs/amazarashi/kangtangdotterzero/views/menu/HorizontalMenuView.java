@@ -9,11 +9,13 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.models.actions.UnRedoAction;
 import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Eraser;
 import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Pen;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.ActionView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallColorPickerDialogView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.SelectToolView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.UnRedoView;
 
 public class HorizontalMenuView extends HorizontalScrollView {
     // implements GestureDetector.OnGestureListener
@@ -40,6 +42,8 @@ public class HorizontalMenuView extends HorizontalScrollView {
         addItem(new SelectToolView(context, new Pen()));
         addItem(new SelectToolView(context, new Eraser()));
         addItem(new CallColorPickerDialogView(context));
+        addItem(new UnRedoView(context, UnRedoAction.DELTA_UNDO));
+        addItem(new UnRedoView(context, UnRedoAction.DELTA_REDO));
 
         this.detector = new GestureDetector(context, new GestureListener());
     }
