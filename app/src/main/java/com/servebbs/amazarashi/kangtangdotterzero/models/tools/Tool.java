@@ -12,8 +12,4 @@ public class Tool {
         return false;
     }
     public Rect createIconRect() { return new Rect(); }
-
-    protected void addHistory(Project project, History history) {
-        project.addHistory(history);
-    }
 }

@@ -8,10 +8,12 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.IndexedBitmap;
 import com.servebbs.amazarashi.kangtangdotterzero.models.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.models.lowlevel.Point;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Layer;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.ProjectContext;
 
@@ -24,6 +26,7 @@ public class Pen extends Tool {
     private ArrayList<Point> buff = null;
     private Layer layer;
     private int color;
+    private int colorIndex;
     private boolean isDraw;
 
     @Override
@@ -40,6 +43,9 @@ public class Pen extends Tool {
             case MotionEvent.ACTION_DOWN:
                 layer = projectContext.getLayer();
                 color = getColor(projectContext);
+                if (layer.isIndexedColor()) {
+                    colorIndex = getColorIndex(projectContext);
+                }
                 onDown(projectContext.getProject(), x, y);
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -56,10 +62,17 @@ public class Pen extends Tool {
         return context.getProject().getPalette().getColor();
     }
 
+    public int getColorIndex(ProjectContext context) {
+        return IndexedBitmap.toSaveIndex(context.getProject().getPalette().getIndex());
+    }
+
     public void onDown(Project project, int x, int y) {
         this.buff = new ArrayList<>();
         buff.add(new Point(x, y));
-        innerDraw(layer.createCanvas(), buff, createPaint(color));
+        innerDraw(layer.getDisplayCanvas(), buff, createPaint(color));
+        if (layer.isIndexedColor()) {
+            innerDraw(layer.getIndexedCanvas(), buff, createPaint(colorIndex));
+        }
         isDraw = !project.isOut(x, y);
     }
 
@@ -67,7 +80,10 @@ public class Pen extends Tool {
         Point prev = buff.get(buff.size() - 1);
         if (x != prev.x || y != prev.y) {
             buff.add(new Point(x, y));
-            innerDraw(layer.createCanvas(), buff, createPaint(color));
+            innerDraw(layer.getDisplayCanvas(), buff, createPaint(color));
+            if (layer.isIndexedColor()) {
+                innerDraw(layer.getIndexedCanvas(), buff, createPaint(colorIndex));
+            }
             isDraw |= !project.isOut(x, y);
         }
         return true;
@@ -75,7 +91,11 @@ public class Pen extends Tool {
 
     public boolean onUp(Project project) {
         if (isDraw) {
-            addHistory(project, new PenHistory(layer, buff, color));
+            if (project.isIndexedColor()) {
+                project.addHistory(new PenHistory(layer, buff, colorIndex));
+            } else {
+                project.addHistory(new PenHistory(layer, buff, color));
+            }
         }
         layer = null;
         buff = null;
@@ -86,6 +106,7 @@ public class Pen extends Tool {
         Paint paint = new Paint();
         paint.setColor(color);
         paint.setStrokeWidth(1);
+        paint.setStrokeCap(Paint.Cap.SQUARE);
         paint.setXfermode(porterDuffXfermode);
         return paint;
     }
@@ -98,7 +119,6 @@ public class Pen extends Tool {
 //            paint.setStrokeCap(Paint.Cap.ROUND);
 //            canvas.drawCircle(prev.x, prev.y, width/2, paint);
 //        } else {
-        paint.setStrokeCap(Paint.Cap.SQUARE);
         canvas.drawPoint(prev.x, prev.y, paint);
 //        }
 
@@ -119,14 +139,25 @@ public class Pen extends Tool {
         private final List<Point> buff;
         @JsonIgnore
         private final Paint paint;
+        @JsonIgnore
+        private final Paint indexedPaint;
+
         public PenHistory(Layer layer, List<Point> buff, int color) {
             super(layer);
             this.buff = buff;
             this.color = color;
             paint = createPaint(color);
+            indexedPaint = layer.isIndexedColor() ? createPaint(color) : null;
         }
-        public void draw(Canvas canvas) {
-            innerDraw(canvas, buff, paint);
+
+        public void draw(Layer layer, Palette palette) {
+            if (layer.isIndexedColor()) {
+                indexedPaint.setColor(palette.getColor(IndexedBitmap.toPlainIndex(color)));
+                innerDraw(layer.getDisplayCanvas(), buff, indexedPaint);
+                innerDraw(layer.getIndexedCanvas(), buff, paint);
+            } else {
+                innerDraw(layer.getDisplayCanvas(), buff, paint);
+            }
         }
     }
 }

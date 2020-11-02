@@ -41,6 +41,6 @@ public class LayerHistory {
     public void clear(LayerData layerData) {
         list.clear();
         list.add(layerData.copy());
-        index = 0;
+        index = 1;
     }
 }

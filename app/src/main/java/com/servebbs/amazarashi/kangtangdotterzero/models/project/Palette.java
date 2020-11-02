@@ -5,7 +5,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.ColorList;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Palette extends ColorList implements Cloneable {
+public class Palette extends ColorList {
     public static Palette createDefault() {
         final int[] colors = {
                 0xff000000,
@@ -27,6 +27,11 @@ public class Palette extends ColorList implements Cloneable {
     public Palette(int[] colors) {
         super(colors);
         index = 0;
+    }
+
+    public Palette(Palette src) {
+        super(src);
+        index = src.index;
     }
 
     public int getColor() {
@@ -52,16 +57,4 @@ public class Palette extends ColorList implements Cloneable {
     @Getter
     @Setter
     private int index;
-
-    @Override
-    public Palette clone() {
-        try {
-            Palette palette = (Palette)super.clone();
-            palette.index = this.index;
-            return palette;
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            return empty();
-        }
-    }
 }

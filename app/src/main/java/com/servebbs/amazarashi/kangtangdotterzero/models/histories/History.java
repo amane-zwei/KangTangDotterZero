@@ -1,8 +1,7 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models.histories;
 
-import android.graphics.Canvas;
-
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Layer;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 
 import lombok.Getter;
 
@@ -14,9 +13,5 @@ public abstract class History {
         this.layerId = layer.getId();
     }
 
-    public void draw(Layer layer) {
-        draw(new Canvas(layer.getDisplay()));
-        layer.touch();
-    }
-    abstract public void draw(Canvas canvas);
+    abstract public void draw(Layer layer, Palette palette);
 }

@@ -1,18 +1,11 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models.project;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.servebbs.amazarashi.kangtangdotterzero.models.histories.History;
-import com.servebbs.amazarashi.kangtangdotterzero.models.histories.HistoryList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,7 +41,7 @@ public class Frame {
     }
 
     public void addLayer() {
-        Layer layer = new Layer(project.generateId(), width, height);
+        Layer layer = new Layer(project.generateId(), width, height, project.isIndexedColor());
         layers.add(layer);
         project.putLayer(layer);
     }

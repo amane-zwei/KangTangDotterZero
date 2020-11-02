@@ -1,6 +1,7 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models.histories;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.Layer;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 
 import java.util.ArrayList;
@@ -30,7 +31,9 @@ public class HistoryList {
     private boolean applyHistory(Project project, int start, int end) {
         for ( ; start < end; start++) {
             History history = list.get(start);
-            history.draw(project.findLayer(history.getLayerId()));
+            Layer layer = project.findLayer(history.getLayerId());
+            history.draw(layer, project.getPalette());
+            layer.touch();
         }
         return true;
     }

@@ -15,4 +15,7 @@ public class Eraser extends Pen {
     public int getColor(ProjectContext context) {
         return 0x0;
     }
+
+    @Override
+    public int getColorIndex(ProjectContext context) { return 0x0; }
 }

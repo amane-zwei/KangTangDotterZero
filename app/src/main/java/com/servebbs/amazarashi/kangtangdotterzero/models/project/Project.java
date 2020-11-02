@@ -26,12 +26,16 @@ public class Project {
     @JsonIgnore
     private int frameIndex;
     @Getter
+    private boolean isIndexedColor;
+    @Getter
     private final ArrayList<Frame> frames;
     @Getter
     private int backGroundColor;
     @Getter
     private Palette palette;
 
+    @JsonIgnore
+    private int paletteOnHistoryIndex;
     @JsonIgnore
     private final HistoryList history;
 
@@ -47,7 +51,9 @@ public class Project {
         id = 0;
         width = 64;
         height = 64;
+        isIndexedColor = true;
 
+        paletteOnHistoryIndex = 0;
         history = new HistoryList();
 
         layerMap = new HashMap<>();
@@ -62,15 +68,22 @@ public class Project {
         canvas = new Canvas(destination);
     }
 
-    public int generateId() { return id++; }
+    public int generateId() {
+        return id++;
+    }
 
     public Rect createRect() {
-        return new Rect(0,0,width,height );
+        return new Rect(0, 0, width, height);
     }
 
     @JsonIgnore
-    public Frame getFrame() { return frames.get(frameIndex); }
-    public void addFrame() { frames.add(new Frame(this, width, height)); }
+    public Frame getFrame() {
+        return frames.get(frameIndex);
+    }
+
+    public void addFrame() {
+        frames.add(new Frame(this, width, height));
+    }
 
     public Bitmap renderBitmap() {
         canvas.drawColor(backGroundColor);
@@ -78,10 +91,18 @@ public class Project {
         return destination;
     }
 
-    public void applyPalette(Palette palette) {
-        if (!this.palette.equals(palette)) {
-            this.palette = palette;
+    public boolean applyPalette(Palette palette) {
+        if (this.palette.equals(palette)) {
+            return false;
         }
+        this.palette = palette;
+        if (isIndexedColor) {
+            for (Layer layer : layerMap.values()) {
+                layer.applyColorList(palette);
+            }
+            paletteOnHistoryIndex = history.getIndex();
+        }
+        return true;
     }
 
     public void addHistory(History history) {
@@ -91,10 +112,14 @@ public class Project {
             layer.write(this.history.getIndex());
         }
     }
+
     public int restoreLayerHistory(int historyIndex) {
         int maxIndex = 0;
         for (Layer layer : layerMap.values()) {
             int tmpIndex = layer.restoreLayerHistory(historyIndex);
+            if (isIndexedColor && tmpIndex < paletteOnHistoryIndex) {
+                layer.applyColorList(palette);
+            }
             maxIndex = Math.max(tmpIndex, maxIndex);
         }
         return maxIndex;
@@ -107,10 +132,14 @@ public class Project {
     public void putLayer(Layer layer) {
         layerMap.put(layer.getId(), layer);
     }
+
     public void removeLayer(Layer layer) {
         layerMap.remove(layer.getId());
     }
-    public Layer findLayer(int id) { return layerMap.get(id); }
+
+    public Layer findLayer(int id) {
+        return layerMap.get(id);
+    }
 
     public boolean isOut(int x, int y) {
         int w = getWidth();
