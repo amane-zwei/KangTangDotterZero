@@ -15,7 +15,6 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Layer;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.ProjectContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,35 +34,36 @@ public class Pen extends Tool {
     }
 
     @Override
-    public boolean touch(MotionEvent event, ProjectContext projectContext) {
-        int x = projectContext.getScreenNormalizer().getPaperX(event.getX());
-        int y = projectContext.getScreenNormalizer().getPaperY(event.getY());
+    public boolean touch(Event event) {
+        Project project = event.getProject();
+        int x = event.getX();
+        int y = event.getY();
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                layer = projectContext.getLayer();
-                color = getColor(projectContext);
+                layer = project.getLayer();
+                color = getColor(project);
                 if (layer.isIndexedColor()) {
-                    colorIndex = getColorIndex(projectContext);
+                    colorIndex = getColorIndex(project);
                 }
-                onDown(projectContext.getProject(), x, y);
+                onDown(project, x, y);
                 return true;
             case MotionEvent.ACTION_MOVE:
-                onMove(projectContext.getProject(), x, y);
+                onMove(project, x, y);
                 return true;
             case MotionEvent.ACTION_UP:
-                onUp(projectContext.getProject());
+                onUp(project);
                 return true;
         }
         return false;
     }
 
-    public int getColor(ProjectContext context) {
-        return context.getProject().getPalette().getColor();
+    protected int getColor(Project project) {
+        return project.getPalette().getColor();
     }
 
-    public int getColorIndex(ProjectContext context) {
-        return IndexedBitmap.toSaveIndex(context.getProject().getPalette().getIndex());
+    protected int getColorIndex(Project project) {
+        return IndexedBitmap.toSaveIndex(project.getPalette().getIndex());
     }
 
     public void onDown(Project project, int x, int y) {

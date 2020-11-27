@@ -16,7 +16,7 @@ public class CallColorPickerDialogAction implements Action{
                 .attachPalette(new Palette(project.getPalette()))
                 .setOnPositive((Palette palette) -> {
                     project.applyPalette(palette);
-                    MainFragment.get(context).getMainView().getProjectView().invalidate();
+                    MainFragment.get(context).getMainView().invalidateProjectViews();
                 })
                 .show(((AppCompatActivity) context).getSupportFragmentManager(), "action_color_picker");
     }

@@ -15,7 +15,7 @@ import lombok.Setter;
 public class ColorView extends View {
     private final static Paint paint = new Paint();
     private final static Rect selectedRect = DotIcon.pallet.createRect();
-    private final static Rect normalRect = DotIcon.cursor.createRect();
+    private final static Rect normalRect = DotIcon.color.createRect();
     private final static Rect plusRect = DotIcon.plusColor.createRect();
 
     @Setter

@@ -1,5 +1,9 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models;
 
+import android.content.Context;
+
+import com.servebbs.amazarashi.kangtangdotterzero.KTDZApplication;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.ProjectContext;
 import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Tool;
 import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Pen;
 
@@ -11,7 +15,14 @@ public class GlobalContext {
     @Getter
     @Setter
     private Tool tool = new Pen();
-    private ScreenNormalizer screenNormalizer = new ScreenNormalizer();
 
-    public ScreenNormalizer getNormalizer() { return screenNormalizer; }
+    @Getter
+    private boolean isMouseMode = false;
+
+    @Getter
+    private final ScreenNormalizer screenNormalizer = new ScreenNormalizer();
+
+    public static GlobalContext get(Context context) {
+        return KTDZApplication.get(context).getGlobalContext();
+    }
 }

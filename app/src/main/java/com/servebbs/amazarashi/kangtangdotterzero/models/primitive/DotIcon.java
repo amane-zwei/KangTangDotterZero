@@ -21,8 +21,10 @@ public class DotIcon {
         return bitmap;
     }
 
+    public static final DotIconData cursor = new DotIconData(96, 0, 16, 16);
+
     public static final DotIconData pallet = new DotIconData(0, 0, 16, 16);
-    public static final DotIconData cursor = new DotIconData(16, 0, 16, 16);
+    public static final DotIconData color = new DotIconData(16, 0, 16, 16);
     public static final DotIconData plusColor = new DotIconData(0, 16, 16, 16);
     public static final DotIconData minusColor = new DotIconData(16, 16, 16, 16);
     public static final DotIconData seekBar = new DotIconData(32, 0, 32, 16);

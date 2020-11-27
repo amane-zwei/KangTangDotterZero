@@ -85,6 +85,9 @@ public class Project {
         frames.add(new Frame(this, width, height));
     }
 
+    @JsonIgnore
+    public Layer getLayer() { return getFrame().getLayer(); }
+
     public Bitmap renderBitmap() {
         canvas.drawColor(backGroundColor);
         getFrame().render(canvas);

@@ -6,9 +6,13 @@ import android.content.Context;
 import com.servebbs.amazarashi.kangtangdotterzero.models.GlobalContext;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.ProjectContext;
 
+import lombok.Getter;
+
 public class KTDZApplication extends Application {
 
+    @Getter
     GlobalContext globalContext;
+    @Getter
     ProjectContext projectContext;
 
     @Override
@@ -17,11 +21,7 @@ public class KTDZApplication extends Application {
 
         projectContext = new ProjectContext();
         globalContext = new GlobalContext();
-
-        android.util.Log.d("hogehoge", "on create!");
     }
-
-    public ProjectContext getProjectContext() { projectContext.setGlobalContext(globalContext); return projectContext; }
 
     public static KTDZApplication get(Context context) {
         return ((KTDZApplication)context.getApplicationContext());

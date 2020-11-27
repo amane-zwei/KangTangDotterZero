@@ -19,7 +19,7 @@ public class UnRedoAction implements Action {
     public void action(Context context) {
         ProjectContext projectContext = ProjectContext.get(context);
         if (projectContext.getProject().unRedo(delta)) {
-            MainFragment.get(context).getMainView().getProjectView().invalidate();
+            MainFragment.get(context).getMainView().invalidateProjectViews();
         }
     }
 }
