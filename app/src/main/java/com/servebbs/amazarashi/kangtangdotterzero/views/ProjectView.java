@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -19,31 +20,44 @@ public class ProjectView extends View {
     private static final Paint paint = new Paint();
 
     private Project project;
-
-    @Setter
-    private boolean consumeEvent;
+    private MainView.Cursor cursor;
 
     private final Rect dstRect;
 
     private final Normalizer normalizer;
 
     private final ScaleGestureDetector scaleGestureDetector;
+    private final GestureDetector gestureDetector;
 
     public ProjectView(Context context) {
         super(context);
 
-        consumeEvent = true;
         dstRect = new Rect();
         setBackgroundColor(0xffa0a0ff);
 
         normalizer = new Normalizer();
 
+        project = null;
+        cursor = null;
+
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetectorListener());
+        gestureDetector = new GestureDetector(context, new GestureListener());
     }
 
-    public void attachProject(Project project) {
+    public ProjectView attachProject(Project project) {
         this.project = project;
         normalizer.setProject(project);
+        return this;
+    }
+
+    public void attachCursor(MainView.Cursor cursor) {
+        this.cursor = cursor;
+    }
+
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        normalizer.setScreen(getMeasuredWidth(), getMeasuredHeight());
     }
 
     @Override
@@ -57,10 +71,26 @@ public class ProjectView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-//        if (scaleGestureDetector.onTouchEvent(event)) {
-//            return true;
-//        }
-        return consumeEvent && touch(event.getAction(), event.getX(), event.getY());
+        if (event.getPointerCount() > 1) {
+            return scaleGestureDetector.onTouchEvent(event);
+        }
+
+        if (cursor == null) {
+            return touch(event.getAction(), event.getX(), event.getY());
+        } else {
+            float x = event.getX();
+            float y = event.getY();
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    cursor.begin(x, y);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    cursor.move(x, y);
+                    break;
+            }
+            gestureDetector.onTouchEvent(event);
+            return true;
+        }
     }
 
     public boolean touch(int action, float x, float y) {
@@ -78,24 +108,26 @@ public class ProjectView extends View {
         return false;
     }
 
-    public boolean click(float x, float y) {
+    public boolean click(float screenX, float screenY) {
         Context context = getContext();
         Tool tool = GlobalContext.get(context).getTool();
+        int projectX = normalizer.getPaperX(screenX);
+        int projectY = normalizer.getPaperY(screenY);
         if (
                 tool.touch(
                         new Tool.Event(
                                 project,
                                 MotionEvent.ACTION_DOWN,
-                                normalizer.getPaperX(x),
-                                normalizer.getPaperY(y)
+                                projectX,
+                                projectY
                         ))
                         ||
                         tool.touch(
                                 new Tool.Event(
                                         project,
                                         MotionEvent.ACTION_UP,
-                                        normalizer.getPaperX(x),
-                                        normalizer.getPaperY(y)
+                                        projectX,
+                                        projectY
                                 ))
         ) {
             invalidate();
@@ -105,19 +137,39 @@ public class ProjectView extends View {
     }
 
     private class ScaleGestureDetectorListener implements ScaleGestureDetector.OnScaleGestureListener {
+        private float tmpSpan = 0f;
+
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            return false;
+            normalizer.changeRate(
+                    (int) (detector.getCurrentSpan() - tmpSpan),
+                    (int) detector.getFocusX(),
+                    (int) detector.getFocusY());
+            invalidate();
+            return true;
         }
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            return false;
+            tmpSpan = detector.getCurrentSpan();
+            normalizer.changeRateBegin();
+            return true;
         }
 
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
+        }
+    }
 
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            return false;
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            return click(cursor.getX(), cursor.getY());
         }
     }
 
@@ -126,40 +178,43 @@ public class ProjectView extends View {
         @Setter
         Project project;
 
-        int positionX;
-        int positionY;
+        private int originX;
+        private int originY;
 
-        int targetX;
-        int targetY;
+        private int targetX;
+        private int targetY;
 
-        int rate;
+        private int rate;
+        private int normalRate;
+        private int baseSize;
 
         public Normalizer() {
             project = null;
 
-            positionX = 48;
-            positionY = 96;
+            originX = 0;
+            originY = 0;
 
             targetX = 0;
             targetY = 0;
 
-            rate = 4 * 65536;
+            rate = 65536;
+            baseSize = 32;
         }
 
         public int getPaperX(float screenX) {
-            return (int) ((screenX - positionX) * 65536 + targetX * rate) / rate;
+            return (int) ((screenX - originX) * 65536 + targetX * rate) / rate;
         }
 
         public int getPaperY(float screenY) {
-            return (int) ((screenY - positionY) * 65536 + targetY * rate) / rate;
+            return (int) ((screenY - originY) * 65536 + targetY * rate) / rate;
         }
 
         public int getScreenX(int paperX) {
-            return (paperX * rate - (int) (targetX * rate)) / 65536 + positionX;
+            return (paperX * rate - targetX * rate) / 65536 + originX;
         }
 
         public int getScreenY(int paperY) {
-            return (paperY * rate - (int) (targetY * rate)) / 65536 + positionY;
+            return (paperY * rate - targetY * rate) / 65536 + originY;
         }
 
         public Rect setScreenRect(Rect rect) {
@@ -170,6 +225,42 @@ public class ProjectView extends View {
                     getScreenY(project.getHeight())
             );
             return rect;
+        }
+
+        public void setScreen(int width, int height) {
+            originX = width / 2;
+            originY = height / 2;
+
+            if (project == null) {
+                return;
+            }
+
+            targetX = project.getWidth() / 2;
+            targetY = project.getHeight() / 2;
+
+            int rateH = (width << 16) / project.getWidth();
+            int rateV = (height << 16) / project.getHeight();
+            if (rateH < rateV) {
+                rate = rateH;
+                baseSize = project.getWidth();
+            } else {
+                rate = rateV;
+                baseSize = project.getHeight();
+            }
+        }
+
+        public void changeRateBegin() {
+            normalRate = rate;
+        }
+
+        public void changeRate(int span, int focusX, int focusY) {
+            int rate = normalRate + (span << 16) / baseSize;
+            if (rate < 1 << 16) {
+                rate = 1 << 16;
+            } else if (rate > baseSize << 16) {
+                rate = baseSize << 16;
+            }
+            this.rate = rate;
         }
     }
 }

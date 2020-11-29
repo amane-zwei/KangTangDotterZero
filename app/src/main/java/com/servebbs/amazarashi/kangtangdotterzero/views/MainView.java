@@ -17,31 +17,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class MainView extends FrameLayout {
 
     private final List<ProjectView> projectViews;
+    private final ProjectView mainProjectView;
 
-    private Cursor cursor;
-    private CursorView cursorView;
-    private FrameLayout.LayoutParams cursorViewParams;
+    private Cursor cursorView;
 
     private boolean isCursorMode;
-    private final GestureDetector gestureDetector;
 
     public MainView(Context context) {
         super(context);
 
         projectViews = new ArrayList<>();
-        addProjectView(context).attachProject(Project.get(context));
+        mainProjectView = addProjectView(context).attachProject(Project.get(context));
         addMenuView(context);
 
         isCursorMode = true;
-        gestureDetector = new GestureDetector(context, new GestureListener());
 
-        cursor = null;
         cursorView = null;
-        cursorViewParams = null;
         if (isCursorMode) {
             summonCursor();
         }
@@ -70,20 +66,17 @@ public class MainView extends FrameLayout {
     }
 
     public void summonCursor() {
-        if (cursor == null) {
-            cursor = new Cursor();
-        }
         if (cursorView == null) {
             final int size = ScreenSize.getIconSize();
-            cursorView = new CursorView(getContext());
-            cursorView.setLayoutParams(cursorViewParams = new FrameLayout.LayoutParams(
+            cursorView = new Cursor(getContext());
+            cursorView.setLayoutParams(new FrameLayout.LayoutParams(
                     size,
                     size)
             );
         }
         isCursorMode = true;
         addView(cursorView);
-        flipProjectView(false);
+        mainProjectView.attachCursor(cursorView);
     }
 
     public void invalidateProjectViews() {
@@ -92,88 +85,31 @@ public class MainView extends FrameLayout {
         }
     }
 
-    private void flipProjectView(boolean consumeEvent) {
-        for (ProjectView view : projectViews) {
-            view.setConsumeEvent(consumeEvent);
-        }
-    }
-
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!isCursorMode) {
-            return false;
-        }
-        float x = event.getX();
-        float y = event.getY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                cursor.set(x, y);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                cursor.move(x, y);
-                cursorViewParams.leftMargin = (int) cursor.getX();
-                cursorViewParams.topMargin = (int) cursor.getY();
-                requestLayout();
-                break;
-        }
-        gestureDetector.onTouchEvent(event);
-        return true;
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        cursorView.setScreenWidth(getMeasuredWidth());
+        cursorView.setScreenHeight(getMeasuredHeight());
     }
 
-    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            return false;
+    public static class Cursor extends CursorView {
+        private FrameLayout.LayoutParams params;
+
+        public Cursor(Context context) {
+            super(context);
         }
 
         @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            for (ProjectView projectView : projectViews) {
-                if (projectView.click(cursor.getX(), cursor.getY())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    public static class Cursor {
-        @Getter
-        private float x;
-        @Getter
-        private float y;
-        private float prevX;
-        private float prevY;
-        private float startX;
-        private float startY;
-
-        public Cursor() {
-            reset(0f, 0f);
-        }
-
-        public void reset(float x, float y) {
-            this.x = x;
-            this.y = y;
-            set(x, y);
-        }
-
-        public void set(float x, float y) {
-            prevX = startX = x;
-            prevY = startY = y;
+        public void setLayoutParams(ViewGroup.LayoutParams params) {
+            super.setLayoutParams(params);
+            this.params = (FrameLayout.LayoutParams) params;
         }
 
         public void move(float x, float y) {
-            this.x += x - prevX;
-            this.y += y - prevY;
-
-            prevX = x;
-            prevY = y;
-        }
-
-        public boolean isMove(float x, float y) {
-            float dx = x - startX;
-            float dy = y - startY;
-            return dx * dx + dy * dy > 4f;
+            super.move(x, y);
+            params.leftMargin = (int) getX();
+            params.topMargin = (int) getY();
+            requestLayout();
         }
     }
 }
