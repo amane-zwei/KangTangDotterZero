@@ -58,6 +58,11 @@ public class Pen extends Tool {
         return false;
     }
 
+    @Override
+    public void clear(Event event) {
+        onUp(event.getProject());
+    }
+
     protected int getColor(Project project) {
         return project.getPalette().getColor();
     }
@@ -77,6 +82,10 @@ public class Pen extends Tool {
     }
 
     public boolean onMove(Project project, int x, int y) {
+        if (buff.size() < 1) {
+            onDown(project, x, y);
+            return true;
+        }
         Point prev = buff.get(buff.size() - 1);
         if (x != prev.x || y != prev.y) {
             buff.add(new Point(x, y));
@@ -99,6 +108,7 @@ public class Pen extends Tool {
         }
         layer = null;
         buff = null;
+        isDraw = false;
         return true;
     }
 

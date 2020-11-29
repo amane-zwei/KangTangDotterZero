@@ -1,30 +1,29 @@
 package com.servebbs.amazarashi.kangtangdotterzero.views;
 
 import android.content.Context;
-import android.view.GestureDetector;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.views.menu.HorizontalMenuView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.CursorButtonView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.CursorView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.FloatingButtonView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public class MainView extends FrameLayout {
 
     private final List<ProjectView> projectViews;
-    private final ProjectView mainProjectView;
+    private final ProjectView currentProjectView;
 
     private Cursor cursorView;
+    private FloatingButtonView cursorButtonView;
 
     private boolean isCursorMode;
 
@@ -32,7 +31,7 @@ public class MainView extends FrameLayout {
         super(context);
 
         projectViews = new ArrayList<>();
-        mainProjectView = addProjectView(context).attachProject(Project.get(context));
+        currentProjectView = addProjectView(context).attachProject(Project.get(context));
         addMenuView(context);
 
         isCursorMode = true;
@@ -74,9 +73,28 @@ public class MainView extends FrameLayout {
                     size)
             );
         }
+        if (cursorButtonView == null) {
+            final int size = ScreenSize.getIconSize();
+            cursorButtonView = new FloatingButtonView(getContext());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    Gravity.BOTTOM);
+            params.bottomMargin = size;
+            cursorButtonView.setLayoutParams(params);
+            {
+                CursorButtonView contentView = new CursorButtonView(getContext());
+                contentView.setLayoutParams(new LinearLayout.LayoutParams(
+                        size,
+                        size
+                ));
+                cursorButtonView.addView(contentView);
+            }
+        }
         isCursorMode = true;
+        addView(cursorButtonView);
         addView(cursorView);
-        mainProjectView.attachCursor(cursorView);
+        currentProjectView.attachCursor(cursorView);
     }
 
     public void invalidateProjectViews() {
@@ -90,6 +108,16 @@ public class MainView extends FrameLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         cursorView.setScreenWidth(getMeasuredWidth());
         cursorView.setScreenHeight(getMeasuredHeight());
+    }
+
+    public boolean keyDown() {
+        currentProjectView.down(cursorView.getX(), cursorView.getY());
+        return true;
+    }
+
+    public boolean keyUp() {
+        currentProjectView.up(cursorView.getX(), cursorView.getY());
+        return true;
     }
 
     public static class Cursor extends CursorView {

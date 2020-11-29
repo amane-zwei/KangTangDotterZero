@@ -76,7 +76,7 @@ public class ProjectView extends View {
         }
 
         if (cursor == null) {
-            return touch(event.getAction(), event.getX(), event.getY());
+            return action(event.getX(), event.getY(), event.getAction());
         } else {
             float x = event.getX();
             float y = event.getY();
@@ -86,6 +86,9 @@ public class ProjectView extends View {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     cursor.move(x, y);
+                    if (cursor.isDown()) {
+                        action(cursor.getX(), cursor.getY(), MotionEvent.ACTION_MOVE);
+                    }
                     break;
             }
             gestureDetector.onTouchEvent(event);
@@ -93,9 +96,10 @@ public class ProjectView extends View {
         }
     }
 
-    public boolean touch(int action, float x, float y) {
+    private boolean action(float x, float y, int action) {
         Context context = getContext();
-        if (GlobalContext.get(context).getTool().touch(
+        Tool tool = GlobalContext.get(context).getTool();
+        if (tool.touch(
                 new Tool.Event(
                         project,
                         action,
@@ -106,6 +110,15 @@ public class ProjectView extends View {
             return true;
         }
         return false;
+    }
+
+    public boolean down(float x, float y) {
+        cursor.setDown(true);
+        return action(x, y, MotionEvent.ACTION_DOWN);
+    }
+    public boolean up(float x, float y) {
+        cursor.setDown(false);
+        return action(x, y, MotionEvent.ACTION_UP);
     }
 
     public boolean click(float screenX, float screenY) {

@@ -15,6 +15,10 @@ public class CursorView extends SimpleIconView{
     private float prevX;
     private float prevY;
 
+    @Getter
+    @Setter
+    private boolean isDown;
+
     @Setter
     private float screenWidth;
     @Setter
@@ -32,7 +36,8 @@ public class CursorView extends SimpleIconView{
     public void reset(float x, float y) {
         this.x = x;
         this.y = y;
-        begin(x, y);
+        prevX = x;
+        prevY = y;
     }
 
     public void begin(float x, float y) {

@@ -15,6 +15,7 @@ public class Tool {
     public boolean touch(Event event) {
         return false;
     }
+    public void clear(Event event) {}
     public Rect createIconRect() { return new Rect(); }
 
     @AllArgsConstructor
