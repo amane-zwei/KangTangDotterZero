@@ -17,7 +17,7 @@ public class ChangeToolAction implements Action {
 
     public void action(Context context) {
         GlobalContext globalContext = GlobalContext.get(context);
-        globalContext.getTool().clear(new Tool.Event(
+        globalContext.getTool().flush(new Tool.Event(
                 Project.get(context),
                 0,
                 0,

@@ -34,9 +34,16 @@ public class MainView extends FrameLayout {
         currentProjectView = addProjectView(context).attachProject(Project.get(context));
         addMenuView(context);
 
-        isCursorMode = true;
+        isCursorMode = false;
 
-        cursorView = null;
+        {
+            final int size = ScreenSize.getIconSize();
+            cursorView = new Cursor(getContext());
+            cursorView.setLayoutParams(new FrameLayout.LayoutParams(
+                    size,
+                    size)
+            );
+        }
         if (isCursorMode) {
             summonCursor();
         }
@@ -65,14 +72,6 @@ public class MainView extends FrameLayout {
     }
 
     public void summonCursor() {
-        if (cursorView == null) {
-            final int size = ScreenSize.getIconSize();
-            cursorView = new Cursor(getContext());
-            cursorView.setLayoutParams(new FrameLayout.LayoutParams(
-                    size,
-                    size)
-            );
-        }
         if (cursorButtonView == null) {
             final int size = ScreenSize.getIconSize();
             cursorButtonView = new FloatingButtonView(getContext());

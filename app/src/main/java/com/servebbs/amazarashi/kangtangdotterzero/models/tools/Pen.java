@@ -59,7 +59,14 @@ public class Pen extends Tool {
     }
 
     @Override
-    public void clear(Event event) {
+    public void clear() {
+        layer = null;
+        buff = null;
+        isDraw = false;
+    }
+
+    @Override
+    public void flush(Event event) {
         onUp(event.getProject());
     }
 
@@ -82,7 +89,7 @@ public class Pen extends Tool {
     }
 
     public boolean onMove(Project project, int x, int y) {
-        if (buff.size() < 1) {
+        if (buff == null || buff.size() < 1) {
             onDown(project, x, y);
             return true;
         }
@@ -106,9 +113,7 @@ public class Pen extends Tool {
                 project.addHistory(new PenHistory(layer, buff, color));
             }
         }
-        layer = null;
-        buff = null;
-        isDraw = false;
+        clear();
         return true;
     }
 

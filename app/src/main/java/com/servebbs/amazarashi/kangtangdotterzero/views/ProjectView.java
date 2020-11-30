@@ -10,6 +10,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.GlobalContext;
+import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Tool;
 
@@ -18,9 +19,24 @@ import lombok.Setter;
 public class ProjectView extends View {
 
     private static final Paint paint = new Paint();
+    private static final Paint backFramePaint;
+    private static final Paint backFrameWhitePaint;
+    private static final Paint backShadowPaint;
+
+    static {
+        backFramePaint = new Paint();
+        backFramePaint.setColor(0xff000000);
+
+        backFrameWhitePaint = new Paint();
+        backFrameWhitePaint.setColor(0xffffffff);
+
+        backShadowPaint = new Paint();
+        backShadowPaint.setColor(0x2f000000);
+    }
 
     private Project project;
     private MainView.Cursor cursor;
+    private Tool tmpTool;
 
     private final Rect dstRect;
 
@@ -39,6 +55,7 @@ public class ProjectView extends View {
 
         project = null;
         cursor = null;
+        tmpTool = null;
 
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetectorListener());
         gestureDetector = new GestureDetector(context, new GestureListener());
@@ -62,16 +79,29 @@ public class ProjectView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
+        int bold = ScreenSize.getDotSize();
+
+        canvas.drawRect(normalizer.setBackShadowRect(dstRect, bold), backShadowPaint);
+
+        canvas.drawRect(normalizer.setBackFrameRect(dstRect, 2), backFramePaint);
+        canvas.drawRect(normalizer.setShrinkRect(dstRect, 1), backFrameWhitePaint);
+
         canvas.drawBitmap(
                 project.renderBitmap(),
                 project.createRect(),
                 normalizer.setScreenRect(dstRect),
                 paint);
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getPointerCount() > 1) {
+            if (tmpTool != null) {
+                tmpTool.clear();
+                tmpTool = null;
+                project.unRedo(0);
+            }
             return scaleGestureDetector.onTouchEvent(event);
         }
 
@@ -98,8 +128,20 @@ public class ProjectView extends View {
 
     private boolean action(float x, float y, int action) {
         Context context = getContext();
-        Tool tool = GlobalContext.get(context).getTool();
-        if (tool.touch(
+        Tool tool = null;
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                tool = tmpTool = GlobalContext.get(context).getTool();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                tool = tmpTool;
+                break;
+            case MotionEvent.ACTION_UP:
+                tool = tmpTool;
+                tmpTool = null;
+                break;
+        }
+        if (tool != null && tool.touch(
                 new Tool.Event(
                         project,
                         action,
@@ -116,6 +158,7 @@ public class ProjectView extends View {
         cursor.setDown(true);
         return action(x, y, MotionEvent.ACTION_DOWN);
     }
+
     public boolean up(float x, float y) {
         cursor.setDown(false);
         return action(x, y, MotionEvent.ACTION_UP);
@@ -236,6 +279,36 @@ public class ProjectView extends View {
                     getScreenY(0),
                     getScreenX(project.getWidth()),
                     getScreenY(project.getHeight())
+            );
+            return rect;
+        }
+
+        public Rect setBackShadowRect(Rect rect, int bold) {
+            rect.set(
+                    getScreenX(0) + bold * 3,
+                    getScreenY(0) + bold * 3,
+                    getScreenX(project.getWidth()) + bold * 4,
+                    getScreenY(project.getHeight()) + bold * 4
+            );
+            return rect;
+        }
+
+        public Rect setBackFrameRect(Rect rect, int bold) {
+            rect.set(
+                    getScreenX(0) - bold,
+                    getScreenY(0) - bold,
+                    getScreenX(project.getWidth()) + bold,
+                    getScreenY(project.getHeight()) + bold
+            );
+            return rect;
+        }
+
+        public Rect setShrinkRect(Rect rect, int bold) {
+            rect.set(
+                    rect.left + bold,
+                    rect.top + bold,
+                    rect.right - bold,
+                    rect.bottom - bold
             );
             return rect;
         }

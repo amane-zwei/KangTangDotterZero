@@ -23,7 +23,7 @@ public class HistoryList {
         if (end < 0 || list.size() < end) {
             return false;
         }
-        applyHistory(project, delta < 0 ? project.restoreLayerHistory(end) : this.index, end);
+        applyHistory(project, delta > 0 ? this.index : project.restoreLayerHistory(end), end);
         this.index = end;
         return true;
     }
