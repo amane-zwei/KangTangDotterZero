@@ -38,6 +38,8 @@ public class ProjectView extends View {
     private MainView.Cursor cursor;
     private Tool tmpTool;
 
+    private final Paint[] gridPaint;
+
     private final Rect dstRect;
 
     private final Normalizer normalizer;
@@ -56,6 +58,12 @@ public class ProjectView extends View {
         project = null;
         cursor = null;
         tmpTool = null;
+
+        gridPaint = new Paint[2];
+        gridPaint[0] = new Paint();
+        gridPaint[0].setColor(0x80000000);
+        gridPaint[1] = new Paint();
+        gridPaint[1].setColor(0x40ffffff);
 
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetectorListener());
         gestureDetector = new GestureDetector(context, new GestureListener());
@@ -92,6 +100,30 @@ public class ProjectView extends View {
                 normalizer.setScreenRect(dstRect),
                 paint);
 
+        if (normalizer.rate >= 3 << 16) {
+            drawGrid(canvas, project);
+        }
+    }
+
+    private void drawGrid(Canvas canvas, Project project) {
+        float left = normalizer.getScreenX(0);
+        float top = normalizer.getScreenY(0);
+        float right = normalizer.getScreenX(project.getWidth());
+        float bottom = normalizer.getScreenY(project.getHeight());
+
+        for (int index = 0; index < gridPaint.length; index++) {
+            Paint paint = gridPaint[index];
+
+            for (int x = 0; x <= project.getWidth(); x++) {
+                float screenX = normalizer.getScreenX(x);
+                canvas.drawLine(screenX, top, screenX, bottom, paint);
+            }
+
+            for (int y = 0; y <= project.getHeight(); y++) {
+                float screenY = normalizer.getScreenY(y);
+                canvas.drawLine(left, screenY, right, screenY, paint);
+            }
+        }
     }
 
     @Override
@@ -145,8 +177,8 @@ public class ProjectView extends View {
                 new Tool.Event(
                         project,
                         action,
-                        normalizer.getPaperX(x),
-                        normalizer.getPaperY(y)
+                        normalizer.getProjectX(x),
+                        normalizer.getProjectY(y)
                 ))) {
             invalidate();
             return true;
@@ -167,8 +199,8 @@ public class ProjectView extends View {
     public boolean click(float screenX, float screenY) {
         Context context = getContext();
         Tool tool = GlobalContext.get(context).getTool();
-        int projectX = normalizer.getPaperX(screenX);
-        int projectY = normalizer.getPaperY(screenY);
+        int projectX = normalizer.getProjectX(screenX);
+        int projectY = normalizer.getProjectY(screenY);
         if (
                 tool.touch(
                         new Tool.Event(
@@ -257,48 +289,48 @@ public class ProjectView extends View {
             baseSize = 32;
         }
 
-        public int getPaperX(float screenX) {
+        public int getProjectX(float screenX) {
             return (int) ((screenX - originX) * 65536 + targetX * rate) / rate;
         }
 
-        public int getPaperY(float screenY) {
+        public int getProjectY(float screenY) {
             return (int) ((screenY - originY) * 65536 + targetY * rate) / rate;
         }
 
-        public int getScreenX(int paperX) {
-            return (paperX * rate - targetX * rate) / 65536 + originX;
+        public float getScreenX(int paperX) {
+            return (paperX * rate - targetX * rate) / 65536f + originX;
         }
 
-        public int getScreenY(int paperY) {
-            return (paperY * rate - targetY * rate) / 65536 + originY;
+        public float getScreenY(int paperY) {
+            return (paperY * rate - targetY * rate) / 65536f + originY;
         }
 
         public Rect setScreenRect(Rect rect) {
             rect.set(
-                    getScreenX(0),
-                    getScreenY(0),
-                    getScreenX(project.getWidth()),
-                    getScreenY(project.getHeight())
+                    (int) getScreenX(0),
+                    (int) getScreenY(0),
+                    (int) getScreenX(project.getWidth()),
+                    (int) getScreenY(project.getHeight())
             );
             return rect;
         }
 
         public Rect setBackShadowRect(Rect rect, int bold) {
             rect.set(
-                    getScreenX(0) + bold * 3,
-                    getScreenY(0) + bold * 3,
-                    getScreenX(project.getWidth()) + bold * 4,
-                    getScreenY(project.getHeight()) + bold * 4
+                    (int) getScreenX(0) + bold * 3,
+                    (int) getScreenY(0) + bold * 3,
+                    (int) getScreenX(project.getWidth()) + bold * 4,
+                    (int) getScreenY(project.getHeight()) + bold * 4
             );
             return rect;
         }
 
         public Rect setBackFrameRect(Rect rect, int bold) {
             rect.set(
-                    getScreenX(0) - bold,
-                    getScreenY(0) - bold,
-                    getScreenX(project.getWidth()) + bold,
-                    getScreenY(project.getHeight()) + bold
+                    (int) getScreenX(0) - bold,
+                    (int) getScreenY(0) - bold,
+                    (int) getScreenX(project.getWidth()) + bold,
+                    (int) getScreenY(project.getHeight()) + bold
             );
             return rect;
         }
