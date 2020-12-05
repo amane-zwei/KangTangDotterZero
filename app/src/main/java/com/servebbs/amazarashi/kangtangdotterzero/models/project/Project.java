@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.servebbs.amazarashi.kangtangdotterzero.models.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.models.histories.HistoryList;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,9 +50,9 @@ public class Project {
 
     public Project() {
         id = 0;
-        width = 16;
-        height = 16;
-        isIndexedColor = false;
+        width = 8;
+        height = 8;
+        isIndexedColor = true;
 
         paletteOnHistoryIndex = 0;
         history = new HistoryList();
@@ -94,18 +95,14 @@ public class Project {
         return destination;
     }
 
-    public boolean applyPalette(Palette palette) {
-        if (this.palette.equals(palette)) {
-            return false;
-        }
-        this.palette = palette;
-        if (isIndexedColor) {
+    public void applyPalette(Palette palette) {
+        if (isIndexedColor && !this.palette.equals(palette)) {
             for (Layer layer : layerMap.values()) {
                 layer.applyColorList(palette);
             }
             paletteOnHistoryIndex = history.getIndex();
         }
-        return true;
+        this.palette = palette;
     }
 
     public void addHistory(History history) {
@@ -142,6 +139,22 @@ public class Project {
 
     public Layer findLayer(int id) {
         return layerMap.get(id);
+    }
+
+    public DotColor getColor() {
+        if (isIndexedColor) {
+            return DotColor.fromIndex(palette.getColor(), palette.getIndex());
+        } else {
+            return DotColor.fromColorValue(palette.getColor());
+        }
+    }
+
+    public DotColor getClearColor() {
+        if (isIndexedColor) {
+            return DotColor.fromIndex(palette.getColor(0), 0);
+        } else {
+            return DotColor.fromColorValue(0x0);
+        }
     }
 
     public boolean isOut(int x, int y) {

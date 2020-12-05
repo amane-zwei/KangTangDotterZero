@@ -17,12 +17,13 @@ public class IndexedBitmap {
     private Bitmap bitmap;
 
     public static IndexedBitmap empty() {
-      return new IndexedBitmap();
+        return new IndexedBitmap();
     }
 
     public static IndexedBitmap createIndexedBitmap(int width, int height) {
         return new IndexedBitmap().resize(width, height);
     }
+
     public static IndexedBitmap createIndexedBitmap(IndexedBitmap src) {
         IndexedBitmap indexedBitmap = new IndexedBitmap();
         indexedBitmap.bitmap = Bitmap.createBitmap(src.bitmap);
@@ -44,49 +45,49 @@ public class IndexedBitmap {
         new Canvas(bitmap).drawColor(0x00000000, PorterDuff.Mode.SRC);
     }
 
-    public Bitmap translateColor(Bitmap dst, ColorList colorList){
+    public Bitmap translateColor(Bitmap dst, ColorList colorList) {
         Bitmap src = bitmap;
 
         int width = src.getWidth();
         int height = src.getHeight();
-        int length = width*height;
+        int length = width * height;
         int[] buff = new int[length];
 
         src.getPixels(buff, 0, width, 0, 0, width, height);
-        for( int idx=0; idx<length; idx++ ){
+        for (int idx = 0; idx < length; idx++) {
             buff[idx] = colorList.getColor(toPlainIndex(buff[idx]));
         }
         dst.setPixels(buff, 0, width, 0, 0, width, height);
         return dst;
     }
 
-    public void fromBitmap(Bitmap src, ColorList colorList){
-        int width  = src.getWidth();
+    public void fromBitmap(Bitmap src, ColorList colorList) {
+        int width = src.getWidth();
         int height = src.getHeight();
-        int length = width*height;
+        int length = width * height;
         int[] buff = new int[length];
 
         src.getPixels(buff, 0, width, 0, 0, width, height);
-        for( int idx=0; idx<length; idx++ ){
+        for (int idx = 0; idx < length; idx++) {
             buff[idx] = toSaveIndex(colorList.findIndex(buff[idx]));
         }
         bitmap.setPixels(buff, 0, width, 0, 0, width, height);
     }
-    
+
     public IndexedBitmap copy() {
         return new IndexedBitmap(bitmap.copy(Bitmap.Config.ARGB_8888, true));
     }
 
-    private void createFromBitmap(Bitmap src, ColorList colorList){
+    private void createFromBitmap(Bitmap src, ColorList colorList) {
         bitmap = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
         fromBitmap(src, colorList);
     }
 
     public static int toSaveIndex(int index) {
-        return index << 24;
+        return index | 0xff000000;
     }
 
     public static int toPlainIndex(int saveIndex) {
-        return saveIndex >> 24;
+        return saveIndex & 0x00ffffff;
     }
 }

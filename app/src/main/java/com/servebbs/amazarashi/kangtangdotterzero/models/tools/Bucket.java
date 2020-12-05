@@ -1,18 +1,25 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models.tools;
 
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.IndexedBitmap;
+import com.servebbs.amazarashi.kangtangdotterzero.models.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Layer;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 
 import java.util.ArrayList;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class Bucket extends Tool {
     @Override
@@ -31,54 +38,99 @@ public class Bucket extends Tool {
             case MotionEvent.ACTION_MOVE:
                 return true;
             case MotionEvent.ACTION_UP:
-                paint(project, x, y, new DotColor(project.getPalette().getColor()));
+                Layer layer = project.getLayer();
+                DotColor color = project.getColor();
+                if (paintLayer(layer, x, y, color)) {
+                    project.addHistory(new BucketHistory(layer, color, x, y));
+                }
                 return true;
         }
         return false;
     }
 
-    public Integer paint(Project project, int x, int y, DotColor color) {
+    public static boolean paintLayer(Layer layer, int x, int y, DotColor color) {
         Stack<ProcessPoint> stack = new Stack<>();
 
-        Layer layer = project.getLayer();
-        final int width = project.getWidth();
-        final int height = project.getHeight();
+        final int width = layer.getWidth();
+        final int height = layer.getHeight();
         final int length = width * height;
 
         if (x < 0 || x >= width || y < 0 || y >= height) {
-            return null;
+            return false;
         }
 
-        Bitmap srcBitmap = layer.getDisplay();
+        int paintColor = color.intValue();
+        int indexedColor = color.saveIndex();
+
+        Bitmap displayBitmap = layer.getDisplay();
         final int[] buff = new int[length];
-        srcBitmap.getPixels(buff, 0, width, 0, 0, width, height);
+        displayBitmap.getPixels(buff, 0, width, 0, 0, width, height);
+
+        IndexedBitmap indexedBitmap = null;
+        int[] indexedBuff = null;
+        if (layer.isIndexedColor()) {
+            indexedBitmap = layer.getIndexed();
+            indexedBuff = new int[length];
+            indexedBitmap.getBitmap().getPixels(indexedBuff, 0, width, 0, 0, width, height);
+        }
 
         int index = x + y * width;
         final int targetColor = buff[index];
-        if (targetColor == color.intValue()) {
-            return null;
+        if (targetColor == paintColor) {
+            return false;
         }
+
+        int leftEdge = x;
+        int topEdge = y;
+        int bottomEdge = y;
+        int rightEdge = x;
 
         stack.push(new ProcessPoint(findRight(buff, width, index, targetColor), DIRECTION_NONE));
 
         while (stack.size() > 0) {
             ProcessPoint processPoint = stack.pop();
-            int left = paintLeft(buff, width, processPoint.getIndex(), targetColor, color.intValue());
+            int rightIndex = processPoint.getIndex();
+            int leftIndex = paintLeft(buff, width, rightIndex, targetColor, paintColor);
+            if (layer.isIndexedColor()) {
+                paintLine(indexedBuff, leftIndex, rightIndex, indexedColor);
+            }
+            int right = rightIndex % width;
+            int left = leftIndex % width;
+            if (left < leftEdge) {
+                leftEdge = left;
+            }
+            if (right > rightEdge) {
+                rightEdge = right;
+            }
+
+            int tmpY = leftIndex / width;
             if (processPoint.direction != DIRECTION_DOWN) {
-                pushPoint(stack, buff, width, left - width, processPoint.getIndex() - width, targetColor, DIRECTION_UP);
+                if (tmpY < topEdge) {
+                    topEdge = tmpY;
+                }
+                pushPoint(stack, buff, width, leftIndex - width, rightIndex - width, targetColor, DIRECTION_UP);
             }
             if (processPoint.direction != DIRECTION_UP) {
-                pushPoint(stack, buff, width, left + width, processPoint.getIndex() + width, targetColor, DIRECTION_DOWN);
+                if (tmpY > bottomEdge) {
+                    bottomEdge = tmpY;
+                }
+                pushPoint(stack, buff, width, leftIndex + width, rightIndex + width, targetColor, DIRECTION_DOWN);
             }
         }
 
-        srcBitmap.setPixels(buff, 0, width, 0, 0, width, height);
+        int start = leftEdge + topEdge * width;
+        int dstWidth = rightEdge - leftEdge + 1;
+        int dstHeight = bottomEdge - topEdge + 1;
+        displayBitmap.setPixels(buff, start, width, leftEdge, topEdge, dstWidth, dstHeight);
 
-        return null;
+        if (layer.isIndexedColor()) {
+            indexedBitmap.getBitmap().setPixels(indexedBuff, start, width, leftEdge, topEdge, dstWidth, dstHeight);
+        }
+        return true;
     }
 
-    private int findRight(int[] buff, int width, int index, int targetColor) {
-        int rightEdge = calcRight(index, width);
+    private static int findRight(int[] buff, int width, int index, int targetColor) {
+        int rightEdge = calcRightIndex(index, width);
         for (index++; index < rightEdge; index++) {
             if (targetColor != buff[index]) {
                 return index - 1;
@@ -87,11 +139,10 @@ public class Bucket extends Tool {
         return rightEdge - 1;
     }
 
-    private void pushPoint(Stack<ProcessPoint> stack, int[] buff, int width, int start, int end, int targetColor, int direction) {
+    private static void pushPoint(Stack<ProcessPoint> stack, int[] buff, int width, int start, int end, int targetColor, int direction) {
         if (start < 0 || start >= buff.length) {
             return;
         }
-        int right = calcRight(start, width);
         for (start++; start <= end; start++) {
             if (targetColor != buff[start] && targetColor == buff[start - 1]) {
                 stack.push(new ProcessPoint(start - 1, direction));
@@ -100,6 +151,7 @@ public class Bucket extends Tool {
         if (targetColor != buff[start - 1]) {
             return;
         }
+        int right = calcRightIndex(start, width);
         for (; start < right; start++) {
             if (targetColor != buff[start]) {
                 stack.push(new ProcessPoint(start - 1, DIRECTION_NONE));
@@ -111,8 +163,8 @@ public class Bucket extends Tool {
         }
     }
 
-    private int paintLeft(int[] buff, int width, int index, int targetColor, int paintColor) {
-        int leftEdge = calcLeft(index, width);
+    private static int paintLeft(int[] buff, int width, int index, int targetColor, int paintColor) {
+        int leftEdge = calcLeftIndex(index, width);
         buff[index] = paintColor;
         for (index--; index >= leftEdge; index--) {
             if (targetColor != buff[index]) {
@@ -123,40 +175,44 @@ public class Bucket extends Tool {
         return leftEdge;
     }
 
-    private int calcLeft(int index, int width) {
+    private static void paintLine(int[] buff, int start, int end, int paintColor) {
+        for (; start <= end; start++) {
+            buff[start] = paintColor;
+        }
+    }
+
+    private static int calcLeftIndex(int index, int width) {
         return index - index % width;
     }
 
-    private int calcRight(int index, int width) {
+    private static int calcRightIndex(int index, int width) {
         return index - index % width + width;
     }
 
-//    public static class BucketHistory extends History {
-//        private final int color;
-//        private final List<Point> buff;
-//        @JsonIgnore
-//        private final Paint paint;
-//        @JsonIgnore
-//        private final Paint indexedPaint;
-//
-//        public BucketHistory(Layer layer, List<Point> buff, int color) {
-//            super(layer);
-//            this.buff = buff;
-//            this.color = color;
-//            paint = createPaint(color);
-//            indexedPaint = layer.isIndexedColor() ? createPaint(color) : null;
-//        }
-//
-//        public void draw(Layer layer, Palette palette) {
-//            if (layer.isIndexedColor()) {
-//                indexedPaint.setColor(palette.getColor(IndexedBitmap.toPlainIndex(color)));
-//                innerDraw(layer.getDisplayCanvas(), buff, indexedPaint);
-//                innerDraw(layer.getIndexedCanvas(), buff, paint);
-//            } else {
-//                innerDraw(layer.getDisplayCanvas(), buff, paint);
-//            }
-//        }
-//    }
+    @NoArgsConstructor
+    public static class BucketHistory extends History {
+        @Setter
+        private DotColor color;
+        @Setter
+        private int x;
+        @Setter
+        private int y;
+
+        @JsonIgnore
+        private final Paint paint = new Paint();
+
+        public BucketHistory(Layer layer, DotColor color, int x, int y) {
+            super(layer);
+            this.color = color;
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public void draw(Layer layer, Palette palette) {
+            paintLayer(layer, x, y, color.applyPalette(palette));
+        }
+    }
 
     private static final int DIRECTION_NONE = 0;
     private static final int DIRECTION_UP = 1;

@@ -4,10 +4,12 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.project.Layer;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public abstract class History {
     @Getter
-    private final int layerId;
+    private int layerId;
 
     public History(Layer layer) {
         this.layerId = layer.getId();

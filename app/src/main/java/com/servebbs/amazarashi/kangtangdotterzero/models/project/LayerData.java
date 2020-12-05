@@ -21,6 +21,7 @@ public class LayerData {
     @Getter
     protected Bitmap display;
     @JsonIgnore
+    @Getter
     protected IndexedBitmap indexed;
     @JsonIgnore
     protected int historyIndex;

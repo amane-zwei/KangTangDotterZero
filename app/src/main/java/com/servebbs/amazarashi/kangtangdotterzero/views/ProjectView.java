@@ -274,7 +274,8 @@ public class ProjectView extends View {
 
         private int rate;
         private int normalRate;
-        private int baseSize;
+        private int projectSize;
+        private int screenSize;
 
         public Normalizer() {
             project = null;
@@ -286,7 +287,8 @@ public class ProjectView extends View {
             targetY = 0;
 
             rate = 65536;
-            baseSize = 32;
+            projectSize = 32;
+            screenSize = 32;
         }
 
         public int getProjectX(float screenX) {
@@ -360,10 +362,12 @@ public class ProjectView extends View {
             int rateV = (height << 16) / project.getHeight();
             if (rateH < rateV) {
                 rate = rateH;
-                baseSize = project.getWidth();
+                projectSize = project.getWidth();
+                screenSize = width;
             } else {
                 rate = rateV;
-                baseSize = project.getHeight();
+                projectSize = project.getHeight();
+                screenSize = height;
             }
         }
 
@@ -372,11 +376,11 @@ public class ProjectView extends View {
         }
 
         public void changeRate(int span, int focusX, int focusY) {
-            int rate = normalRate + (span << 16) / baseSize;
+            int rate = normalRate + (span << 16) / projectSize;
             if (rate < 1 << 16) {
                 rate = 1 << 16;
-            } else if (rate > baseSize << 16) {
-                rate = baseSize << 16;
+            } else if (rate > screenSize << 16) {
+                rate = screenSize << 16;
             }
             this.rate = rate;
         }

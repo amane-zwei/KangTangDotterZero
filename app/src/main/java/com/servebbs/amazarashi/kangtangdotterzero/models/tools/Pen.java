@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.IndexedBitmap;
 import com.servebbs.amazarashi.kangtangdotterzero.models.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.models.lowlevel.Point;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Layer;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
@@ -19,13 +20,14 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.NoArgsConstructor;
+
 public class Pen extends Tool {
     private static final PorterDuffXfermode porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.SRC);
 
     private ArrayList<Point> buff = null;
     private Layer layer;
-    private int color;
-    private int colorIndex;
+    private DotColor color;
     private boolean isDraw;
 
     @Override
@@ -43,9 +45,6 @@ public class Pen extends Tool {
             case MotionEvent.ACTION_DOWN:
                 layer = project.getLayer();
                 color = getColor(project);
-                if (layer.isIndexedColor()) {
-                    colorIndex = getColorIndex(project);
-                }
                 onDown(project, x, y);
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -60,8 +59,9 @@ public class Pen extends Tool {
 
     @Override
     public void clear() {
-        layer = null;
         buff = null;
+        layer = null;
+        color = null;
         isDraw = false;
     }
 
@@ -70,20 +70,16 @@ public class Pen extends Tool {
         onUp(event.getProject());
     }
 
-    protected int getColor(Project project) {
-        return project.getPalette().getColor();
-    }
-
-    protected int getColorIndex(Project project) {
-        return IndexedBitmap.toSaveIndex(project.getPalette().getIndex());
+    protected DotColor getColor(Project project) {
+        return project.getColor();
     }
 
     public void onDown(Project project, int x, int y) {
         this.buff = new ArrayList<>();
         buff.add(new Point(x, y));
-        innerDraw(layer.getDisplayCanvas(), buff, createPaint(color));
+        innerDraw(layer.getDisplayCanvas(), buff, createPaint(color.intValue()));
         if (layer.isIndexedColor()) {
-            innerDraw(layer.getIndexedCanvas(), buff, createPaint(colorIndex));
+            innerDraw(layer.getIndexedCanvas(), buff, createPaint(color.saveIndex()));
         }
         isDraw = !project.isOut(x, y);
     }
@@ -96,9 +92,9 @@ public class Pen extends Tool {
         Point prev = buff.get(buff.size() - 1);
         if (x != prev.x || y != prev.y) {
             buff.add(new Point(x, y));
-            innerDraw(layer.getDisplayCanvas(), buff, createPaint(color));
+            innerDraw(layer.getDisplayCanvas(), buff, createPaint(color.intValue()));
             if (layer.isIndexedColor()) {
-                innerDraw(layer.getIndexedCanvas(), buff, createPaint(colorIndex));
+                innerDraw(layer.getIndexedCanvas(), buff, createPaint(color.saveIndex()));
             }
             isDraw |= !project.isOut(x, y);
         }
@@ -107,11 +103,7 @@ public class Pen extends Tool {
 
     public boolean onUp(Project project) {
         if (isDraw) {
-            if (project.isIndexedColor()) {
-                project.addHistory(new PenHistory(layer, buff, colorIndex));
-            } else {
-                project.addHistory(new PenHistory(layer, buff, color));
-            }
+            project.addHistory(new PenHistory(layer, buff, color));
         }
         clear();
         return true;
@@ -149,27 +141,37 @@ public class Pen extends Tool {
         }
     }
 
+    @NoArgsConstructor
     public static class PenHistory extends History {
-        private final int color;
-        private final List<Point> buff;
+        private DotColor color;
+        private List<Point> buff;
         @JsonIgnore
-        private final Paint paint;
+        private Paint paint;
         @JsonIgnore
-        private final Paint indexedPaint;
+        private Paint indexedPaint;
 
-        public PenHistory(Layer layer, List<Point> buff, int color) {
+        public PenHistory(Layer layer, List<Point> buff, DotColor color) {
             super(layer);
             this.buff = buff;
             this.color = color;
-            paint = createPaint(color);
-            indexedPaint = layer.isIndexedColor() ? createPaint(color) : null;
+            set();
+        }
+
+        public void set() {
+            if (color.isIndexedColor()) {
+                paint = createPaint(color.intValue());
+                indexedPaint = createPaint(color.saveIndex());
+            } else {
+                paint = createPaint(color.intValue());
+                indexedPaint = null;
+            }
         }
 
         public void draw(Layer layer, Palette palette) {
             if (layer.isIndexedColor()) {
-                indexedPaint.setColor(palette.getColor(IndexedBitmap.toPlainIndex(color)));
-                innerDraw(layer.getDisplayCanvas(), buff, indexedPaint);
-                innerDraw(layer.getIndexedCanvas(), buff, paint);
+                paint.setColor(palette.getColor(color.plainIndex()));
+                innerDraw(layer.getDisplayCanvas(), buff, paint);
+                innerDraw(layer.getIndexedCanvas(), buff, indexedPaint);
             } else {
                 innerDraw(layer.getDisplayCanvas(), buff, paint);
             }

@@ -50,10 +50,6 @@ public class Palette extends ColorList {
         return color;
     }
 
-    public boolean equals(Palette palette) {
-        return this.index == palette.index && super.equals(palette);
-    }
-
     @Getter
     @Setter
     private int index;

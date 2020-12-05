@@ -48,7 +48,7 @@ public class ColorPickerDialog extends KTDZDialogFragment {
 
     public static class ColorPickerDialogView extends LinearLayout {
 
-        private ColorSelector colorSelector;
+        private final ColorSelector colorSelector;
         private ARGBColorPicker argbColorPicker;
 
         public ColorPickerDialogView(Context context) {
@@ -89,7 +89,7 @@ public class ColorPickerDialog extends KTDZDialogFragment {
             }
             {
                 ARGBColorPicker argbColorPicker = this.argbColorPicker = new ARGBColorPicker(context);
-                argbColorPicker.setOnColorChangeListener((int color) -> colorSelector.applyColor(color));
+                argbColorPicker.setOnColorChangeListener(colorSelector::applyColor);
                 argbColorPicker.setPadding(padding, padding, padding, padding);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,

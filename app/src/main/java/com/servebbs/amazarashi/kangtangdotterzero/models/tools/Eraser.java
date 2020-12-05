@@ -2,6 +2,7 @@ package com.servebbs.amazarashi.kangtangdotterzero.models.tools;
 
 import android.graphics.Rect;
 
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 
@@ -12,12 +13,7 @@ public class Eraser extends Pen {
     }
 
     @Override
-    protected int getColor(Project project) {
-        return 0x0;
-    }
-
-    @Override
-    protected int getColorIndex(Project project) {
-        return 0x0;
+    protected DotColor getColor(Project project) {
+        return project.getClearColor();
     }
 }
