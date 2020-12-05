@@ -49,9 +49,9 @@ public class Project {
 
     public Project() {
         id = 0;
-        width = 64;
-        height = 64;
-        isIndexedColor = true;
+        width = 16;
+        height = 16;
+        isIndexedColor = false;
 
         paletteOnHistoryIndex = 0;
         history = new HistoryList();

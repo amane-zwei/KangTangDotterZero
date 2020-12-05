@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.actions.UnRedoAction;
+import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Bucket;
 import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Eraser;
 import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Pen;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.ActionView;
@@ -41,6 +42,7 @@ public class HorizontalMenuView extends HorizontalScrollView {
 
         addItem(new SelectToolView(context, new Pen()));
         addItem(new SelectToolView(context, new Eraser()));
+        addItem(new SelectToolView(context, new Bucket()));
         addItem(new CallColorPickerDialogView(context));
         addItem(new UnRedoView(context, UnRedoAction.DELTA_UNDO));
         addItem(new UnRedoView(context, UnRedoAction.DELTA_REDO));
