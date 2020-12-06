@@ -128,13 +128,31 @@ public class ProjectView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            normalizer.slideEnd();
+        }
         if (event.getPointerCount() > 1) {
             if (tmpTool != null) {
                 tmpTool.clear();
                 tmpTool = null;
                 project.unRedo(0);
             }
-            return scaleGestureDetector.onTouchEvent(event);
+
+            // pinch
+            scaleGestureDetector.onTouchEvent(event);
+
+            // slide
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    normalizer.slideBegin(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (normalizer.slide(event.getX(0), event.getY(0), event.getX(1), event.getY(1))) {
+                        invalidate();
+                    }
+                    break;
+            }
+            return true;
         }
 
         if (cursor == null) {
@@ -266,6 +284,10 @@ public class ProjectView extends View {
         @Setter
         Project project;
 
+        private boolean isSliding;
+        private final float[] prevX;
+        private final float[] prevY;
+
         private int originX;
         private int originY;
 
@@ -279,6 +301,10 @@ public class ProjectView extends View {
 
         public Normalizer() {
             project = null;
+
+            isSliding = false;
+            prevX = new float[2];
+            prevY = new float[2];
 
             originX = 0;
             originY = 0;
@@ -370,6 +396,34 @@ public class ProjectView extends View {
                 screenSize = height;
             }
         }
+
+        public void slideBegin(float x0, float y0, float x1, float y1) {
+            prevX[0] = x0;
+            prevY[0] = y0;
+            prevX[1] = x1;
+            prevY[1] = y1;
+        }
+
+        public boolean slide(float x0, float y0, float x1, float y1) {
+            boolean result = false;
+            float dx0 = x0 - prevX[0];
+            float dy0 = y0 - prevY[0];
+            float dx1 = x1 - prevX[1];
+            float dy1 = y1 - prevY[1];
+            if (isSliding && dx0 * dx1 >= 0f && dy0 * dy1 >= 0f) {
+                originX += (int) ((dx0 + dx1) / 2);
+                originY += (int) ((dy0 + dy1) / 2);
+                result = true;
+            }
+            slideBegin(x0, y0, x1, y1);
+            isSliding = true;
+            return result;
+        }
+
+        public void slideEnd() {
+            isSliding = false;
+        }
+
 
         public void changeRateBegin() {
             normalRate = rate;
