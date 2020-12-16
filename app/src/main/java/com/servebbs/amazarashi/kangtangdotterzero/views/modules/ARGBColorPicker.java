@@ -11,8 +11,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
-import androidx.appcompat.widget.LinearLayoutCompat;
-
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.UnderLineDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotEditText;
@@ -24,13 +22,13 @@ import lombok.Setter;
 
 public class ARGBColorPicker extends LinearLayout {
 
-    private static ColorData[] colorData = {
+    private static final ColorData[] colorData = {
             new ColorData(0xff808080, 0xffffffff),
             new ColorData(0xffff4040, 0xffffffff),
             new ColorData(0xff40ff40, 0xffffffff),
             new ColorData(0xff4040ff, 0xffffffff),
     };
-    static GradientDrawable divider;
+    private static final GradientDrawable divider;
 
     static {
         divider = new GradientDrawable();
@@ -38,7 +36,7 @@ public class ARGBColorPicker extends LinearLayout {
         divider.setSize(0, 2);
     }
 
-    private ColorPicker[] colorPickers;
+    private final ColorPicker[] colorPickers;
     @Setter
     private OnColorChangeListener onColorChangeListener;
 
@@ -59,7 +57,8 @@ public class ARGBColorPicker extends LinearLayout {
             LinearLayout.LayoutParams layoutParams =
                     new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
+                            0,
+                            1
                     );
             colorPicker.setLayoutParams(layoutParams);
             addView(colorPicker);
@@ -78,7 +77,7 @@ public class ARGBColorPicker extends LinearLayout {
 
     public int getColor() {
         int color = 0;
-        for( int index = 0; index < colorPickers.length; index++) {
+        for (int index = 0; index < colorPickers.length; index++) {
             color <<= 8;
             color += colorPickers[index].getColor();
         }
@@ -86,7 +85,7 @@ public class ARGBColorPicker extends LinearLayout {
     }
 
     private void onColorChange() {
-        if(onColorChangeListener != null) {
+        if (onColorChangeListener != null) {
             onColorChangeListener.onColorChange(getColor());
         }
     }
@@ -100,8 +99,8 @@ public class ARGBColorPicker extends LinearLayout {
                 new InputFilter.LengthFilter(3)
         };
 
-        private DotEditText editText;
-        private DotSeekBar seekBar;
+        private final DotEditText editText;
+        private final DotSeekBar seekBar;
         private ARGBColorPicker parent;
 
         public ColorPicker(Context context) {
@@ -114,41 +113,41 @@ public class ARGBColorPicker extends LinearLayout {
             setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
             setFocusableInTouchMode(true);
             {
-                DotEditText editText = this.editText = new DotEditText(context);
+                DotEditText editText = this.editText = new DotEditText(context) {
+                    @Override
+                    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                        super.onMeasure(heightMeasureSpec, heightMeasureSpec);
+                    }
+                };
                 editText.setSelectAllOnFocus(true);
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editText.setFilters(inputFilters);
                 editText.setGravity(Gravity.CENTER);
                 editText.setLayoutParams(
-                        new LinearLayoutCompat.LayoutParams(
-                                iconSize,
-                                iconSize
-                        )
-                );
+                        new LinearLayout.LayoutParams(
+                                LayoutParams.MATCH_PARENT,
+                                LayoutParams.MATCH_PARENT
+                        ));
                 addView(editText);
             }
             {
                 DotSeekBar seekBar = this.seekBar = new DotSeekBar(context);
                 seekBar.setMax(0xff);
-                LinearLayout.LayoutParams layoutParams =
+                seekBar.setLayoutParams(
                         new LinearLayout.LayoutParams(
                                 0,
-                                iconSize
-                        );
-                layoutParams.weight = 1;
-                seekBar.setLayoutParams(layoutParams);
+                                LayoutParams.MATCH_PARENT,
+                                1
+                        ));
                 addView(seekBar);
             }
-            this.editText.setOnFocusChangeListener(new OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean hasFocus) {
-                    if (!hasFocus) {
-                        EditText editText = (EditText) view;
-                        int color = normalize(Integer.parseInt(editText.getText().toString()));
-                        seekBar.setProgress(color);
-                        editText.setText(Integer.toString(color));
-                        parent.onColorChange();
-                    }
+            this.editText.setOnFocusChangeListener((view, hasFocus) -> {
+                if (!hasFocus) {
+                    EditText editText = (EditText) view;
+                    int color = normalize(Integer.parseInt(editText.getText().toString()));
+                    seekBar.setProgress(color);
+                    editText.setText(Integer.toString(color));
+                    parent.onColorChange();
                 }
             });
             this.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -195,7 +194,7 @@ public class ARGBColorPicker extends LinearLayout {
     @Getter
     @AllArgsConstructor
     private static class ColorData {
-        private int mainColor;
-        private int subColor;
+        private final int mainColor;
+        private final int subColor;
     }
 }

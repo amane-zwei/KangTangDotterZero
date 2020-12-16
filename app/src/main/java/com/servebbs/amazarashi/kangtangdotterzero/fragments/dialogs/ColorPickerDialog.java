@@ -55,7 +55,6 @@ public class ColorPickerDialog extends KTDZDialogFragment {
             super(context);
 
             final int iconSize = ScreenSize.getIconSize();
-            final int dotSize = ScreenSize.getDotSize();
             final int padding = ScreenSize.getPadding();
 
             setOrientation(LinearLayout.VERTICAL);
@@ -68,9 +67,9 @@ public class ColorPickerDialog extends KTDZDialogFragment {
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        0
+                        0,
+                        1
                 );
-                layoutParams.weight = 1;
                 layoutParams.setMargins(padding, padding, padding, padding);
                 colorSelector.setLayoutParams(layoutParams);
                 addView(colorSelector);
@@ -88,12 +87,16 @@ public class ColorPickerDialog extends KTDZDialogFragment {
                 addView(divider);
             }
             {
+                int height = iconSize * 4 + padding * 2;
+                if (height > ScreenSize.getHeight()/2) {
+                    height = ScreenSize.getHeight()/2;
+                }
                 ARGBColorPicker argbColorPicker = this.argbColorPicker = new ARGBColorPicker(context);
                 argbColorPicker.setOnColorChangeListener(colorSelector::applyColor);
                 argbColorPicker.setPadding(padding, padding, padding, padding);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
+                        height
                 );
                 argbColorPicker.setLayoutParams(layoutParams);
                 addView(argbColorPicker);
