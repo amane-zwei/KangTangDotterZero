@@ -42,10 +42,10 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
 
     static class DotSeekBarDrawable extends Drawable {
 
-        private Paint paint;
-        private Paint mainColorPaint;
-        private Paint subColorPaint;
-        private int offset;
+        private final Paint paint;
+        private final Paint mainColorPaint;
+        private final Paint subColorPaint;
+        private final int offset;
 
         public DotSeekBarDrawable(int offset) {
             this.offset = offset;
@@ -92,13 +92,8 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
             tmpCanvas.drawRect(border, 0, width, height, subColorPaint);
 //            tmpCanvas.drawRect(border - dotSize / 2, 0, border + dotSize / 2, height, black);
 
-            {
-                Rect rect = new Rect(0, 0, tmpBitmap.getWidth(), tmpBitmap.getHeight());
-                canvas.drawBitmap(tmpBitmap, rect, rect, paint);
-            }
-
             drawBitmap(
-                    canvas,
+                    tmpCanvas,
                     DotIcon.seekBar.getLeft(),
                     DotIcon.seekBar.getTop(),
                     DotIcon.seekBar.getWidth(),
@@ -106,6 +101,11 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
                     offset,
                     paint
             );
+
+            {
+                Rect rect = new Rect(0, 0, tmpBitmap.getWidth(), tmpBitmap.getHeight());
+                canvas.drawBitmap(tmpBitmap, rect, rect, paint);
+            }
         }
 
         private void drawBitmap(
