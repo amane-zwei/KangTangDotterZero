@@ -38,14 +38,17 @@ public class DotIcon {
     public static final DotIconData colorPicker = new DotIconData(16, 64, 16, 16);
     public static final DotIconData undo = new DotIconData(32, 64, 16, 16);
     public static final DotIconData redo = new DotIconData(48, 64, 16, 16);
+    public static final DotIconData newPaper = new DotIconData(80, 64, 16, 16);
+    public static final DotIconData save = new DotIconData(96, 64, 16, 16);
+    public static final DotIconData load = new DotIconData(112, 64, 16, 16);
 
     @Getter
     @AllArgsConstructor
     public static class DotIconData {
-        private int left;
-        private int top;
-        private int width;
-        private int height;
+        private final int left;
+        private final int top;
+        private final int width;
+        private final int height;
 
         public int getRight() {
             return left + width;

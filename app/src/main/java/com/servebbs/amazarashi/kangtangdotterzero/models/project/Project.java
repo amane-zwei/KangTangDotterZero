@@ -11,6 +11,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.histories.HistoryList;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class Project {
         id = 0;
         width = 8;
         height = 8;
-        isIndexedColor = true;
+        isIndexedColor = false;
 
         paletteOnHistoryIndex = 0;
         history = new HistoryList();
@@ -83,7 +84,7 @@ public class Project {
     }
 
     public void addFrame() {
-        frames.add(new Frame(this, width, height));
+        frames.add(new Frame(this));
     }
 
     @JsonIgnore
@@ -141,22 +142,23 @@ public class Project {
         return layerMap.get(id);
     }
 
+    public Collection<Layer> layers() { return layerMap.values(); }
+
+    @JsonIgnore
     public DotColor getColor() {
-        if (isIndexedColor) {
-            return DotColor.fromIndex(palette.getColor(), palette.getIndex());
-        } else {
-            return DotColor.fromColorValue(palette.getColor());
-        }
+        return palette.getColor();
     }
 
+    @JsonIgnore
     public DotColor getClearColor() {
         if (isIndexedColor) {
-            return DotColor.fromIndex(palette.getColor(0), 0);
+            return palette.getColor(0);
         } else {
             return DotColor.fromColorValue(0x0);
         }
     }
 
+    @JsonIgnore
     public boolean isOut(int x, int y) {
         int w = getWidth();
         int h = getHeight();

@@ -43,7 +43,7 @@ public class ColorView extends View {
             return;
         }
 
-        basePaint.setColor(palette.getColor(index));
+        basePaint.setColor(palette.getColor(index).intValue());
         if (palette.getIndex() == index) {
             final int dotSize = ScreenSize.getDotSize() * 3;
 

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.servebbs.amazarashi.kangtangdotterzero">
 
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:name=".KTDZApplication"
         android:allowBackup="true"
@@ -18,5 +20,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

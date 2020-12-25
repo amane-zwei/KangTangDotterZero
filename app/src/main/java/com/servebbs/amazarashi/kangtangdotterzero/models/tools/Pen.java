@@ -169,7 +169,7 @@ public class Pen extends Tool {
 
         public void draw(Layer layer, Palette palette) {
             if (layer.isIndexedColor()) {
-                paint.setColor(palette.getColor(color.plainIndex()));
+                paint.setColor(palette.getColor(color.plainIndex()).intValue());
                 innerDraw(layer.getDisplayCanvas(), buff, paint);
                 innerDraw(layer.getIndexedCanvas(), buff, indexedPaint);
             } else {

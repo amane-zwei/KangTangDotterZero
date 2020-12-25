@@ -5,7 +5,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -13,6 +12,7 @@ import android.widget.SeekBar;
 
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.UnderLineDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotEditText;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotSeekBar;
 
@@ -67,21 +67,22 @@ public class ARGBColorPicker extends LinearLayout {
         onColorChangeListener = null;
     }
 
-    public void applyColor(int color) {
+    public void applyColor(DotColor color) {
+        int intValue = color.intValue();
         for (int index = colorPickers.length - 1; index >= 0; index--) {
             ColorPicker colorPicker = colorPickers[index];
-            colorPicker.setColor(color & 0xff);
-            color >>= 8;
+            colorPicker.setColor(intValue & 0xff);
+            intValue >>= 8;
         }
     }
 
-    public int getColor() {
-        int color = 0;
+    public DotColor getColor() {
+        int intValue = 0;
         for (int index = 0; index < colorPickers.length; index++) {
-            color <<= 8;
-            color += colorPickers[index].getColor();
+            intValue <<= 8;
+            intValue += colorPickers[index].getColor();
         }
-        return color;
+        return DotColor.fromColorValue(intValue);
     }
 
     private void onColorChange() {
@@ -91,7 +92,7 @@ public class ARGBColorPicker extends LinearLayout {
     }
 
     public interface OnColorChangeListener {
-        void onColorChange(int color);
+        void onColorChange(DotColor color);
     }
 
     private static class ColorPicker extends LinearLayout {

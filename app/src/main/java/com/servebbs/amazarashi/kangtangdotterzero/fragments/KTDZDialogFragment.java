@@ -20,7 +20,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotButton;
 
 public class KTDZDialogFragment extends DialogFragment {
 
-    private OnButtonFunction[] onButtonFunctions = new OnButtonFunction[2];
+    private final OnButtonFunction[] onButtonFunctions = new OnButtonFunction[2];
 
     @Override
     public Dialog onCreateDialog(Bundle bundle) {

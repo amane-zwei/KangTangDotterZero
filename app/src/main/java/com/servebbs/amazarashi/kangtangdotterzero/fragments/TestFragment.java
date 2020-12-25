@@ -3,13 +3,14 @@ package com.servebbs.amazarashi.kangtangdotterzero.fragments;
 import android.content.Context;
 import android.view.View;
 
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 
 public class TestFragment extends KTDZDialogFragment {
     @Override
     public View createContentView(Context context) {
         ARGBColorPicker argbColorPicker = new ARGBColorPicker(context);
-        argbColorPicker.applyColor(0xfff0a080);
+        argbColorPicker.applyColor(DotColor.fromColorValue(0xfff0a080));
         return argbColorPicker;
     }
 //    private static TestFragment instance = new TestFragment();

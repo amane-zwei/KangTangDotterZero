@@ -15,6 +15,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Eraser;
 import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Pen;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.ActionView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallColorPickerDialogView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallSaveProjectDialogView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.SelectToolView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.UnRedoView;
 
@@ -46,6 +47,7 @@ public class HorizontalMenuView extends HorizontalScrollView {
         addItem(new CallColorPickerDialogView(context));
         addItem(new UnRedoView(context, UnRedoAction.DELTA_UNDO));
         addItem(new UnRedoView(context, UnRedoAction.DELTA_REDO));
+        addItem(new CallSaveProjectDialogView(context));
 
         this.detector = new GestureDetector(context, new GestureListener());
     }

@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DividerDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ColorSelector;
@@ -62,7 +63,7 @@ public class ColorPickerDialog extends KTDZDialogFragment {
 
             {
                 ColorSelector colorSelector = this.colorSelector = new ColorSelector(context);
-                colorSelector.setOnColorSelectListener((int color) -> argbColorPicker.applyColor(color));
+                colorSelector.setOnColorSelectListener((DotColor color) -> argbColorPicker.applyColor(color));
                 colorSelector.setPadding(padding, padding, padding, padding);
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(

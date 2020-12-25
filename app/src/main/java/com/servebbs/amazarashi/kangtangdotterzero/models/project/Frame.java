@@ -12,24 +12,18 @@ import lombok.Setter;
 public class Frame {
 
     @Getter
-    private int width;
-    @Getter
-    private int height;
-    @Getter
     @Setter
     private int interval = 100;
 
     @JsonIgnore
     private int index;
     @Getter
-    private ArrayList<Layer> layers = new ArrayList<>();
+    private final ArrayList<Layer> layers = new ArrayList<>();
     @JsonIgnore
-    private Project project;
+    private final Project project;
 
-    public Frame(Project project, int width, int height) {
+    public Frame(Project project) {
         this.project = project;
-        this.width = width;
-        this.height = height;
 
         addLayer();
         index = 0;
@@ -41,7 +35,11 @@ public class Frame {
     }
 
     public void addLayer() {
-        Layer layer = new Layer(project.generateId(), width, height, project.isIndexedColor());
+        Layer layer = new Layer(
+                project.generateId(),
+                project.getWidth(),
+                project.getHeight(),
+                project.isIndexedColor());
         layers.add(layer);
         project.putLayer(layer);
     }

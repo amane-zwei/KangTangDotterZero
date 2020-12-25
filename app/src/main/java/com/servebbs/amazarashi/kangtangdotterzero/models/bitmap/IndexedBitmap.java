@@ -55,7 +55,7 @@ public class IndexedBitmap {
 
         src.getPixels(buff, 0, width, 0, 0, width, height);
         for (int idx = 0; idx < length; idx++) {
-            buff[idx] = colorList.getColor(toPlainIndex(buff[idx]));
+            buff[idx] = colorList.getColor(toPlainIndex(buff[idx])).intValue();
         }
         dst.setPixels(buff, 0, width, 0, 0, width, height);
         return dst;

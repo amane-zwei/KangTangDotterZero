@@ -22,7 +22,7 @@ public class MainView extends FrameLayout {
     private final List<ProjectView> projectViews;
     private final ProjectView currentProjectView;
 
-    private Cursor cursorView;
+    private final Cursor cursorView;
     private FloatingButtonView cursorButtonView;
 
     private boolean isCursorMode;

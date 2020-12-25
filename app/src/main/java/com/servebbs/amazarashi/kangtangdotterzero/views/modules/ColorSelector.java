@@ -11,6 +11,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 
@@ -19,7 +20,7 @@ import lombok.Setter;
 public class ColorSelector extends LinearLayout {
 
     private Palette palette = null;
-    private ColorGridView colorGridView;
+    private final ColorGridView colorGridView;
     @Setter
     private OnColorSelectListener onColorSelectListener = null;
 
@@ -59,7 +60,7 @@ public class ColorSelector extends LinearLayout {
         colorGridView.setSelection(palette.getIndex());
     }
 
-    public void applyColor(int color) {
+    public void applyColor(DotColor color) {
         palette.setColor(color);
         colorGridView.invalidateViews();
     }
@@ -124,12 +125,12 @@ public class ColorSelector extends LinearLayout {
     }
 
     public interface OnColorSelectListener {
-        void onColorSelect(int color);
+        void onColorSelect(DotColor color);
     }
 
     private class GridAdapter extends BaseAdapter {
 
-        private Palette palette;
+        private final Palette palette;
 
         private GridAdapter(Palette palette) {
             super();
