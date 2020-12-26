@@ -2,7 +2,7 @@ package com.servebbs.amazarashi.kangtangdotterzero.models.project;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.ColorList;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,16 +37,16 @@ public class Palette extends ColorList {
     }
 
     @JsonIgnore
-    public DotColor getColor() {
+    public DotColorValue getColor() {
         return getColor(index);
     }
 
-    public void setColor(DotColor color) {
+    public void setColor(DotColorValue color) {
         setColor(index, color);
     }
 
-    public DotColor removeColor() {
-        DotColor color = removeColor(index);
+    public DotColorValue removeColor() {
+        DotColorValue color = removeColor(index);
         if (index >= size() -1) {
             index = size() -1;
         }

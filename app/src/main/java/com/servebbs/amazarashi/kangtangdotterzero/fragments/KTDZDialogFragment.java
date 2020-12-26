@@ -63,10 +63,9 @@ public class KTDZDialogFragment extends DialogFragment {
             button.setLayoutParams(layoutParams);
             button.setText(texts[index]);
             button.setOnClickListener((View v) -> {
-                if (onButtonFunction != null) {
-                    onButtonFunction.accept();
+                if (onButtonFunction == null || onButtonFunction.apply()) {
+                    dismiss();
                 }
-                dismiss();
             });
             buttonAreaLayout.addView(button);
         }
@@ -119,8 +118,7 @@ public class KTDZDialogFragment extends DialogFragment {
         return constraintLayout;
     }
 
-    @FunctionalInterface
     public interface OnButtonFunction {
-        void accept();
+        boolean apply();
     }
 }

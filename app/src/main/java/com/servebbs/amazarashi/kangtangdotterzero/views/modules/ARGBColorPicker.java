@@ -12,7 +12,7 @@ import android.widget.SeekBar;
 
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.UnderLineDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotEditText;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotSeekBar;
 
@@ -67,8 +67,11 @@ public class ARGBColorPicker extends LinearLayout {
         onColorChangeListener = null;
     }
 
-    public void applyColor(DotColor color) {
-        int intValue = color.intValue();
+    public void applyColor(DotColorValue color) {
+        applyIntColor(color.getValue());
+    }
+
+    private void applyIntColor(int intValue) {
         for (int index = colorPickers.length - 1; index >= 0; index--) {
             ColorPicker colorPicker = colorPickers[index];
             colorPicker.setColor(intValue & 0xff);
@@ -76,13 +79,17 @@ public class ARGBColorPicker extends LinearLayout {
         }
     }
 
-    public DotColor getColor() {
+    public DotColorValue getColor() {
+        return new DotColorValue(getIntColor());
+    }
+
+    private int getIntColor() {
         int intValue = 0;
         for (int index = 0; index < colorPickers.length; index++) {
             intValue <<= 8;
             intValue += colorPickers[index].getColor();
         }
-        return DotColor.fromColorValue(intValue);
+        return intValue;
     }
 
     private void onColorChange() {
@@ -92,7 +99,7 @@ public class ARGBColorPicker extends LinearLayout {
     }
 
     public interface OnColorChangeListener {
-        void onColorChange(DotColor color);
+        void onColorChange(DotColorValue color);
     }
 
     private static class ColorPicker extends LinearLayout {

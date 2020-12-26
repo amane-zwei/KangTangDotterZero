@@ -76,13 +76,15 @@ public class SaveProjectDialog extends KTDZDialogFragment {
             return false;
         }
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, ktdzFile.toFileName());
-        contentValues.put(MediaStore.Images.Media.MIME_TYPE, ktdzFile.getExtension().getMimeType());
-        contentValues.put(MediaStore.Images.Media.DATA, file.getPath());
+        if (ktdzFile.getExtension().isNeedRegister()) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, ktdzFile.toFileName());
+            contentValues.put(MediaStore.Images.Media.MIME_TYPE, ktdzFile.getExtension().getMimeType());
+            contentValues.put(MediaStore.Images.Media.DATA, file.getPath());
 
-        getContext().getContentResolver()
-                .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            getContext().getContentResolver()
+                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        }
         return true;
     }
 

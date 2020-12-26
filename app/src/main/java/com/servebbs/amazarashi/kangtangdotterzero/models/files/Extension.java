@@ -9,14 +9,16 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum Extension {
-    PNG(".png", "image/png", new PngRepository()),
-    KTDZ_PROJECT(".ktd", "image/prs.ktd+zip", new ProjectRepository());
+    PNG(".png", "image/png", new PngRepository(), true),
+    KTDZ_PROJECT(".ktd", "image/prs.ktd+zip", new ProjectRepository(), false);
 
     private final String extension;
     @Getter
     private final String mimeType;
     @Getter
     private final FileRepository repository;
+    @Getter
+    private final boolean needRegister;
 
     public String toString() {
         return extension;

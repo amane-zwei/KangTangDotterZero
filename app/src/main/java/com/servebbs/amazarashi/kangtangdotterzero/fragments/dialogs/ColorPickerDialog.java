@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DividerDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ColorSelector;
@@ -43,8 +43,7 @@ public class ColorPickerDialog extends KTDZDialogFragment {
 
     @FunctionalInterface
     public interface OnPositiveButtonListener {
-        void onPositiveButton(Palette palette);
-
+        boolean onPositiveButton(Palette palette);
     }
 
     public static class ColorPickerDialogView extends LinearLayout {
@@ -63,7 +62,7 @@ public class ColorPickerDialog extends KTDZDialogFragment {
 
             {
                 ColorSelector colorSelector = this.colorSelector = new ColorSelector(context);
-                colorSelector.setOnColorSelectListener((DotColor color) -> argbColorPicker.applyColor(color));
+                colorSelector.setOnColorSelectListener((DotColorValue color) -> argbColorPicker.applyColor(color));
                 colorSelector.setPadding(padding, padding, padding, padding);
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -89,8 +88,8 @@ public class ColorPickerDialog extends KTDZDialogFragment {
             }
             {
                 int height = iconSize * 4 + padding * 2;
-                if (height > ScreenSize.getHeight()/2) {
-                    height = ScreenSize.getHeight()/2;
+                if (height > ScreenSize.getHeight() / 2) {
+                    height = ScreenSize.getHeight() / 2;
                 }
                 ARGBColorPicker argbColorPicker = this.argbColorPicker = new ARGBColorPicker(context);
                 argbColorPicker.setOnColorChangeListener(colorSelector::applyColor);

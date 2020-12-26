@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.IndexedBitmap;
 import com.servebbs.amazarashi.kangtangdotterzero.models.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.models.lowlevel.Point;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
@@ -169,7 +168,7 @@ public class Pen extends Tool {
 
         public void draw(Layer layer, Palette palette) {
             if (layer.isIndexedColor()) {
-                paint.setColor(palette.getColor(color.plainIndex()).intValue());
+                paint.setColor(palette.getColor(color.plainIndex()).getValue());
                 innerDraw(layer.getDisplayCanvas(), buff, paint);
                 innerDraw(layer.getIndexedCanvas(), buff, indexedPaint);
             } else {

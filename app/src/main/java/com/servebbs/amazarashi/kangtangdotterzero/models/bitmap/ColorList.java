@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 public class ColorList {
     public static final int colorMax = 256;
 
-    private final List<DotColor> array;
+    private final List<DotColorValue> array;
 
     public ColorList(int[] colors) {
         array = new ArrayList<>();
@@ -35,7 +35,7 @@ public class ColorList {
     }
 
     public void addColor(int value) {
-        array.add(DotColor.create(value, size()));
+        array.add(new DotColorValue(value));
     }
 
     public void addColors(int[] colors) {
@@ -50,9 +50,9 @@ public class ColorList {
         }
     }
 
-    public DotColor removeColor(int index) {
+    public DotColorValue removeColor(int index) {
         if (array.size() < 2) {
-            return DotColor.empty();
+            return DotColorValue.empty();
         }
         return this.array.remove(index);
     }
@@ -61,23 +61,23 @@ public class ColorList {
         return array.size();
     }
 
-    public DotColor getColor(int index) {
+    public DotColorValue getColor(int index) {
         return array.get(index);
     }
 
-    public void setColor(int index, DotColor color) {
+    public void setColor(int index, DotColorValue color) {
         array.set(index, color);
     }
 
     public int findIndex(int intValue) {
         int index;
         for (index = 0; index < array.size(); index++) {
-            if (array.get(index).intValue() == intValue) {
+            if (array.get(index).equals(intValue)) {
                 return index;
             }
         }
         if (canAddColor()) {
-            array.add(DotColor.fromColorValue(intValue));
+            array.add(new DotColorValue(intValue));
             return array.size() - 1;
         }
         return 0;
@@ -127,9 +127,7 @@ public class ColorList {
                 SerializerProvider provider)
                 throws IOException {
 
-            jsonGenerator.writeStartObject();
             jsonGenerator.writeArray(value.toStringArray(), 0, value.size());
-            jsonGenerator.writeEndObject();
         }
     }
 }

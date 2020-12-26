@@ -11,7 +11,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 
@@ -60,7 +60,7 @@ public class ColorSelector extends LinearLayout {
         colorGridView.setSelection(palette.getIndex());
     }
 
-    public void applyColor(DotColor color) {
+    public void applyColor(DotColorValue color) {
         palette.setColor(color);
         colorGridView.invalidateViews();
     }
@@ -103,7 +103,7 @@ public class ColorSelector extends LinearLayout {
             final int dotSize = ScreenSize.getDotSize();
 
             setOrientation(LinearLayout.HORIZONTAL);
-            setPadding(0,0,iconSize / 2, 0);
+            setPadding(0, 0, iconSize / 2, 0);
 
             GradientDrawable gradientDrawable = new GradientDrawable();
             gradientDrawable.setStroke(dotSize, 0xff000000);
@@ -113,7 +113,7 @@ public class ColorSelector extends LinearLayout {
             {
                 SimpleIconView iconView = new SimpleIconView(context);
                 iconView.setRect(DotIcon.minusColor.createRect());
-                iconView.setOnClickListener((View view) -> minusColor() );
+                iconView.setOnClickListener((View view) -> minusColor());
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         iconSize,
                         iconSize
@@ -125,7 +125,7 @@ public class ColorSelector extends LinearLayout {
     }
 
     public interface OnColorSelectListener {
-        void onColorSelect(DotColor color);
+        void onColorSelect(DotColorValue color);
     }
 
     private class GridAdapter extends BaseAdapter {

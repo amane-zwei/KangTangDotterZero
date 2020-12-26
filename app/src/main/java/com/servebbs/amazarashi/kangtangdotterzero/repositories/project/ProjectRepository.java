@@ -10,39 +10,64 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ProjectRepository extends FileRepository {
+    private static final Charset charset = Charset.forName("UTF-8");
+
+    private final String thumbnailFileName = "thumbnail.png";
+    private final String projectFileName = "project.json";
+    private final String paletteFileName = "palette.json";
+    private final String imagesDirectoryName = "images/";
+
     public void save(Project project, OutputStream outputStream) throws IOException {
         ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
 
-        {
-            ZipEntry zipEntry = new ZipEntry("thumbnail.png");
-            zipOutputStream.putNextEntry(zipEntry);
-            project.renderBitmap().compress(Bitmap.CompressFormat.PNG, 100, zipOutputStream);
-        }
-        {
-            ZipEntry zipEntry = new ZipEntry("project.json");
-            zipOutputStream.putNextEntry(zipEntry);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-            zipOutputStream.write(objectMapper.writeValueAsBytes(project));
-        }
+        // put thumbnail
+        putFile(zipOutputStream, thumbnailFileName,
+                tmpStream -> project.renderBitmap().compress(Bitmap.CompressFormat.PNG, 100, tmpStream));
+
+        // put project data
+        putFile(zipOutputStream, projectFileName,
+                tmpStream -> {
+                    String json = objectMapper.writeValueAsString(project);
+                    tmpStream.write(json.getBytes(charset));
+                });
+
+        // put palette
+        putFile(zipOutputStream, paletteFileName,
+                tmpStream -> {
+                    String json = objectMapper.writeValueAsString(project.getPalette());
+                    tmpStream.write(json.getBytes(charset));
+                });
+
+        // put layer bitmaps
         for (Layer layer : project.layers()) {
-            ZipEntry zipEntry = new ZipEntry("images/" + layer.getId() + Extension.PNG);
-            zipOutputStream.putNextEntry(zipEntry);
-            layer.getDisplay().compress(Bitmap.CompressFormat.PNG, 100, zipOutputStream);
-
-            if (!layer.isIndexedColor()) {
-                continue;
-            }
-            ZipEntry zipEntry_indexed = new ZipEntry("images-i/" + layer.getId() + Extension.PNG);
-            zipOutputStream.putNextEntry(zipEntry_indexed);
-            layer.getIndexed().getBitmap().compress(Bitmap.CompressFormat.PNG, 100, zipOutputStream);
+            putFile(zipOutputStream,
+                    imagesDirectoryName + layer.getId() + Extension.PNG,
+                    tmpStream -> {
+                        Bitmap bitmap = project.isIndexedColor()
+                                ? layer.getIndexed().getBitmap()
+                                : layer.getDisplay();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, tmpStream);
+                    });
         }
 
         zipOutputStream.close();
+    }
+
+    private void putFile(ZipOutputStream zipOutputStream, String fileName, Consumer consumer) throws IOException {
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        zipOutputStream.putNextEntry(zipEntry);
+        consumer.accept(zipOutputStream);
+    }
+
+    private interface Consumer {
+        void accept(ZipOutputStream zipOutputStream) throws IOException;
     }
 }

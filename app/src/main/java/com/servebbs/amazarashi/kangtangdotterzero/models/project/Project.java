@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.servebbs.amazarashi.kangtangdotterzero.models.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.models.histories.HistoryList;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Project {
     @JsonIgnore
@@ -32,8 +34,11 @@ public class Project {
     @Getter
     private final ArrayList<Frame> frames;
     @Getter
-    private int backGroundColor;
+    @Setter
+    private DotColorValue backGroundColor;
+
     @Getter
+    @JsonIgnore
     private Palette palette;
 
     @JsonIgnore
@@ -63,7 +68,7 @@ public class Project {
         frames = new ArrayList<>();
         addFrame();
         frameIndex = 0;
-        backGroundColor = 0xffffffff;
+        backGroundColor = new DotColorValue(0xffffffff);
         palette = Palette.createDefault();
 
         destination = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -88,10 +93,12 @@ public class Project {
     }
 
     @JsonIgnore
-    public Layer getLayer() { return getFrame().getLayer(); }
+    public Layer getLayer() {
+        return getFrame().getLayer();
+    }
 
     public Bitmap renderBitmap() {
-        canvas.drawColor(backGroundColor);
+        canvas.drawColor(backGroundColor.getValue());
         getFrame().render(canvas);
         return destination;
     }
@@ -142,20 +149,23 @@ public class Project {
         return layerMap.get(id);
     }
 
-    public Collection<Layer> layers() { return layerMap.values(); }
+    public Collection<Layer> layers() {
+        return layerMap.values();
+    }
 
     @JsonIgnore
     public DotColor getColor() {
-        return palette.getColor();
+        int intValue = palette.getColor().getValue();
+        return isIndexedColor
+                ? DotColor.create(intValue, palette.getIndex())
+                : DotColor.fromColorValue(intValue);
     }
 
     @JsonIgnore
     public DotColor getClearColor() {
-        if (isIndexedColor) {
-            return palette.getColor(0);
-        } else {
-            return DotColor.fromColorValue(0x0);
-        }
+        return isIndexedColor
+                ? DotColor.create(palette.getColor(0).getValue(), 0)
+                : DotColor.fromColorValue(0x00);
     }
 
     @JsonIgnore
