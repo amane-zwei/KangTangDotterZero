@@ -1,19 +1,18 @@
 package com.servebbs.amazarashi.kangtangdotterzero;
 
 import android.annotation.SuppressLint;
-
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
-import com.servebbs.amazarashi.kangtangdotterzero.util.Navigation;
 import com.servebbs.amazarashi.kangtangdotterzero.util.ViewList;
 
 import lombok.Getter;
@@ -61,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
 //                transaction.commit();
 //            }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

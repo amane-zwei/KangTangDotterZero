@@ -23,6 +23,11 @@ public class KTDZApplication extends Application {
         globalContext = new GlobalContext();
     }
 
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+
     public static KTDZApplication get(Context context) {
         return ((KTDZApplication)context.getApplicationContext());
     }
