@@ -15,12 +15,17 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.util.ViewList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 
 public class MainActivity extends AppCompatActivity {
 
     @Getter
     ViewList toolViews = new ViewList();
+
+    List<OnPermissionResponse> onPermissionResponses = new ArrayList<>();
 
     @SuppressLint("ResourceType")
     @Override
@@ -75,5 +80,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return super.onKeyUp(keyCode, event);
+    }
+
+
+    public void addPermissionRequest(OnPermissionResponse onPermissionResponse) {
+        onPermissionResponses.add(onPermissionResponse);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        for (int index = onPermissionResponses.size() - 1; index >= 0; index--) {
+            OnPermissionResponse onPermissionResponse = onPermissionResponses.get(index);
+            if (onPermissionResponse.apply(requestCode, permissions, grantResults)) {
+                onPermissionResponses.remove(index);
+            }
+        }
+    }
+
+    public interface OnPermissionResponse {
+        boolean apply(int requestCode, String[] permissions, int[] grantResults);
     }
 }

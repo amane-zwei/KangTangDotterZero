@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.servebbs.amazarashi.kangtangdotterzero.MainActivity;
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DividerDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
@@ -32,7 +33,7 @@ import lombok.Getter;
 public class SaveProjectDialog extends KTDZDialogFragment {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
+//            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
@@ -49,6 +50,15 @@ public class SaveProjectDialog extends KTDZDialogFragment {
     public Dialog onCreateDialog(Bundle bundle) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ((MainActivity) getContext()).addPermissionRequest((int requestCode, String[] permissions, int[] grantResults) -> {
+                if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+                    if (grantResults.length < 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                        dismiss();
+                    }
+                    return true;
+                }
+                return false;
+            });
             ActivityCompat.requestPermissions(
                     (AppCompatActivity) getContext(),
                     PERMISSIONS_STORAGE,
@@ -70,6 +80,22 @@ public class SaveProjectDialog extends KTDZDialogFragment {
         }
 
         File file = ktdzFile.translateToFile();
+        if (file.exists()) {
+            new ConfirmDialog()
+                    .setMessage("the file is exist.")
+                    .setOnPositive(() -> {
+                        saveFile(ktdzFile, file);
+                        dismiss();
+                        return true;
+                    })
+                    .show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "action_confirm_overwrite");
+            return false;
+        } else {
+            return saveFile(ktdzFile, file);
+        }
+    }
+
+    private boolean saveFile(KTDZFile ktdzFile, File file) {
         try (OutputStream outputStream = new FileOutputStream(file)){
             ktdzFile.getExtension().getRepository().save(project, outputStream);
         } catch (IOException e) {
