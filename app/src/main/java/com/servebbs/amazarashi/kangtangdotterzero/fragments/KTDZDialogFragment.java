@@ -19,8 +19,11 @@ import com.servebbs.amazarashi.kangtangdotterzero.util.DisplayMetricsUtil;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotButton;
 
 public class KTDZDialogFragment extends DialogFragment {
+    public static final int BUTTON_CANCEL = 0;
+    public static final int BUTTON_POSITIVE = 1;
 
     private final OnButtonFunction[] onButtonFunctions = new OnButtonFunction[2];
+    private final DotButton[] buttons = new DotButton[2];
 
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
@@ -42,6 +45,10 @@ public class KTDZDialogFragment extends DialogFragment {
         onButtonFunctions[1] = onPositiveButton;
     }
 
+    public void setButtonEnabled(int buttonId, boolean enabled) {
+        buttons[buttonId].setEnabled(enabled);
+    }
+
     public View createButtonAreaView(Context context) {
         final int margin = DisplayMetricsUtil.calcPixel(context, 10);
 
@@ -52,7 +59,7 @@ public class KTDZDialogFragment extends DialogFragment {
         buttonAreaLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
         for (int index = 0; index < texts.length; index++) {
-            DotButton button = new DotButton(context);
+            DotButton button = buttons[index] = new DotButton(context);
             final OnButtonFunction onButtonFunction = onButtonFunctions[index];
             LinearLayout.LayoutParams layoutParams =
                     new LinearLayout.LayoutParams(
