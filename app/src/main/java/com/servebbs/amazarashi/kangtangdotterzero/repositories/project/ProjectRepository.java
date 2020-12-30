@@ -1,17 +1,25 @@
 package com.servebbs.amazarashi.kangtangdotterzero.repositories.project;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.ColorList;
 import com.servebbs.amazarashi.kangtangdotterzero.models.files.Extension;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Layer;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ProjectRepository extends FileRepository {
@@ -22,6 +30,7 @@ public class ProjectRepository extends FileRepository {
     private final String paletteFileName = "palette.json";
     private final String imagesDirectoryName = "images/";
 
+    @Override
     public void save(Project project, OutputStream outputStream) throws IOException {
         ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
 
@@ -61,13 +70,58 @@ public class ProjectRepository extends FileRepository {
         zipOutputStream.close();
     }
 
-    private void putFile(ZipOutputStream zipOutputStream, String fileName, Consumer consumer) throws IOException {
+    @Override
+    public Project load(InputStream inputStream) throws IOException {
+        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        objectMapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+
+        Project project = null;
+        Palette palette = null;
+        Map<String, Bitmap> bitmaps = new HashMap<>();
+
+        BitmapFactory.Options options = new  BitmapFactory.Options();
+        options.inMutable = true;
+
+        // get project data
+        ZipEntry zipEntry = null;
+        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+            String fileName = zipEntry.getName();
+
+            if (projectFileName.equals(fileName)) {
+                project = objectMapper.readValue(zipInputStream, Project.class);
+            } else if (paletteFileName.equals(fileName)) {
+                palette = new Palette(objectMapper.readValue(zipInputStream, ColorList.class));
+            } else if (fileName.startsWith(imagesDirectoryName) && !zipEntry.isDirectory()) {
+                bitmaps.put(extractFileName(fileName), BitmapFactory.decodeStream(zipInputStream, null, options));
+            }
+            zipInputStream.closeEntry();
+        }
+
+        if (project == null) {
+            throw new IOException("project not found.");
+        }
+        if (palette == null) {
+            palette = Palette.createDefault();
+        }
+
+        zipInputStream.close();
+        return project.restore(palette, bitmaps);
+    }
+
+    private void putFile(ZipOutputStream zipOutputStream, String fileName, OutputConsumer consumer) throws IOException {
         ZipEntry zipEntry = new ZipEntry(fileName);
         zipOutputStream.putNextEntry(zipEntry);
         consumer.accept(zipOutputStream);
     }
 
-    private interface Consumer {
+    private String extractFileName(String src) {
+        return src.substring(src.lastIndexOf('/') + 1, src.lastIndexOf('.'));
+    }
+
+    private interface OutputConsumer {
         void accept(ZipOutputStream zipOutputStream) throws IOException;
     }
 }

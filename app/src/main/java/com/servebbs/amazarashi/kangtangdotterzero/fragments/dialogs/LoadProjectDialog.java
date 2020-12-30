@@ -23,8 +23,14 @@ import androidx.core.app.ActivityCompat;
 import com.servebbs.amazarashi.kangtangdotterzero.MainActivity;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.models.files.Extension;
+import com.servebbs.amazarashi.kangtangdotterzero.models.files.KTDZFile;
+import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +47,6 @@ public class LoadProjectDialog extends KTDZDialogFragment {
 
     public LoadProjectDialog() {
         super();
-//        setOnPositiveButton(this::saveFile);
     }
 
     @Override
@@ -68,9 +73,33 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         return dialog;
     }
 
+    public LoadProjectDialog setOnPositive(LoadProjectDialog.OnPositiveButtonListener onPositive) {
+        setOnPositiveButton(() -> {
+            Project project = loadFile();
+            if (project == null) {
+                return false;
+            }
+            return onPositive.onPositiveButton(project);
+        });
+        return this;
+    }
+
     @Override
     public View createContentView(Context context) {
         return this.contentView = new ContentView(context).findFiles();
+    }
+
+    private Project loadFile() {
+        KTDZFile ktdzFile = contentView.getFile();
+        return loadFile(ktdzFile, ktdzFile.translateToFile());
+    }
+
+    private Project loadFile(KTDZFile ktdzFile, File file) {
+        try (InputStream inputStream = new FileInputStream(file)) {
+            return ktdzFile.getExtension().getRepository().load(inputStream);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public static List<String> findFileList(File path) {
@@ -81,6 +110,11 @@ public class LoadProjectDialog extends KTDZDialogFragment {
 
     public void onSelected() {
         setButtonEnabled(KTDZDialogFragment.BUTTON_POSITIVE, true);
+    }
+
+    @FunctionalInterface
+    public interface OnPositiveButtonListener {
+        boolean onPositiveButton(Project project);
     }
 
     public class ContentView extends LinearLayout {
@@ -127,6 +161,10 @@ public class LoadProjectDialog extends KTDZDialogFragment {
             fileListView.setAdapter(new FileViewAdapter(findFileList(pathView.getPath())));
             return this;
         }
+
+        public KTDZFile getFile() {
+            return fileListView.getFile(pathView.getPath().getPath());
+        }
     }
 
     private static class PathView extends LinearLayout {
@@ -154,6 +192,12 @@ public class LoadProjectDialog extends KTDZDialogFragment {
             super(context);
 
             setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        }
+
+        public KTDZFile getFile(String directoryPath) {
+            String fileName = ((String) getAdapter().getItem(getCheckedItemPosition()));
+            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+            return new KTDZFile(directoryPath, fileName, Extension.KTDZ_PROJECT);
         }
     }
 
@@ -198,7 +242,7 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         }
     }
 
-    private static final int[] CHECKED_STATE_SET = { android.R.attr.state_checked };
+    private static final int[] CHECKED_STATE_SET = {android.R.attr.state_checked};
 
     private class ListItemView extends LinearLayout implements Checkable {
         @Getter
@@ -215,8 +259,8 @@ public class LoadProjectDialog extends KTDZDialogFragment {
             addView(this.textView = new TextView(context));
 
             StateListDrawable stateListDrawable = new StateListDrawable();
-            stateListDrawable.addState( new int[]{android.R.attr.state_checked}, new ColorDrawable(0xffffa0a0));
-            stateListDrawable.addState( new int[]{-android.R.attr.state_checked}, new ColorDrawable(0x00000000));
+            stateListDrawable.addState(new int[]{android.R.attr.state_checked}, new ColorDrawable(0xffffa0a0));
+            stateListDrawable.addState(new int[]{-android.R.attr.state_checked}, new ColorDrawable(0x00000000));
             setBackground(stateListDrawable);
         }
 

@@ -1,8 +1,12 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models.bitmap;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
 
@@ -12,13 +16,16 @@ import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonSerialize(using = ColorList.ColorListSerializer.class)
+@JsonDeserialize(using = ColorList.ColorListDeserializer.class)
 public class ColorList {
     public static final int colorMax = 256;
 
-    private final List<DotColorValue> array;
+    private List<DotColorValue> array;
 
     public ColorList(int[] colors) {
         array = new ArrayList<>();
@@ -107,6 +114,10 @@ public class ColorList {
         return result;
     }
 
+    protected void copy(ColorList src) {
+        this.array = src.array;
+    }
+
     public static ColorList empty() {
         return new ColorList(new ArrayList<>());
     }
@@ -128,6 +139,32 @@ public class ColorList {
                 throws IOException {
 
             jsonGenerator.writeArray(value.toStringArray(), 0, value.size());
+        }
+    }
+
+    public static class ColorListDeserializer extends StdDeserializer<ColorList> {
+        public ColorListDeserializer() {
+            this(null);
+        }
+
+        public ColorListDeserializer(Class<DotColorValue> dotColor) {
+            super(dotColor);
+        }
+
+        @Override
+        public ColorList deserialize(
+                JsonParser jsonParser, DeserializationContext deserializationContext)
+                throws IOException {
+
+            ColorList colorList = new ColorList();
+            colorList.array = new ArrayList<>();
+
+            String[] values = jsonParser.readValueAs(String[].class);
+
+            for (int index = 0; index < values.length; index++) {
+                colorList.array.add(DotColorValue.fromString(values[index]));
+            }
+            return colorList;
         }
     }
 }

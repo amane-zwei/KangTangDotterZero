@@ -26,6 +26,11 @@ public class Palette extends ColorList {
         return new Palette(new int[0]);
     }
 
+    public Palette(ColorList src) {
+        copy(src);
+        index = 0;
+    }
+
     public Palette(int[] colors) {
         super(colors);
         index = 0;
@@ -55,5 +60,6 @@ public class Palette extends ColorList {
 
     @Getter
     @Setter
+    @JsonIgnore
     private int index;
 }

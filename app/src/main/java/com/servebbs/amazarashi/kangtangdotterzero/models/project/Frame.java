@@ -20,12 +20,22 @@ public class Frame {
     @Getter
     private final ArrayList<Layer> layers = new ArrayList<>();
     @JsonIgnore
-    private final Project project;
+    private Project project;
+
+    public Frame() {
+        this.project = null;
+        index = -1;
+    }
 
     public Frame(Project project) {
         this.project = project;
 
         addLayer();
+        index = 0;
+    }
+
+    public void restore(Project project) {
+        this.project = project;
         index = 0;
     }
 

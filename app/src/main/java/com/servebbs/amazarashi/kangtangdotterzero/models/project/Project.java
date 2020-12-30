@@ -11,6 +11,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.histories.HistoryList;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColor;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,9 +31,11 @@ public class Project {
     @JsonIgnore
     private int frameIndex;
     @Getter
+    @Setter
     private boolean isIndexedColor;
     @Getter
-    private final ArrayList<Frame> frames;
+    @Setter
+    private ArrayList<Frame> frames;
     @Getter
     @Setter
     private DotColorValue backGroundColor;
@@ -44,35 +47,63 @@ public class Project {
     @JsonIgnore
     private int paletteOnHistoryIndex;
     @JsonIgnore
-    private final HistoryList history;
+    private HistoryList history;
 
     @JsonIgnore
-    private final Map<Integer, Layer> layerMap;
+    private Map<Integer, Layer> layerMap;
 
     @JsonIgnore
     private Bitmap destination;
     @JsonIgnore
     private Canvas canvas;
 
-    public Project() {
-        id = 0;
-        width = 8;
-        height = 8;
-        isIndexedColor = false;
+    public static Project create() {
+        Project project = new Project();
+        project.width = 8;
+        project.height = 8;
+        project.isIndexedColor = false;
+        project.backGroundColor = new DotColorValue(0xffffffff);
 
+        project.frames = new ArrayList<>();
+        project.addFrame();
+        project.frameIndex = 0;
+
+        project.palette = Palette.createDefault();
+
+        project.createDestination();
+
+        return project;
+    }
+
+    private Project() {
+        id = 0;
         paletteOnHistoryIndex = 0;
+
+        history = new HistoryList();
+        layerMap = new HashMap<>();
+    }
+
+    public Project restore(Palette palette, Map<String, Bitmap> bitmaps) throws IOException{
+
         history = new HistoryList();
 
-        layerMap = new HashMap<>();
+        this.palette = palette;
 
-        frames = new ArrayList<>();
-        addFrame();
-        frameIndex = 0;
-        backGroundColor = new DotColorValue(0xffffffff);
-        palette = Palette.createDefault();
+        for (Frame frame : frames) {
+            frame.restore(this);
 
-        destination = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(destination);
+            for (Layer layer : frame.getLayers()) {
+                Bitmap bitmap = bitmaps.get(Integer.toString(layer.getId()));
+                if (bitmap == null) {
+                    throw new IOException("image not found: " + layer.getId());
+                }
+                layer.restore(palette, bitmap, isIndexedColor);
+                layerMap.put(layer.getId(), layer);
+            }
+        }
+
+        createDestination();
+        return this;
     }
 
     public int generateId() {
@@ -178,5 +209,10 @@ public class Project {
 
     public static Project get(Context context) {
         return ProjectContext.get(context).getProject();
+    }
+
+    private void createDestination() {
+        destination = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(destination);
     }
 }

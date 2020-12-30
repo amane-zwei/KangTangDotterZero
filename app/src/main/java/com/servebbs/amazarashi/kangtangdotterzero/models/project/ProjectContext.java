@@ -1,20 +1,19 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models.project;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 
 import com.servebbs.amazarashi.kangtangdotterzero.KTDZApplication;
-import com.servebbs.amazarashi.kangtangdotterzero.models.GlobalContext;
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenNormalizer;
 
 import lombok.Getter;
 
 public class ProjectContext {
 
     @Getter
-    private final Project project = new Project();
+    private Project project = Project.create();
+
+    public void applyProject(Project project) {
+        this.project = project;
+    }
 
     public Layer getLayer() {
         return project.getFrame().getLayer();

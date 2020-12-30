@@ -1,19 +1,23 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models.project;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.ColorList;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class Layer extends LayerData {
     private final int intervalOfHistory = 4;
 
     @Getter
-    private final int id;
+    private int id;
 
     @JsonIgnore
     @Getter
@@ -28,7 +32,7 @@ public class Layer extends LayerData {
 
     @JsonIgnore
     @Getter
-    private final LayerHistory history;
+    private LayerHistory history;
 
     static Paint copyPaint;
 
@@ -44,6 +48,16 @@ public class Layer extends LayerData {
         resize(width, height);
         written = 0;
         history = new LayerHistory(this);
+    }
+
+    public Layer restore(ColorList colorList, Bitmap src, boolean isIndexedColor) {
+        super.restore(colorList, src, isIndexedColor);
+        displayCanvas = new Canvas(display);
+        if (isIndexedColor()) {
+            indexedCanvas = new Canvas(indexed.getBitmap());
+        }
+        history = new LayerHistory(this);
+        return this;
     }
 
     @Override

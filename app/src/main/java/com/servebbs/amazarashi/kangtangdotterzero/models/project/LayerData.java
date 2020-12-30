@@ -45,6 +45,18 @@ public class LayerData {
         indexed = IndexedBitmap.empty();
     }
 
+    public LayerData restore(ColorList colorList, Bitmap src, boolean isIndexedColor) {
+      if (isIndexedColor) {
+          display = Bitmap.createBitmap(src.getWidth(), src.getHeight(), bitmapConfig);
+          indexed = IndexedBitmap.create(src, colorList);
+      } else {
+          display = src;
+          indexed = null;
+      }
+      historyIndex = 0;
+      return this;
+    }
+
     public LayerData restore(LayerData src) {
         display = src.display.copy(bitmapConfig, true);
         if (src.indexed == null) {

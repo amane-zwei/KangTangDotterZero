@@ -1,8 +1,12 @@
 package com.servebbs.amazarashi.kangtangdotterzero.models.primitive;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
@@ -12,6 +16,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @JsonSerialize(using = DotColorValue.DotColorValueSerializer.class)
+@JsonDeserialize(using = DotColorValue.DotColorValueDeserializer.class)
 public class DotColorValue {
     @Getter
     private final int value;
@@ -37,6 +42,10 @@ public class DotColorValue {
         return String.format("#%08x", value);
     }
 
+    public static DotColorValue fromString(String src) {
+        return new DotColorValue((int) Long.parseLong(src.replace("#", ""), 16));
+    }
+
     public static class DotColorValueSerializer extends StdSerializer<DotColorValue> {
         public DotColorValueSerializer() {
             this(null);
@@ -54,6 +63,24 @@ public class DotColorValue {
                 throws IOException {
 
             jsonGenerator.writeString(value.toString());
+        }
+    }
+
+    public static class DotColorValueDeserializer extends StdDeserializer<DotColorValue> {
+        public DotColorValueDeserializer() {
+            this(null);
+        }
+
+        public DotColorValueDeserializer(Class<DotColorValue> dotColor) {
+            super(dotColor);
+        }
+
+        @Override
+        public DotColorValue deserialize(
+                JsonParser jsonParser, DeserializationContext deserializationContext)
+                throws IOException {
+
+            return fromString(jsonParser.getText());
         }
     }
 }

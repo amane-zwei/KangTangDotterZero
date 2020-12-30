@@ -49,6 +49,11 @@ public class MainView extends FrameLayout {
         }
     }
 
+    public void applyProject(Project project) {
+        currentProjectView.attachProject(project);
+        invalidateProjectViews();
+    }
+
     private ProjectView addProjectView(Context context) {
         ProjectView projectView = new ProjectView(context);
         projectView.setLayoutParams(new FrameLayout.LayoutParams(
