@@ -23,4 +23,13 @@ public enum Extension {
     public String toString() {
         return extension;
     }
+
+    public static Extension fromExtension(String extension) {
+        for (Extension element : values()) {
+            if (element.extension.equals(extension)) {
+                return element;
+            }
+        }
+        return null;
+    }
 }

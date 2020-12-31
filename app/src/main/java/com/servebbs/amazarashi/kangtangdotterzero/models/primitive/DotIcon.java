@@ -41,6 +41,8 @@ public class DotIcon {
     public static final DotIconData newPaper = new DotIconData(80, 64, 16, 16);
     public static final DotIconData save = new DotIconData(96, 64, 16, 16);
     public static final DotIconData load = new DotIconData(112, 64, 16, 16);
+    public static final DotIconData picture = new DotIconData(128, 64, 16, 16);
+    public static final DotIconData omochi = new DotIconData(144, 64, 16, 16);
 
     @Getter
     @AllArgsConstructor

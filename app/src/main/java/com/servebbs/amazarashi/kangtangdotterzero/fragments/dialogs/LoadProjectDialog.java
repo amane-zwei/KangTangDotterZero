@@ -4,15 +4,18 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Checkable;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,17 +28,19 @@ import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.files.Extension;
 import com.servebbs.amazarashi.kangtangdotterzero.models.files.KTDZFile;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.SimpleIconView;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class LoadProjectDialog extends KTDZDialogFragment {
     private static final int REQUEST_EXTERNAL_STORAGE = 2;
@@ -102,9 +107,19 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         }
     }
 
-    public static List<String> findFileList(File path) {
-        List<String> result = new ArrayList<>();
-        Collections.addAll(result, path.list());
+    public static List<FileData> findFileList(File path) {
+        List<FileData> result = new ArrayList<>();
+        String directoryPath = path.getPath();
+        for (String fileName : path.list()) {
+            if (new File(path, fileName).isDirectory()) {
+                result.add(FileData.directory(directoryPath, fileName));
+            } else {
+                FileData data = FileData.file(directoryPath, fileName);
+                if (data.getExtension() != null) {
+                    result.add(data);
+                }
+            }
+        }
         return result;
     }
 
@@ -203,9 +218,9 @@ public class LoadProjectDialog extends KTDZDialogFragment {
 
     private class FileViewAdapter extends BaseAdapter {
 
-        private final List<String> fileList;
+        private final List<FileData> fileList;
 
-        private FileViewAdapter(List<String> fileList) {
+        private FileViewAdapter(List<FileData> fileList) {
             super();
             this.fileList = fileList;
         }
@@ -221,7 +236,7 @@ public class LoadProjectDialog extends KTDZDialogFragment {
                 itemView = (ListItemView) convertView;
             }
 
-            itemView.getTextView().setText(fileList.get(position));
+            itemView.attacheFileData(fileList.get(position));
 
             return itemView;
         }
@@ -245,8 +260,13 @@ public class LoadProjectDialog extends KTDZDialogFragment {
     private static final int[] CHECKED_STATE_SET = {android.R.attr.state_checked};
 
     private class ListItemView extends LinearLayout implements Checkable {
+
         @Getter
+        private FileData fileData;
+
+        private final SimpleIconView iconView;
         private final TextView textView;
+        private final ImageView imageView;
 
         @Getter
         private boolean checked;
@@ -254,14 +274,54 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         public ListItemView(Context context) {
             super(context);
 
+            final int size = ScreenSize.getIconSize() / 2;
+            final int margin = ScreenSize.getDotSize() * 2;
+
             setOrientation(LinearLayout.HORIZONTAL);
 
-            addView(this.textView = new TextView(context));
+            {
+                SimpleIconView iconView = this.iconView = new SimpleIconView(getContext());
+                iconView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
+                addView(iconView);
+            }
+            {
+                TextView textView = this.textView = new TextView(getContext());
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        1
+                );
+                layoutParams.leftMargin = margin;
+                layoutParams.gravity = Gravity.CENTER_VERTICAL;
+                textView.setLayoutParams(layoutParams);
+                addView(textView);
+            }
+            {
+                ImageView imageView = this.imageView = new ImageView(getContext());
+                addView(imageView);
+            }
 
             StateListDrawable stateListDrawable = new StateListDrawable();
             stateListDrawable.addState(new int[]{android.R.attr.state_checked}, new ColorDrawable(0xffffa0a0));
             stateListDrawable.addState(new int[]{-android.R.attr.state_checked}, new ColorDrawable(0x00000000));
             setBackground(stateListDrawable);
+        }
+
+        public ListItemView attacheFileData(FileData fileData) {
+            this.fileData = fileData;
+
+            if (fileData.isDirectory) {
+                iconView.setRect(DotIcon.load.createRect());
+                textView.setText(fileData.getName());
+            } else {
+                if (fileData.getExtension() == Extension.KTDZ_PROJECT) {
+                    iconView.setRect(DotIcon.omochi.createRect());
+                } else {
+                    iconView.setRect(DotIcon.picture.createRect());
+                }
+                textView.setText(fileData.toFileName());
+            }
+            return this;
         }
 
         @Override
@@ -288,5 +348,32 @@ public class LoadProjectDialog extends KTDZDialogFragment {
             }
             return drawableState;
         }
+    }
+
+    private static class FileData extends KTDZFile {
+        private FileData(String directoryPath, String fileName) {
+            super(directoryPath, fileName);
+        }
+        private FileData(String directoryPath, String fileName, Extension extension) {
+            super(directoryPath, fileName, extension);
+        }
+        public static FileData file(String directoryPath, String fileName) {
+            FileData result = new FileData(directoryPath, fileName);
+            result.isDirectory = false;
+            result.thumbnail = null;
+            return result;
+        }
+        public static FileData directory(String directoryPath, String fileName) {
+            FileData result = new FileData(directoryPath, fileName, null);
+            result.isDirectory = true;
+            result.thumbnail = null;
+            return result;
+        }
+
+        @Getter
+        private boolean isDirectory;
+        @Getter
+        @Setter
+        private Bitmap thumbnail;
     }
 }
