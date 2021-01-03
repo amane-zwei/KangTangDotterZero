@@ -111,6 +111,24 @@ public class ProjectRepository extends FileRepository {
         return project.restore(palette, bitmaps);
     }
 
+    @Override
+    public Bitmap loadThumbnail(InputStream inputStream) throws IOException {
+        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+        ZipEntry zipEntry;
+        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+            String fileName = zipEntry.getName();
+
+            if (thumbnailFileName.equals(fileName)) {
+                Bitmap result = BitmapFactory.decodeStream(zipInputStream);
+                zipInputStream.close();
+                return result;
+            }
+            zipInputStream.closeEntry();
+        }
+        zipInputStream.close();
+        return null;
+    }
+
     private void putFile(ZipOutputStream zipOutputStream, String fileName, OutputConsumer consumer) throws IOException {
         ZipEntry zipEntry = new ZipEntry(fileName);
         zipOutputStream.putNextEntry(zipEntry);

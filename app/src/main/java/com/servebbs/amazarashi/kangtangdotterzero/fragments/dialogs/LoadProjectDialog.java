@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -236,7 +237,15 @@ public class LoadProjectDialog extends KTDZDialogFragment {
                 itemView = (ListItemView) convertView;
             }
 
-            itemView.attacheFileData(fileList.get(position));
+            FileData fileData = fileList.get(position);
+            itemView.attacheFileData(fileData);
+            if (!fileData.isRequestLoad()) {
+                fileData.loadThumbnail((Bitmap bitmap) -> {
+                    ListItemView tmpItemView = ((ListItemView)parent.getChildAt(position));
+                    tmpItemView.attacheThumbnail(bitmap);
+                    tmpItemView.invalidate();
+                });
+            }
 
             return itemView;
         }
@@ -298,6 +307,7 @@ public class LoadProjectDialog extends KTDZDialogFragment {
             }
             {
                 ImageView imageView = this.imageView = new ImageView(getContext());
+                imageView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
                 addView(imageView);
             }
 
@@ -320,7 +330,13 @@ public class LoadProjectDialog extends KTDZDialogFragment {
                     iconView.setRect(DotIcon.picture.createRect());
                 }
                 textView.setText(fileData.toFileName());
+                imageView.setImageBitmap(fileData.thumbnail);
             }
+            return this;
+        }
+
+        public ListItemView attacheThumbnail(Bitmap bitmap) {
+            imageView.setImageBitmap(bitmap);
             return this;
         }
 
@@ -350,6 +366,33 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         }
     }
 
+    private static class LoadBitmapTask extends AsyncTask<KTDZFile, Void, Bitmap> {
+        private OnLoadedBitmapListener onLoaded;
+
+        public LoadBitmapTask setOnLoaded(OnLoadedBitmapListener onLoaded) {
+            this.onLoaded = onLoaded;
+            return this;
+        }
+
+        @Override
+        protected Bitmap doInBackground(KTDZFile... files) {
+            KTDZFile file = files[0];
+            try (InputStream inputStream = new FileInputStream(file.translateToFile())) {
+                return file.getExtension().getRepository().loadThumbnail(inputStream);
+            } catch (IOException e) {
+                return null;
+            }
+        }
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            onLoaded.onLoadedBitmap(result);
+        }
+    }
+
+    private interface OnLoadedBitmapListener {
+        void onLoadedBitmap(Bitmap bitmap);
+    }
+
     private static class FileData extends KTDZFile {
         private FileData(String directoryPath, String fileName) {
             super(directoryPath, fileName);
@@ -370,10 +413,22 @@ public class LoadProjectDialog extends KTDZDialogFragment {
             return result;
         }
 
+        public void loadThumbnail(OnLoadedBitmapListener onLoaded) {
+            if (isDirectory || requestLoad) {
+                return;
+            }
+            new LoadBitmapTask()
+                    .setOnLoaded(onLoaded)
+                    .execute(this);
+            requestLoad = true;
+        }
+
         @Getter
         private boolean isDirectory;
         @Getter
         @Setter
         private Bitmap thumbnail;
+        @Getter
+        private boolean requestLoad = false;
     }
 }

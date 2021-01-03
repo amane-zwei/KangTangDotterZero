@@ -22,4 +22,9 @@ public class PngRepository extends FileRepository{
     public Project load(InputStream inputStream) throws IOException {
         return null;
     }
+
+    @Override
+    public Bitmap loadThumbnail(InputStream inputStream) throws IOException {
+        return null;
+    }
 }
