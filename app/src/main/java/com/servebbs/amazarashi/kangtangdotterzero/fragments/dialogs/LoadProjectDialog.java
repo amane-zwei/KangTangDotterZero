@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Checkable;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,9 +28,8 @@ import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.files.Extension;
 import com.servebbs.amazarashi.kangtangdotterzero.models.files.KTDZFile;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
-import com.servebbs.amazarashi.kangtangdotterzero.views.modules.SimpleIconView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ThumbnailView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -179,7 +177,7 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         }
 
         public KTDZFile getFile() {
-            return fileListView.getFile(pathView.getPath().getPath());
+            return fileListView.getFile();
         }
     }
 
@@ -210,10 +208,8 @@ public class LoadProjectDialog extends KTDZDialogFragment {
             setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
 
-        public KTDZFile getFile(String directoryPath) {
-            String fileName = ((String) getAdapter().getItem(getCheckedItemPosition()));
-            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-            return new KTDZFile(directoryPath, fileName, Extension.KTDZ_PROJECT);
+        public KTDZFile getFile() {
+            return ((FileData) getAdapter().getItem(getCheckedItemPosition()));
         }
     }
 
@@ -231,8 +227,9 @@ public class LoadProjectDialog extends KTDZDialogFragment {
 
             ListItemView itemView;
             if (convertView == null) {
-//                final int iconSize = ScreenSize.getIconSize();
+                final int margin = ScreenSize.getMargin();
                 itemView = new ListItemView(getContext());
+                itemView.setPadding(margin, margin, margin, margin);
             } else {
                 itemView = (ListItemView) convertView;
             }
@@ -243,8 +240,9 @@ public class LoadProjectDialog extends KTDZDialogFragment {
                 fileData.loadThumbnail((Bitmap bitmap) -> {
                     ListItemView tmpItemView = ((ListItemView)parent.getChildAt(position));
                     tmpItemView.attacheThumbnail(bitmap);
-                    tmpItemView.invalidate();
                 });
+            } else {
+                itemView.attacheThumbnail(fileData.thumbnail);
             }
 
             return itemView;
@@ -273,9 +271,8 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         @Getter
         private FileData fileData;
 
-        private final SimpleIconView iconView;
+        private final ThumbnailView thumbnail;
         private final TextView textView;
-        private final ImageView imageView;
 
         @Getter
         private boolean checked;
@@ -283,15 +280,15 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         public ListItemView(Context context) {
             super(context);
 
-            final int size = ScreenSize.getIconSize() / 2;
             final int margin = ScreenSize.getDotSize() * 2;
+            final int size = ScreenSize.getIconSize() / 2 + 2;
 
             setOrientation(LinearLayout.HORIZONTAL);
 
             {
-                SimpleIconView iconView = this.iconView = new SimpleIconView(getContext());
-                iconView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
-                addView(iconView);
+                ThumbnailView thumbnailView = this.thumbnail = new ThumbnailView(context).setMargin(2);
+                thumbnailView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
+                addView(thumbnailView);
             }
             {
                 TextView textView = this.textView = new TextView(getContext());
@@ -305,11 +302,6 @@ public class LoadProjectDialog extends KTDZDialogFragment {
                 textView.setLayoutParams(layoutParams);
                 addView(textView);
             }
-            {
-                ImageView imageView = this.imageView = new ImageView(getContext());
-                imageView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
-                addView(imageView);
-            }
 
             StateListDrawable stateListDrawable = new StateListDrawable();
             stateListDrawable.addState(new int[]{android.R.attr.state_checked}, new ColorDrawable(0xffffa0a0));
@@ -319,24 +311,19 @@ public class LoadProjectDialog extends KTDZDialogFragment {
 
         public ListItemView attacheFileData(FileData fileData) {
             this.fileData = fileData;
+            this.thumbnail.setExtension(fileData.isDirectory, fileData.getExtension());
 
             if (fileData.isDirectory) {
-                iconView.setRect(DotIcon.load.createRect());
                 textView.setText(fileData.getName());
             } else {
-                if (fileData.getExtension() == Extension.KTDZ_PROJECT) {
-                    iconView.setRect(DotIcon.omochi.createRect());
-                } else {
-                    iconView.setRect(DotIcon.picture.createRect());
-                }
                 textView.setText(fileData.toFileName());
-                imageView.setImageBitmap(fileData.thumbnail);
             }
             return this;
         }
 
         public ListItemView attacheThumbnail(Bitmap bitmap) {
-            imageView.setImageBitmap(bitmap);
+            thumbnail.setBitmap(bitmap);
+            thumbnail.invalidate();
             return this;
         }
 
@@ -418,7 +405,10 @@ public class LoadProjectDialog extends KTDZDialogFragment {
                 return;
             }
             new LoadBitmapTask()
-                    .setOnLoaded(onLoaded)
+                    .setOnLoaded((Bitmap bitmap) -> {
+                        this.thumbnail = bitmap;
+                        onLoaded.onLoadedBitmap(bitmap);
+                    })
                     .execute(this);
             requestLoad = true;
         }
