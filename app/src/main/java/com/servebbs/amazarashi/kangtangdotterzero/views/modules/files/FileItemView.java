@@ -15,7 +15,6 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.files.FileData;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ThumbnailView;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class FileItemView extends LinearLayout implements Checkable {
 
@@ -30,9 +29,6 @@ public class FileItemView extends LinearLayout implements Checkable {
     @Getter
     private boolean checked;
 
-    @Setter
-    private OnSelectedListener onSelectedListener;
-
     public FileItemView(Context context) {
         super(context);
 
@@ -42,7 +38,7 @@ public class FileItemView extends LinearLayout implements Checkable {
         setOrientation(LinearLayout.HORIZONTAL);
 
         {
-            ThumbnailView thumbnailView = this.thumbnail = new ThumbnailView(context).setMargin(2);
+            ThumbnailView thumbnailView = this.thumbnail = new ThumbnailView(context).setMargin(1);
             thumbnailView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
             addView(thumbnailView);
         }
@@ -88,9 +84,6 @@ public class FileItemView extends LinearLayout implements Checkable {
         if (this.checked != checked) {
             this.checked = checked;
             refreshDrawableState();
-            if (checked && onSelectedListener != null) {
-                onSelectedListener.onSelected(fileData);
-            }
         }
     }
 
@@ -106,9 +99,5 @@ public class FileItemView extends LinearLayout implements Checkable {
             mergeDrawableStates(drawableState, CHECKED_STATE_SET);
         }
         return drawableState;
-    }
-
-    public interface OnSelectedListener {
-        void onSelected(FileData fileData);
     }
 }

@@ -98,19 +98,27 @@ public class LoadProjectDialog extends KTDZDialogFragment {
     }
 
     public static List<FileData> findFileList(File path) {
-        List<FileData> result = new ArrayList<>();
+        String[] fileNames = path.list();
+        if (fileNames == null) {
+            return new ArrayList<>();
+        }
+
+        List<FileData> directories = new ArrayList<>();
+        List<FileData> files = new ArrayList<>();
         String directoryPath = path.getPath();
-        for (String fileName : path.list()) {
+
+        for (String fileName : fileNames) {
             if (new File(path, fileName).isDirectory()) {
-                result.add(FileData.directory(directoryPath, fileName));
+                directories.add(FileData.directory(directoryPath, fileName));
             } else {
                 FileData data = FileData.file(directoryPath, fileName);
                 if (data.getExtension() != null) {
-                    result.add(data);
+                    files.add(data);
                 }
             }
         }
-        return result;
+        directories.addAll(files);
+        return directories;
     }
 
     @FunctionalInterface
@@ -159,9 +167,13 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         }
 
         public ContentView findFiles() {
+            return findFiles(pathView.getPath());
+        }
+
+        public ContentView findFiles(File path) {
             fileListView.setAdapter(
-                    new FileListView.FileViewAdapter(findFileList(pathView.getPath()))
-                            .setOnSelectedListener(this::onFileSelected));
+                    new FileListView.FileViewAdapter(findFileList(path))
+                            .setOnFileClickListener(this::onFileClick));
             return this;
         }
 
@@ -169,8 +181,13 @@ public class LoadProjectDialog extends KTDZDialogFragment {
             return fileListView.getFile();
         }
 
-        public void onFileSelected(FileData fileData) {
-            setButtonEnabled(KTDZDialogFragment.BUTTON_POSITIVE, true);
+        public void onFileClick(int position, FileData fileData) {
+            if (fileData.isDirectory()) {
+                findFiles(fileData.translateToFile());
+            } else {
+                fileListView.setItemChecked(position, true);
+                setButtonEnabled(KTDZDialogFragment.BUTTON_POSITIVE, true);
+            }
         }
     }
 

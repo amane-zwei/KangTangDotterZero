@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.models.files.FileData;
@@ -19,15 +20,23 @@ public class FileListView extends ListView {
         super(context);
 
         setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        TextView empty = new TextView(context);
+        empty.setText("no files");
+        setEmptyView(empty);
     }
 
     public KTDZFile getFile() {
         return ((FileData) getAdapter().getItem(getCheckedItemPosition()));
     }
 
+    public interface OnFileClickListener {
+        void onClick(int position, FileData fileData);
+    }
+
     public static class FileViewAdapter extends BaseAdapter {
 
-        private FileItemView.OnSelectedListener onSelectedListener;
+        private OnFileClickListener onFileClickListener;
         private final List<FileData> fileList;
 
         public FileViewAdapter(List<FileData> fileList) {
@@ -35,25 +44,30 @@ public class FileListView extends ListView {
             this.fileList = fileList;
         }
 
-        public FileViewAdapter setOnSelectedListener(FileItemView.OnSelectedListener onSelectedListener) {
-            this.onSelectedListener = onSelectedListener;
+        public FileViewAdapter setOnFileClickListener(OnFileClickListener onFileClickListener) {
+            this.onFileClickListener = onFileClickListener;
             return this;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
+            FileData fileData = fileList.get(position);
+
             FileItemView itemView;
             if (convertView == null) {
                 final int margin = ScreenSize.getMargin();
                 itemView = new FileItemView(parent.getContext());
                 itemView.setPadding(margin, margin, margin, margin);
-                itemView.setOnSelectedListener(onSelectedListener);
+                itemView.setOnClickListener((View view) -> {
+                    if (onFileClickListener != null) {
+                        onFileClickListener.onClick(position, fileData);
+                    }
+                });
             } else {
                 itemView = (FileItemView) convertView;
             }
 
-            FileData fileData = fileList.get(position);
             itemView.attacheFileData(fileData);
             if (!fileData.isRequestLoad()) {
                 fileData.loadThumbnail((Bitmap bitmap) -> {
