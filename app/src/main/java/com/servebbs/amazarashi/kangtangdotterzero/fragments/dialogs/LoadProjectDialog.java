@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -22,6 +20,8 @@ import com.servebbs.amazarashi.kangtangdotterzero.models.files.FileData;
 import com.servebbs.amazarashi.kangtangdotterzero.models.files.KTDZFile;
 import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.FileListView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.PathView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.Divider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,8 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Getter;
 
 public class LoadProjectDialog extends KTDZDialogFragment {
     private static final int REQUEST_EXTERNAL_STORAGE = 2;
@@ -150,8 +148,10 @@ public class LoadProjectDialog extends KTDZDialogFragment {
                 );
                 layoutParams.setMargins(padding, padding, padding, padding);
                 pathView.setLayoutParams(layoutParams);
+                pathView.setPathSelectedListener(this::findFiles);
                 addView(pathView);
             }
+            addView(new Divider(context).setLinearLayoutParams());
             {
                 FileListView fileListView = this.fileListView = new FileListView(context);
 //                pathView.setPadding(padding, padding, padding, padding);
@@ -167,7 +167,7 @@ public class LoadProjectDialog extends KTDZDialogFragment {
         }
 
         public ContentView findFiles() {
-            return findFiles(pathView.getPath());
+            return findFiles(pathView.getRoot());
         }
 
         public ContentView findFiles(File path) {
@@ -183,31 +183,12 @@ public class LoadProjectDialog extends KTDZDialogFragment {
 
         public void onFileClick(int position, FileData fileData) {
             if (fileData.isDirectory()) {
+                pathView.addDirectory(fileData.getName());
                 findFiles(fileData.translateToFile());
             } else {
                 fileListView.setItemChecked(position, true);
                 setButtonEnabled(KTDZDialogFragment.BUTTON_POSITIVE, true);
             }
-        }
-    }
-
-    private static class PathView extends LinearLayout {
-        @Getter
-        private final File path;
-
-        public PathView(Context context) {
-            super(context);
-
-            setOrientation(LinearLayout.HORIZONTAL);
-
-            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            add(path.getPath());
-        }
-
-        public void add(String directoryName) {
-            TextView view = new TextView(getContext());
-            view.setText(directoryName);
-            addView(view);
         }
     }
 }

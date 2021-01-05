@@ -2,6 +2,7 @@ package com.servebbs.amazarashi.kangtangdotterzero.views.modules.files;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -20,6 +21,9 @@ public class FileListView extends ListView {
         super(context);
 
         setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        setDivider(new ColorDrawable(0xff000000));
+        setDividerHeight(1);
 
         TextView empty = new TextView(context);
         empty.setText("no files");
