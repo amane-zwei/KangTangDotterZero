@@ -30,6 +30,7 @@ public class DotIcon {
     public static final DotIconData minusColor = new DotIconData(16, 16, 16, 16);
     public static final DotIconData seekBar = new DotIconData(32, 0, 32, 16);
     public static final DotIconData seekBarThumb = new DotIconData(96, 0, 4, 16);
+    public static final DotIconData breadcrumb = new DotIconData(32, 16, 32, 8);
 
     public static final DotIconData pen = new DotIconData(0, 32, 16, 16);
     public static final DotIconData eraser = new DotIconData(16, 32, 16, 16);
