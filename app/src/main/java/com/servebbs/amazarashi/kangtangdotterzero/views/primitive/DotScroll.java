@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 
 public class DotScroll extends View {
 

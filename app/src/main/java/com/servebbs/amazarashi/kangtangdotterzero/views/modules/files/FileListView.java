@@ -9,9 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.files.FileData;
-import com.servebbs.amazarashi.kangtangdotterzero.models.files.KTDZFile;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.files.FileData;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.files.KTDZFile;
 
 import java.util.List;
 

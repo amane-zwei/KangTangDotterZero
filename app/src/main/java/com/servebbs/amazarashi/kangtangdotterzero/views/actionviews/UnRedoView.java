@@ -1,14 +1,10 @@
 package com.servebbs.amazarashi.kangtangdotterzero.views.actionviews;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.actions.UnRedoAction;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.ProjectContext;
-import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Tool;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.UnRedoAction;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 
 public class UnRedoView extends ActionView {
     private static Paint backPaint;

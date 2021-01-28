@@ -6,9 +6,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Palette;
 
 import lombok.Setter;
 

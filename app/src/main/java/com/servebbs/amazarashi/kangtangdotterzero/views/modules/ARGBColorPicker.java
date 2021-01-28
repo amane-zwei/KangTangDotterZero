@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.UnderLineDrawable;
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColorValue;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotEditText;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotSeekBar;
 

@@ -2,8 +2,8 @@ package com.servebbs.amazarashi.kangtangdotterzero.views.actionviews;
 
 import android.content.Context;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.actions.CallLoadProjectDialogAction;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.CallLoadProjectDialogAction;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 
 public class CallLoadProjectDialogView extends ActionView {
     public CallLoadProjectDialogView(Context context) {

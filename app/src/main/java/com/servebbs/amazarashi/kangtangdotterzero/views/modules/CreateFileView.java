@@ -7,8 +7,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.files.Extension;
-import com.servebbs.amazarashi.kangtangdotterzero.models.files.KTDZFile;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.files.Extension;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.files.KTDZFile;
 
 public class CreateFileView extends LinearLayout {
     private final String directoryPath;

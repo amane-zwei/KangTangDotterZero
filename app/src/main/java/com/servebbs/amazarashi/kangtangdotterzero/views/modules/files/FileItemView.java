@@ -10,8 +10,8 @@ import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.files.FileData;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.files.FileData;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ThumbnailView;
 
 import lombok.Getter;

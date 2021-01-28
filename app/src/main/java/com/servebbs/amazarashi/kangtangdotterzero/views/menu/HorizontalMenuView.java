@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.actions.UnRedoAction;
-import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Bucket;
-import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Eraser;
-import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Pen;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.UnRedoAction;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Bucket;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Eraser;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Pen;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.ActionView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallColorPickerDialogView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallLoadProjectDialogView;

@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.views.menu.HorizontalMenuView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.CursorButtonView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.CursorView;

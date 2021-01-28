@@ -3,8 +3,8 @@ package com.servebbs.amazarashi.kangtangdotterzero;
 import android.app.Application;
 import android.content.Context;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.GlobalContext;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.ProjectContext;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.GlobalContext;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.ProjectContext;
 
 import lombok.Getter;
 

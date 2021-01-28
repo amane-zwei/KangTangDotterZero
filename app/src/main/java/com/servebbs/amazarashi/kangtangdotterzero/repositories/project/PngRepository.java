@@ -2,7 +2,7 @@ package com.servebbs.amazarashi.kangtangdotterzero.repositories.project;
 
 import android.graphics.Bitmap;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

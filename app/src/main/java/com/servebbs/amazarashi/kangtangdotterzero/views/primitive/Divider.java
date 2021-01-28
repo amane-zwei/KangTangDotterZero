@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DividerDrawable;
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 
 public class Divider extends View {
     public Divider(Context context) {

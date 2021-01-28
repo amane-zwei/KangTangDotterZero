@@ -6,10 +6,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.servebbs.amazarashi.kangtangdotterzero.MainActivity;
-import com.servebbs.amazarashi.kangtangdotterzero.models.GlobalContext;
-import com.servebbs.amazarashi.kangtangdotterzero.models.actions.ChangeToolAction;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
-import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Tool;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.GlobalContext;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.ChangeToolAction;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Tool;
 
 public class SelectToolView extends ActionView {
     private static Paint backPaint;

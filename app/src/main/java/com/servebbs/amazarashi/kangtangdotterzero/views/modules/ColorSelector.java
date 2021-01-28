@@ -10,10 +10,10 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColorValue;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Palette;
 
 import lombok.Setter;
 

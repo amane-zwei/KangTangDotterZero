@@ -15,10 +15,10 @@ import androidx.core.app.ActivityCompat;
 
 import com.servebbs.amazarashi.kangtangdotterzero.MainActivity;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.files.FileData;
-import com.servebbs.amazarashi.kangtangdotterzero.models.files.KTDZFile;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.files.FileData;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.files.KTDZFile;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.FileListView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.PathView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.Divider;

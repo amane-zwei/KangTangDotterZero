@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 
 public class FloatingButtonView extends LinearLayout {
     private FrameLayout.LayoutParams layoutParams;

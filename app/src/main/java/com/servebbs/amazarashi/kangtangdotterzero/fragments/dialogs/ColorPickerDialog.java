@@ -7,9 +7,9 @@ import android.widget.LinearLayout;
 
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DividerDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotColorValue;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColorValue;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ColorSelector;
 

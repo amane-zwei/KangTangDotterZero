@@ -4,10 +4,7 @@ import android.content.Context;
 import android.view.MotionEvent;
 
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
-
-import lombok.Getter;
-import lombok.Setter;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 
 public class CursorButtonView extends SimpleIconView{
     public CursorButtonView(Context context) {

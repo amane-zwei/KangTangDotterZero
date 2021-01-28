@@ -10,7 +10,7 @@ import android.graphics.drawable.StateListDrawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotFont;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
 
 public class DotButton extends androidx.appcompat.widget.AppCompatButton {
     public DotButton(Context context) {

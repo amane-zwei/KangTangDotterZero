@@ -7,8 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.files.Extension;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.files.Extension;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 
 public class ThumbnailView extends View {
     private final static Paint paint = new Paint();

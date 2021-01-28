@@ -2,7 +2,7 @@ package com.servebbs.amazarashi.kangtangdotterzero.views.modules;
 
 import android.content.Context;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 
 import lombok.Getter;
 import lombok.Setter;

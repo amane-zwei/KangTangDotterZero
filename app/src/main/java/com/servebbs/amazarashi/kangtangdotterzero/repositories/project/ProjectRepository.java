@@ -6,11 +6,11 @@ import android.graphics.BitmapFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.servebbs.amazarashi.kangtangdotterzero.models.bitmap.ColorList;
-import com.servebbs.amazarashi.kangtangdotterzero.models.files.Extension;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Layer;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Palette;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.bitmap.ColorList;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.files.Extension;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Layer;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Palette;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 
 import java.io.IOException;
 import java.io.InputStream;

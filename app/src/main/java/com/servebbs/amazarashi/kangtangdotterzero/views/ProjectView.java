@@ -9,10 +9,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.GlobalContext;
-import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
-import com.servebbs.amazarashi.kangtangdotterzero.models.project.Project;
-import com.servebbs.amazarashi.kangtangdotterzero.models.tools.Tool;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.GlobalContext;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Tool;
 
 import lombok.Setter;
 

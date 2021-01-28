@@ -6,8 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 
-import com.servebbs.amazarashi.kangtangdotterzero.models.actions.Action;
-import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.Action;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 
 import lombok.Getter;
 
