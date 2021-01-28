@@ -1,6 +1,7 @@
 package com.servebbs.amazarashi.kangtangdotterzero;
 
 import android.annotation.SuppressLint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.models.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotFont;
 import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.util.ViewList;
 
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
         ScreenSize.init(this);
         DotIcon.init(getResources());
+//        DotFont.init(getResources());
+        DotFont.setDotTypeface(Typeface.createFromAsset(getAssets(), "dotfont.ttf"));
 
 //        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 

@@ -10,8 +10,9 @@ import android.graphics.drawable.StateListDrawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class DotButton extends androidx.appcompat.widget.AppCompatButton {
+import com.servebbs.amazarashi.kangtangdotterzero.models.primitive.DotFont;
 
+public class DotButton extends androidx.appcompat.widget.AppCompatButton {
     public DotButton(Context context) {
         super(context);
 
@@ -20,6 +21,9 @@ public class DotButton extends androidx.appcompat.widget.AppCompatButton {
         stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, new DotButtonDrawable(0xffa000));
         stateListDrawable.addState(new int[0], new DotButtonDrawable(0xffffff));
         setBackground(stateListDrawable);
+
+        setTypeface(DotFont.getDotTypeface());
+        setIncludeFontPadding(false);
     }
 
     public static class DotButtonDrawable extends Drawable {
