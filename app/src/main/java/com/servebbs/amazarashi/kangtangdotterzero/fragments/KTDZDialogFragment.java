@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.util.DisplayMetricsUtil;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotButton;
 
@@ -79,14 +81,21 @@ public class KTDZDialogFragment extends DialogFragment {
         return buttonAreaLayout;
     }
 
+    private final static int paddingLeft = ScreenSize.getDotSize();
+    private final static int paddingRight = ScreenSize.getDotSize() * 2;
+    private final static int paddingTop = ScreenSize.getDotSize() * 2;
+    private final static int paddingBottom = ScreenSize.getDotSize() * 4;
+
     public View createMainView(Context context) {
-        final int topMargin = DisplayMetricsUtil.calcPixel(context, 30);
         final int margin = DisplayMetricsUtil.calcPixel(context, 10);
 
         ConstraintLayout constraintLayout = new ConstraintLayout(context);
 
         int contentViewId = View.generateViewId();
         int buttonAreaViewId = View.generateViewId();
+
+        constraintLayout.setBackground(new DotRoundRectDrawable(0xffffffff, 0xff000000, 0x40000000));
+        constraintLayout.setPadding(paddingLeft, 0, paddingRight, 0);
 
         {
             View contentView = createContentView(context);
@@ -99,7 +108,7 @@ public class KTDZDialogFragment extends DialogFragment {
             layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.bottomToTop = buttonAreaViewId;
-            layoutParams.topMargin = topMargin;
+            layoutParams.topMargin = paddingTop;
             layoutParams.constrainedHeight = true;
             contentView.setLayoutParams(layoutParams);
             constraintLayout.addView(contentView);
@@ -117,7 +126,7 @@ public class KTDZDialogFragment extends DialogFragment {
             layoutParams.topToBottom = contentViewId;
             layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.topMargin = margin;
-            layoutParams.bottomMargin = topMargin;
+            layoutParams.bottomMargin = paddingBottom;
             buttonAreaView.setLayoutParams(layoutParams);
             constraintLayout.addView(buttonAreaView);
         }

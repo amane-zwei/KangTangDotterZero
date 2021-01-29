@@ -1,56 +1,34 @@
 package com.servebbs.amazarashi.kangtangdotterzero.views.primitive;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
+import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable;
 
 public class DotButton extends androidx.appcompat.widget.AppCompatButton {
+
+    private static final float height = (float) (ScreenSize.getIconSize() / 2);
+    private static final int padding = ScreenSize.getDotSize() * 2;
+    private static final int paddingRB = ScreenSize.getDotSize() * 3;
+
+    private static final int[] stateFocused = {android.R.attr.state_focused};
+    private static final int[] statePressed = {android.R.attr.state_pressed};
+    private static final int[] stateNormal = new int[0];
+
     public DotButton(Context context) {
         super(context);
 
         StateListDrawable stateListDrawable = new StateListDrawable();
-        stateListDrawable.addState(new int[]{android.R.attr.state_focused}, new DotButtonDrawable(0xffa000));
-        stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, new DotButtonDrawable(0xffa000));
-        stateListDrawable.addState(new int[0], new DotButtonDrawable(0xffffff));
+        stateListDrawable.addState(stateFocused, new DotRoundRectDrawable(0xffffa000, 0xff000000, 0x40000000));
+        stateListDrawable.addState(statePressed, new DotRoundRectDrawable(0xffffa000, 0xff000000, 0x40000000));
+        stateListDrawable.addState(stateNormal, new DotRoundRectDrawable(0xffffffff, 0xff000000, 0x40000000));
         setBackground(stateListDrawable);
 
         setTypeface(DotFont.getDotTypeface());
         setIncludeFontPadding(false);
-    }
-
-    public static class DotButtonDrawable extends Drawable {
-        int alpha = 0xff;
-        int color;
-
-        DotButtonDrawable(int color) {
-            this.color = color;
-        }
-
-        @Override
-        public void draw(@NonNull Canvas canvas) {
-            canvas.drawColor((alpha << 24) + color);
-        }
-
-        @Override
-        public void setAlpha(int alpha) {
-            this.alpha = alpha;
-        }
-
-        @Override
-        public void setColorFilter(@Nullable ColorFilter colorFilter) {
-        }
-
-        @Override
-        public int getOpacity() {
-            return PixelFormat.OPAQUE;
-        }
+        setTextSize(height);
+        setPadding(padding, padding, paddingRB, paddingRB);
     }
 }
