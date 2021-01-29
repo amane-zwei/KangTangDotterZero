@@ -18,6 +18,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DotRoundRectDrawable extends Drawable {
 
+    public static final int paddingLeft = ScreenSize.getDotSize() * 2;
+    public static final int paddingTop = ScreenSize.getDotSize() * 2;
+    public static final int paddingRight = ScreenSize.getDotSize() * 3;
+    public static final int paddingBottom = ScreenSize.getDotSize() * 3;
+
     private int alpha = 0xff;
 
     private final Paint backgroundPaint = new Paint();

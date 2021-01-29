@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.UnderLineDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColorValue;
@@ -114,26 +115,21 @@ public class ARGBColorPicker extends LinearLayout {
         public ColorPicker(Context context) {
             super(context);
 
-            final int iconSize = ScreenSize.getIconSize();
+            final int padding = ScreenSize.getDotSize() * 4;
 
             setOrientation(LinearLayout.HORIZONTAL);
             setGravity(Gravity.CENTER_HORIZONTAL);
             setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
             setFocusableInTouchMode(true);
             {
-                DotEditText editText = this.editText = new DotEditText(context) {
-                    @Override
-                    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                        super.onMeasure(heightMeasureSpec, heightMeasureSpec);
-                    }
-                };
+                DotEditText editText = this.editText = new DotEditText(context);
                 editText.setSelectAllOnFocus(true);
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editText.setFilters(inputFilters);
                 editText.setGravity(Gravity.CENTER);
                 editText.setLayoutParams(
                         new LinearLayout.LayoutParams(
-                                LayoutParams.MATCH_PARENT,
+                                DotFont.numericWidth * 3 + padding,
                                 LayoutParams.MATCH_PARENT
                         ));
                 addView(editText);

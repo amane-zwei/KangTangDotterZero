@@ -9,7 +9,6 @@ import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable
 
 public class DotButton extends androidx.appcompat.widget.AppCompatButton {
 
-    private static final float height = (float) (ScreenSize.getIconSize() / 2);
     private static final int padding = ScreenSize.getDotSize() * 2;
     private static final int paddingRB = ScreenSize.getDotSize() * 3;
 
@@ -28,7 +27,7 @@ public class DotButton extends androidx.appcompat.widget.AppCompatButton {
 
         setTypeface(DotFont.getDotTypeface());
         setIncludeFontPadding(false);
-        setTextSize(height);
+        setTextSize(DotFont.normalHeight);
         setPadding(padding, padding, paddingRB, paddingRB);
     }
 }

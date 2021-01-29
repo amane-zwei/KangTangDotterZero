@@ -19,12 +19,15 @@ import lombok.Getter;
 public class FileItemView extends LinearLayout implements Checkable {
 
     private static final int[] CHECKED_STATE_SET = {android.R.attr.state_checked};
+    public static final int indent = ScreenSize.getIconSize() / 4;
 
     @Getter
     private FileData fileData;
 
     private final ThumbnailView thumbnail;
     private final TextView textView;
+
+    private final LayoutParams thumbnailLayoutParams;
 
     @Getter
     private boolean checked;
@@ -39,7 +42,8 @@ public class FileItemView extends LinearLayout implements Checkable {
 
         {
             ThumbnailView thumbnailView = this.thumbnail = new ThumbnailView(context).setMargin(1);
-            thumbnailView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
+            LayoutParams layoutParams = thumbnailLayoutParams = new LayoutParams(size, size);
+            thumbnailView.setLayoutParams(layoutParams);
             addView(thumbnailView);
         }
         {
@@ -67,8 +71,10 @@ public class FileItemView extends LinearLayout implements Checkable {
 
         if (fileData.isDirectory()) {
             textView.setText(fileData.getName());
+            thumbnailLayoutParams.leftMargin = 0;
         } else {
             textView.setText(fileData.toFileName());
+            thumbnailLayoutParams.leftMargin = indent;
         }
         return this;
     }

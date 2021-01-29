@@ -14,14 +14,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.servebbs.amazarashi.kangtangdotterzero.MainActivity;
-import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.files.FileData;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.files.KTDZFile;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
+import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable;
+import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.FileListView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.PathView;
-import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.Divider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -151,16 +151,21 @@ public class LoadProjectDialog extends KTDZDialogFragment {
                 pathView.setPathSelectedListener(this::findFiles);
                 addView(pathView);
             }
-            addView(new Divider(context).setLinearLayoutParams());
             {
                 FileListView fileListView = this.fileListView = new FileListView(context);
-//                pathView.setPadding(padding, padding, padding, padding);
+                fileListView.setBackground(new DotRoundRectDrawable(0xffffffff, 0xff000000, 0x40000000));
+                fileListView.setPadding(
+                        DotRoundRectDrawable.paddingLeft,
+                        DotRoundRectDrawable.paddingTop,
+                        DotRoundRectDrawable.paddingRight,
+                        DotRoundRectDrawable.paddingBottom);
 
                 LayoutParams layoutParams = new LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         0,
                         1
                 );
+                layoutParams.leftMargin = ScreenSize.getDotSize();
                 fileListView.setLayoutParams(layoutParams);
                 addView(fileListView);
             }
