@@ -5,11 +5,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.servebbs.amazarashi.kangtangdotterzero.drawables.DividerDrawable;
-import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColorValue;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Palette;
+import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable;
+import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ARGBColorPicker;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.ColorSelector;
 
@@ -35,6 +35,11 @@ public class ColorPickerDialog extends KTDZDialogFragment {
     }
 
     @Override
+    public String getTitle() {
+        return "COLOR PICKER";
+    }
+
+    @Override
     public View createContentView(Context context) {
         this.contentView = new ColorPickerDialogView(context);
         this.contentView.attachPalette(palette);
@@ -55,13 +60,14 @@ public class ColorPickerDialog extends KTDZDialogFragment {
             super(context);
 
             final int iconSize = ScreenSize.getIconSize();
+            final int dotSize = ScreenSize.getDotSize();
             final int padding = ScreenSize.getPadding();
 
             setOrientation(LinearLayout.VERTICAL);
-            setBackgroundColor(0xfff0f0f0);
 
             {
                 ColorSelector colorSelector = this.colorSelector = new ColorSelector(context);
+                colorSelector.setBackground(new DotRoundRectDrawable());
                 colorSelector.setOnColorSelectListener((DotColorValue color) -> argbColorPicker.applyColor(color));
                 colorSelector.setPadding(padding, padding, padding, padding);
 
@@ -70,19 +76,17 @@ public class ColorPickerDialog extends KTDZDialogFragment {
                         0,
                         1
                 );
-                layoutParams.setMargins(padding, padding, padding, padding);
+                layoutParams.leftMargin = dotSize;
                 colorSelector.setLayoutParams(layoutParams);
                 addView(colorSelector);
             }
             {
                 View divider = new View(context);
-                DividerDrawable drawable = new DividerDrawable(0xffa0a0ff);
-                divider.setBackground(drawable);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        iconSize / 4
+                        0,
+                        0
                 );
-                layoutParams.setMargins(padding * 2, 0, padding * 2, 0);
                 divider.setLayoutParams(layoutParams);
                 addView(divider);
             }
@@ -92,12 +96,15 @@ public class ColorPickerDialog extends KTDZDialogFragment {
                     height = ScreenSize.getHeight() / 2;
                 }
                 ARGBColorPicker argbColorPicker = this.argbColorPicker = new ARGBColorPicker(context);
+                argbColorPicker.setBackground(new DotRoundRectDrawable());
                 argbColorPicker.setOnColorChangeListener(colorSelector::applyColor);
                 argbColorPicker.setPadding(padding, padding, padding, padding);
+
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         height
                 );
+                layoutParams.leftMargin = dotSize;
                 argbColorPicker.setLayoutParams(layoutParams);
                 addView(argbColorPicker);
             }

@@ -47,6 +47,11 @@ public class SaveProjectDialog extends KTDZDialogFragment {
     }
 
     @Override
+    public String getTitle() {
+        return "SAVE";
+    }
+
+    @Override
     public Dialog onCreateDialog(Bundle bundle) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

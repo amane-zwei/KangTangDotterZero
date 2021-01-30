@@ -13,9 +13,7 @@ import androidx.annotation.Nullable;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 public class DotRoundRectDrawable extends Drawable {
 
     public static final int paddingLeft = ScreenSize.getDotSize() * 2;
@@ -44,6 +42,12 @@ public class DotRoundRectDrawable extends Drawable {
     private final Rect sr = new Rect();
     private final Rect srb = new Rect();
     private final Rect sb = new Rect();
+
+    public DotRoundRectDrawable() {
+        setBackgroundColor(0xffffffff);
+        setLineColor(0xff000000);
+        setShadowColor(0x40000000);
+    }
 
     public DotRoundRectDrawable(int backgroundColor, int lineColor, int shadowColor) {
         setBackgroundColor(backgroundColor);

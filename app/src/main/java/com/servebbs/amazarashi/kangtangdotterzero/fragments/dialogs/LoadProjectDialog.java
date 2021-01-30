@@ -43,6 +43,11 @@ public class LoadProjectDialog extends KTDZDialogFragment {
     }
 
     @Override
+    public String getTitle() {
+        return "LOAD";
+    }
+
+    @Override
     public Dialog onCreateDialog(Bundle bundle) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -153,7 +158,7 @@ public class LoadProjectDialog extends KTDZDialogFragment {
             }
             {
                 FileListView fileListView = this.fileListView = new FileListView(context);
-                fileListView.setBackground(new DotRoundRectDrawable(0xffffffff, 0xff000000, 0x40000000));
+                fileListView.setBackground(new DotRoundRectDrawable());
                 fileListView.setPadding(
                         DotRoundRectDrawable.paddingLeft,
                         DotRoundRectDrawable.paddingTop,
