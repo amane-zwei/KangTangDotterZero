@@ -16,12 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.servebbs.amazarashi.kangtangdotterzero.MainActivity;
-import com.servebbs.amazarashi.kangtangdotterzero.drawables.DividerDrawable;
-import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.files.KTDZFile;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
+import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable;
+import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.CreateFileView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.HeaderView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -136,31 +137,33 @@ public class SaveProjectDialog extends KTDZDialogFragment {
             final int padding = ScreenSize.getPadding();
 
             setOrientation(LinearLayout.VERTICAL);
-            setBackgroundColor(0xfff0f0f0);
 
             {
+                HeaderView headerView = new HeaderView(context);
+                headerView.setText("FILE NAME");
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                headerView.setLayoutParams(layoutParams);
+                addView(headerView);
+            }
+            {
                 CreateFileView createFileView = this.createFileView = new CreateFileView(context);
-                createFileView.setPadding(padding, padding, padding, padding);
+                createFileView.setBackground(new DotRoundRectDrawable());
+                createFileView.setPadding(
+                        DotRoundRectDrawable.paddingLeft,
+                        DotRoundRectDrawable.paddingTop,
+                        DotRoundRectDrawable.paddingRight,
+                        DotRoundRectDrawable.paddingBottom);
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
-                layoutParams.setMargins(padding, padding, padding, padding);
+                layoutParams.setMargins(padding, 0, padding, padding);
                 createFileView.setLayoutParams(layoutParams);
                 addView(createFileView);
-            }
-            {
-                View divider = new View(context);
-                DividerDrawable drawable = new DividerDrawable(0xffa0a0ff);
-                divider.setBackground(drawable);
-                LayoutParams layoutParams = new LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        iconSize / 4
-                );
-                layoutParams.setMargins(padding * 2, 0, padding * 2, 0);
-                divider.setLayoutParams(layoutParams);
-                addView(divider);
             }
         }
     }

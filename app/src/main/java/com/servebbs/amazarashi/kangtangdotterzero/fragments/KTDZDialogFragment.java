@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ public class KTDZDialogFragment extends DialogFragment {
     private final OnButtonFunction[] onButtonFunctions = new OnButtonFunction[2];
     private final DotButton[] buttons = new DotButton[2];
 
+    private static final int margin = ScreenSize.getDotSize() * 2;
+
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
         Dialog dialog = new Dialog(getActivity());
@@ -38,6 +41,19 @@ public class KTDZDialogFragment extends DialogFragment {
         // 背景を透明にする
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return dialog;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        Dialog dialog = getDialog();
+
+        WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        layoutParams.width = (int) metrics.widthPixels - margin;
+        dialog.getWindow().setAttributes(layoutParams);
     }
 
     public String getTitle() { return null; }
@@ -116,6 +132,9 @@ public class KTDZDialogFragment extends DialogFragment {
         int contentViewId = View.generateViewId();
         int buttonAreaViewId = View.generateViewId();
 
+        constraintLayout.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
         constraintLayout.setBackground(new DotRoundRectDrawable());
         constraintLayout.setPadding(paddingLeft, paddingTop, paddingRight, 0);
 
@@ -123,8 +142,8 @@ public class KTDZDialogFragment extends DialogFragment {
             View titleView = createTitleView(context, getTitle());
             titleView.setId(titleViewId);
             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT
             );
             layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
@@ -139,8 +158,8 @@ public class KTDZDialogFragment extends DialogFragment {
             View contentView = createContentView(context);
             contentView.setId(contentViewId);
             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                    ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT
             );
             layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
@@ -154,8 +173,8 @@ public class KTDZDialogFragment extends DialogFragment {
             View buttonAreaView = createButtonAreaView(context);
             buttonAreaView.setId(buttonAreaViewId);
             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                    ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT
             );
             layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;

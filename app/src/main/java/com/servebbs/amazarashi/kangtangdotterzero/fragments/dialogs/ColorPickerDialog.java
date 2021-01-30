@@ -81,16 +81,6 @@ public class ColorPickerDialog extends KTDZDialogFragment {
                 addView(colorSelector);
             }
             {
-                View divider = new View(context);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        0,
-                        0
-                );
-                divider.setLayoutParams(layoutParams);
-                addView(divider);
-            }
-            {
                 int height = iconSize * 4 + padding * 2;
                 if (height > ScreenSize.getHeight() / 2) {
                     height = ScreenSize.getHeight() / 2;
