@@ -144,7 +144,7 @@ public class KTDZDialogFragment extends DialogFragment {
             );
             layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.topToTop = titleViewId;
+            layoutParams.topToBottom = titleViewId;
             layoutParams.bottomToTop = buttonAreaViewId;
             layoutParams.constrainedHeight = true;
             contentView.setLayoutParams(layoutParams);
