@@ -82,7 +82,7 @@ public class KTDZDialogFragment extends DialogFragment {
         titleView.setTextColor(0xff000000);
         titleView.setBackground(new ColorDrawable(0xffc0c0ff));
         titleView.setPadding(paddingH, paddingV, paddingH, paddingV);
-        titleView.setOnClickListener((View view) -> { view.setVisibility(View.GONE);});
+        titleView.setOnClickListener((View view) -> view.setVisibility(View.GONE));
         return titleView;
     }
 
@@ -134,7 +134,11 @@ public class KTDZDialogFragment extends DialogFragment {
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        linearLayout.setBackground(new DotRoundRectDrawable());
+        linearLayout.setBackground(new DotRoundRectDrawable(
+                0xfff0f0ff,
+                0xff000000,
+                0x40000000
+        ));
         linearLayout.setPadding(paddingLeft, paddingTop, paddingRight, 0);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
