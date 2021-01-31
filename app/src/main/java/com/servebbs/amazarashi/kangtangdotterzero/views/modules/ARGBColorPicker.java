@@ -115,13 +115,14 @@ public class ARGBColorPicker extends LinearLayout {
         public ColorPicker(Context context) {
             super(context);
 
-            final int padding = ScreenSize.getDotSize() * 4;
 
             setOrientation(LinearLayout.HORIZONTAL);
             setGravity(Gravity.CENTER_HORIZONTAL);
             setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
             setFocusableInTouchMode(true);
             {
+                final int padding = ScreenSize.getDotSize() * 4;
+
                 DotEditText editText = this.editText = new DotEditText(context);
                 editText.setSelectAllOnFocus(true);
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -135,8 +136,10 @@ public class ARGBColorPicker extends LinearLayout {
                 addView(editText);
             }
             {
+                final int paddingV = ScreenSize.getDotSize();
                 DotSeekBar seekBar = this.seekBar = new DotSeekBar(context);
                 seekBar.setMax(0xff);
+                seekBar.setPadding(seekBar.getPaddingLeft(), paddingV, seekBar.getPaddingRight(), paddingV);
                 seekBar.setLayoutParams(
                         new LinearLayout.LayoutParams(
                                 0,

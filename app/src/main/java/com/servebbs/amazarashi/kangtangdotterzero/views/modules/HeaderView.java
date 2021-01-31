@@ -2,8 +2,10 @@ package com.servebbs.amazarashi.kangtangdotterzero.views.modules;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.util.TypedValue;
 
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotTextView;
 
 public class HeaderView extends DotTextView {
@@ -17,7 +19,7 @@ public class HeaderView extends DotTextView {
     public HeaderView(Context context) {
         super(context);
 
-        setTextSize(getTextSize() / 2);
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, DotFont.normalHeight / 2);
         setTextColor(textColor);
         setBackground(new ColorDrawable(backgroundColor));
         setPadding(paddingH, paddingV, paddingH, paddingV);
