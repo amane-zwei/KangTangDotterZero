@@ -44,9 +44,9 @@ public class ColorSelector extends LinearLayout {
             ColorGridView colorGridView = this.colorGridView = new ColorGridView(context);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    0
+                    0,
+                    1
             );
-            layoutParams.weight = 1;
             colorGridView.setLayoutParams(layoutParams);
             addView(colorGridView);
         }

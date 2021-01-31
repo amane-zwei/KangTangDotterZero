@@ -82,8 +82,8 @@ public class ColorPickerDialog extends KTDZDialogFragment {
             }
             {
                 int height = iconSize * 4 + padding * 2;
-                if (height > ScreenSize.getHeight() / 2) {
-                    height = ScreenSize.getHeight() / 2;
+                if (height > ScreenSize.getHeight() / 3) {
+                    height = ScreenSize.getHeight() / 3;
                 }
                 ARGBColorPicker argbColorPicker = this.argbColorPicker = new ARGBColorPicker(context);
                 argbColorPicker.setBackground(new DotRoundRectDrawable());

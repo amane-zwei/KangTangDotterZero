@@ -2,6 +2,7 @@ package com.servebbs.amazarashi.kangtangdotterzero.views.primitive;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.util.TypedValue;
 
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
@@ -13,7 +14,7 @@ public class DotEditText extends androidx.appcompat.widget.AppCompatEditText {
 
         setTypeface(DotFont.getDotTypeface());
         setIncludeFontPadding(false);
-        setTextSize(DotFont.normalHeight);
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, DotFont.normalHeight);
 
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setStroke(ScreenSize.getIconSize()/16, 0xff000000);

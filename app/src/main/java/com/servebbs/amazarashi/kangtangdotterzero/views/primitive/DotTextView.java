@@ -11,6 +11,6 @@ public class DotTextView extends androidx.appcompat.widget.AppCompatTextView {
 
         setTypeface(DotFont.getDotTypeface());
         setIncludeFontPadding(false);
-        setTextSize(DotFont.normalHeight);
+//        setTextSize(TypedValue.COMPLEX_UNIT_PX, DotFont.normalHeight);
     }
 }
