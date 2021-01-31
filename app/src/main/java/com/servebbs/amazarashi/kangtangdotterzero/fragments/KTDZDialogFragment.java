@@ -13,7 +13,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
@@ -126,67 +125,57 @@ public class KTDZDialogFragment extends DialogFragment {
 
     public View createMainView(Context context) {
 
-        ConstraintLayout constraintLayout = new ConstraintLayout(context);
+        LinearLayout linearLayout = new LinearLayout(context);
 
         int titleViewId = View.generateViewId();
         int contentViewId = View.generateViewId();
         int buttonAreaViewId = View.generateViewId();
 
-        constraintLayout.setLayoutParams(new ViewGroup.LayoutParams(
+        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        constraintLayout.setBackground(new DotRoundRectDrawable());
-        constraintLayout.setPadding(paddingLeft, paddingTop, paddingRight, 0);
+        linearLayout.setBackground(new DotRoundRectDrawable());
+        linearLayout.setPadding(paddingLeft, paddingTop, paddingRight, 0);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
 
         {
             View titleView = createTitleView(context, getTitle());
             titleView.setId(titleViewId);
-            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                    ConstraintLayout.LayoutParams.WRAP_CONTENT
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.bottomToTop = contentViewId;
             layoutParams.topMargin = paddingTop;
             layoutParams.bottomMargin = ScreenSize.getDotSize();
+            layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
             titleView.setLayoutParams(layoutParams);
-            constraintLayout.addView(titleView);
+            linearLayout.addView(titleView);
         }
         {
             View contentView = createContentView(context);
             contentView.setId(contentViewId);
-            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                    ConstraintLayout.LayoutParams.WRAP_CONTENT
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    0,
+                    1
             );
-            layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.topToBottom = titleViewId;
-            layoutParams.bottomToTop = buttonAreaViewId;
-            layoutParams.constrainedHeight = true;
             contentView.setLayoutParams(layoutParams);
-            constraintLayout.addView(contentView);
+            linearLayout.addView(contentView);
         }
         {
             View buttonAreaView = createButtonAreaView(context);
             buttonAreaView.setId(buttonAreaViewId);
-            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                    ConstraintLayout.LayoutParams.WRAP_CONTENT
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.topToBottom = contentViewId;
-            layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.topMargin = buttonMargin;
             layoutParams.bottomMargin = paddingBottom;
             buttonAreaView.setLayoutParams(layoutParams);
-            constraintLayout.addView(buttonAreaView);
+            linearLayout.addView(buttonAreaView);
         }
 
-        return constraintLayout;
+        return linearLayout;
     }
 
     public interface OnButtonFunction {
