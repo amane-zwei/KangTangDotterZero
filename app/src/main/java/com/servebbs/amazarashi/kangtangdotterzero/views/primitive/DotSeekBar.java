@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 
+import lombok.AllArgsConstructor;
+
 public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
 
     DotSeekBarDrawable drawable;
@@ -101,6 +103,10 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
             mainColorPaint.setColor(mainColor);
         }
 
+        private static final SeekBarDrawer drawerH = new SeekBarDrawer(DotSeekBarDrawable::drawFrameH, DotSeekBarDrawable::drawBarH);
+        private static final SeekBarDrawer drawerM = new SeekBarDrawer(DotSeekBarDrawable::drawFrameM, DotSeekBarDrawable::drawBarM);
+        private static final SeekBarDrawer drawerL = new SeekBarDrawer(DotSeekBarDrawable::drawFrameL, DotSeekBarDrawable::drawBarL);
+
         @Override
         public void onBoundsChange(Rect bounds) {
             dstRect.set(bounds);
@@ -112,47 +118,34 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
             frameBitmap = Bitmap.createBitmap(frameRect.width(), frameRect.height(), Bitmap.Config.ARGB_8888);
             barBitmap = Bitmap.createBitmap(frameRect.width(), frameRect.height(), Bitmap.Config.ARGB_8888);
 
-            if (frameRect.height() < ScreenSize.getDotSize() * 12) {
-                drawFrameL(
-                        new Canvas(frameBitmap),
-                        0,
-                        0,
-                        frameRect.width(),
-                        frameRect.height(),
-                        linePaint,
-                        highLightPaint,
-                        shadowPaint
-                );
-
-                drawBarL(
-                        new Canvas(barBitmap),
-                        0,
-                        0,
-                        frameRect.width(),
-                        frameRect.height(),
-                        mainColorPaint
-                );
+            SeekBarDrawer drawer;
+            final int height = frameRect.height();
+            if (height < ScreenSize.getDotSize() * 6) {
+                drawer = drawerL;
+            } else if (height < ScreenSize.getDotSize() * 12) {
+                drawer = drawerM;
             } else {
-                drawFrameH(
-                        new Canvas(frameBitmap),
-                        0,
-                        0,
-                        frameRect.width(),
-                        frameRect.height(),
-                        linePaint,
-                        highLightPaint,
-                        shadowPaint
-                );
-
-                drawBarH(
-                        new Canvas(barBitmap),
-                        0,
-                        0,
-                        frameRect.width(),
-                        frameRect.height(),
-                        mainColorPaint
-                );
+                drawer = drawerH;
             }
+
+            drawer.frameDrawer.draw(
+                    new Canvas(frameBitmap),
+                    0,
+                    0,
+                    frameRect.width(),
+                    frameRect.height(),
+                    linePaint,
+                    highLightPaint,
+                    shadowPaint
+            );
+            drawer.barDrawer.draw(
+                    new Canvas(barBitmap),
+                    0,
+                    0,
+                    frameRect.width(),
+                    frameRect.height(),
+                    mainColorPaint
+            );
         }
 
         @Override
@@ -169,7 +162,7 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
             canvas.drawBitmap(frameBitmap, frameRect, dstRect, paint);
         }
 
-        private void drawFrameH(
+        private static void drawFrameH(
                 Canvas canvas,
                 int left,
                 int top,
@@ -189,61 +182,43 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
             Rect rect = new Rect();
 
             // shadow-right-top
-            rect.set(right - ds2, top + ds3, right - ds1, top + ds4);
-            canvas.drawRect(rect, shadow);
+            drawParts(canvas, rect, shadow, right - ds2, top + ds3, right - ds1, top + ds4);
             // shadow-right
-            rect.set(right - ds1, top + ds5, right - ds0, bottom - ds4);
-            canvas.drawRect(rect, shadow);
+            drawParts(canvas, rect, shadow, right - ds1, top + ds5, right - ds0, bottom - ds4);
             // shadow-bottom-right-right
-            rect.set(right - ds2, bottom - ds5, right - ds1, bottom - ds2);
-            canvas.drawRect(rect, shadow);
+            drawParts(canvas, rect, shadow, right - ds2, bottom - ds5, right - ds1, bottom - ds2);
             // shadow-bottom-bottom-right
-            rect.set(right - ds5, bottom - ds3, right - ds2, bottom - ds1);
-            canvas.drawRect(rect, shadow);
+            drawParts(canvas, rect, shadow, right - ds5, bottom - ds3, right - ds2, bottom - ds1);
             // shadow-bottom
-            rect.set(left + ds5, bottom - ds1, right - ds4, bottom - ds0);
-            canvas.drawRect(rect, shadow);
+            drawParts(canvas, rect, shadow, left + ds5, bottom - ds1, right - ds4, bottom - ds0);
 
 
             // left
-            rect.set(left + ds0, top + ds4, left + ds1, bottom - ds5);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds0, top + ds4, left + ds1, bottom - ds5);
             // left-left-top
-            rect.set(left + ds1, top + ds2, left + ds2, top + ds4);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds1, top + ds2, left + ds2, top + ds4);
             // left-top-top
-            rect.set(left + ds2, top + ds1, left + ds4, top + ds2);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds2, top + ds1, left + ds4, top + ds2);
             // top
-            rect.set(left + ds4, top + ds0, right - ds5, top + ds1);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds4, top + ds0, right - ds5, top + ds1);
             // right-top-top
-            rect.set(right - ds5, top + ds1, right - ds3, top + ds2);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, right - ds5, top + ds1, right - ds3, top + ds2);
             // right-top-top
-            rect.set(right - ds5, top + ds1, right - ds3, top + ds2);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, right - ds5, top + ds1, right - ds3, top + ds2);
             // right-right-top
-            rect.set(right - ds3, top + ds2, right - ds2, top + ds4);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, right - ds3, top + ds2, right - ds2, top + ds4);
             // right
-            rect.set(right - ds2, top + ds4, right - ds1, bottom - ds5);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, right - ds2, top + ds4, right - ds1, bottom - ds5);
             // right-right-bottom
-            rect.set(right - ds3, bottom - ds5, right - ds2, bottom - ds3);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, right - ds3, bottom - ds5, right - ds2, bottom - ds3);
             // right-bottom-bottom
-            rect.set(right - ds5, bottom - ds3, right - ds3, bottom - ds2);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, right - ds5, bottom - ds3, right - ds3, bottom - ds2);
             // bottom
-            rect.set(left + ds4, bottom - ds2, right - ds5, bottom - ds1);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds4, bottom - ds2, right - ds5, bottom - ds1);
             // left-bottom-bottom
-            rect.set(left + ds2, bottom - ds3, left + ds4, bottom - ds2);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds2, bottom - ds3, left + ds4, bottom - ds2);
             // left-left-bottom
-            rect.set(left + ds1, bottom - ds5, left + ds2, bottom - ds3);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds1, bottom - ds5, left + ds2, bottom - ds3);
 
 
             int highlightBottom = top + ds1 * 8;
@@ -251,17 +226,14 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
                 highlightBottom = bottom - ds5;
             }
             // highlight-left
-            rect.set(left + ds2, top + ds4, left + ds3, highlightBottom);
-            canvas.drawRect(rect, highlight);
+            drawParts(canvas, rect, highlight, left + ds2, top + ds4, left + ds3, highlightBottom);
             // highlight-left-top
-            rect.set(left + ds3, top + ds3, left + ds4, top + ds4);
-            canvas.drawRect(rect, highlight);
+            drawParts(canvas, rect, highlight, left + ds3, top + ds3, left + ds4, top + ds4);
             // highlight-top
-            rect.set(left + ds4, top + ds2, right - ds5, top + ds3);
-            canvas.drawRect(rect, highlight);
+            drawParts(canvas, rect, highlight, left + ds4, top + ds2, right - ds5, top + ds3);
         }
 
-        private void drawBarH(
+        private static void drawBarH(
                 Canvas canvas,
                 int left,
                 int top,
@@ -277,18 +249,12 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
 
             Rect rect = new Rect();
 
-            // 0
-            rect.set(left + ds1, top + ds4, right - ds2, bottom - ds5);
-            canvas.drawRect(rect, paint);
-            // 1
-            rect.set(left + ds2, top + ds2, right - ds3, bottom - ds3);
-            canvas.drawRect(rect, paint);
-            // 2
-            rect.set(left + ds4, top + ds1, right - ds5, bottom - ds2);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds1, top + ds4, right - ds2, bottom - ds5);
+            drawParts(canvas, rect, paint, left + ds2, top + ds2, right - ds3, bottom - ds3);
+            drawParts(canvas, rect, paint, left + ds4, top + ds1, right - ds5, bottom - ds2);
         }
 
-        private void drawFrameL(
+        private static void drawFrameM(
                 Canvas canvas,
                 int left,
                 int top,
@@ -303,32 +269,91 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
             final int ds2 = ds1 + ds1;
             final int ds3 = ds2 + ds1;
             final int ds4 = ds3 + ds1;
-            final int ds5 = ds4 + ds1;
 
             Rect rect = new Rect();
 
             // shadow-right
-            rect.set(right - ds1, top + ds2, right - ds0, bottom - ds1);
-            canvas.drawRect(rect, shadow);
+            drawParts(canvas, rect, shadow, right - ds1, top + ds3, right - ds0, bottom - ds2);
+            // shadow-right-bottom
+            drawParts(canvas, rect, shadow, right - ds3, bottom - ds3, right - ds1, bottom - ds1);
             // shadow-bottom
-            rect.set(left + ds2, bottom - ds2, right - ds1, bottom - ds0);
-            canvas.drawRect(rect, shadow);
+            drawParts(canvas, rect, shadow, left + ds3, bottom - ds1, right - ds2, bottom - ds0);
 
             // left
-            rect.set(left + ds0, top + ds1, left + ds1, bottom - ds2);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds0, top + ds2, left + ds1, bottom - ds3);
+            // left-top
+            drawParts(canvas, rect, paint, left + ds1, top + ds1, left + ds2, top + ds2);
             // top
-            rect.set(left + ds1, top + ds0, right - ds2, top + ds1);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds2, top + ds0, right - ds3, top + ds1);
+            // top-right
+            drawParts(canvas, rect, paint, right - ds3, top + ds1, right - ds2, top + ds2);
             // right
-            rect.set(right - ds2, top + ds1, right - ds1, bottom - ds2);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, right - ds2, top + ds2, right - ds1, bottom - ds3);
+            // right-bottom
+            drawParts(canvas, rect, paint, right - ds3, bottom - ds3, right - ds2, bottom - ds2);
             // bottom
-            rect.set(left + ds1, bottom - ds2, right - ds2, bottom - ds1);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds2, bottom - ds2, right - ds3, bottom - ds1);
+            // left-bottom
+            drawParts(canvas, rect, paint, left + ds1, bottom - ds3, left + ds2, bottom - ds2);
+
+            // highlight-left
+            drawParts(canvas, rect, highlight, left + ds2, top + ds3, left + ds3, bottom - ds4);
+            // highlight-top
+            drawParts(canvas, rect, highlight, left + ds3, top + ds2, right - ds4, top + ds3);
         }
 
-        private void drawBarL(
+        private static void drawBarM(
+                Canvas canvas,
+                int left,
+                int top,
+                int right,
+                int bottom,
+                Paint paint) {
+
+            final int ds1 = ScreenSize.getDotSize();
+            final int ds2 = ds1 + ds1;
+            final int ds3 = ds2 + ds1;
+
+            Rect rect = new Rect();
+
+            drawParts(canvas, rect, paint, left + ds1, top + ds2, right - ds2, bottom - ds3);
+            drawParts(canvas, rect, paint, left + ds2, top + ds1, right - ds3, bottom - ds2);
+        }
+
+        private static void drawFrameL(
+                Canvas canvas,
+                int left,
+                int top,
+                int right,
+                int bottom,
+                Paint paint,
+                Paint highlight,
+                Paint shadow) {
+
+            final int ds0 = 0;
+            final int ds1 = ScreenSize.getDotSize();
+            final int ds2 = ds1 + ds1;
+            final int ds3 = ds2 + ds1;
+            final int ds4 = ds3 + ds1;
+
+            Rect rect = new Rect();
+
+            // shadow-right
+            drawParts(canvas, rect, shadow, right - ds1, top + ds2, right - ds0, bottom - ds1);
+            // shadow-bottom
+            drawParts(canvas, rect, shadow, left + ds2, bottom - ds2, right - ds1, bottom - ds0);
+
+            // left
+            drawParts(canvas, rect, paint, left + ds0, top + ds1, left + ds1, bottom - ds2);
+            // top
+            drawParts(canvas, rect, paint, left + ds1, top + ds0, right - ds2, top + ds1);
+            // right
+            drawParts(canvas, rect, paint, right - ds2, top + ds1, right - ds1, bottom - ds2);
+            // bottom
+            drawParts(canvas, rect, paint, left + ds1, bottom - ds2, right - ds2, bottom - ds1);
+        }
+
+        private static void drawBarL(
                 Canvas canvas,
                 int left,
                 int top,
@@ -341,8 +366,7 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
 
             Rect rect = new Rect();
 
-            rect.set(left + ds1, top + ds1, right - ds2, bottom - ds2);
-            canvas.drawRect(rect, paint);
+            drawParts(canvas, rect, paint, left + ds1, top + ds1, right - ds2, bottom - ds2);
         }
 
         @Override
@@ -357,5 +381,38 @@ public class DotSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
         public int getOpacity() {
             return PixelFormat.OPAQUE;
         }
+
+        private static void drawParts(Canvas canvas, Rect rect, Paint paint, int left, int top, int right, int bottom) {
+            rect.set(left, top, right, bottom);
+            canvas.drawRect(rect, paint);
+        }
+    }
+
+    @AllArgsConstructor
+    private static class SeekBarDrawer {
+        private final FrameDrawer frameDrawer;
+        private final BarDrawer barDrawer;
+    }
+
+    private interface FrameDrawer {
+        void draw(
+                Canvas canvas,
+                int left,
+                int top,
+                int right,
+                int bottom,
+                Paint paint,
+                Paint highlight,
+                Paint shadow);
+    }
+
+    private interface BarDrawer {
+        void draw(
+                Canvas canvas,
+                int left,
+                int top,
+                int right,
+                int bottom,
+                Paint paint);
     }
 }
