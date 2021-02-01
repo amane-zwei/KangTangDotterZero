@@ -15,6 +15,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Eraser;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Pen;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.ActionView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallColorPickerDialogView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallDrawerView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallLoadProjectDialogView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallSaveProjectDialogView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.SelectToolView;
@@ -22,12 +23,12 @@ import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.UnRedoView;
 
 public class HorizontalMenuView extends HorizontalScrollView {
     // implements GestureDetector.OnGestureListener
-    private LinearLayout layout;
+    private final LinearLayout layout;
 
     private int tmpPos = -1;
     private int width;
 
-    private GestureDetector detector;
+    private final GestureDetector detector;
 
     public HorizontalMenuView(Context context) {
         super(context);
@@ -50,6 +51,7 @@ public class HorizontalMenuView extends HorizontalScrollView {
         addItem(new UnRedoView(context, UnRedoAction.DELTA_REDO));
         addItem(new CallSaveProjectDialogView(context));
         addItem(new CallLoadProjectDialogView(context));
+        addItem(new CallDrawerView(context));
 
         this.detector = new GestureDetector(context, new GestureListener());
     }

@@ -3,18 +3,23 @@ package com.servebbs.amazarashi.kangtangdotterzero;
 import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
+import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.util.ViewList;
 
 import java.util.ArrayList;
@@ -26,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Getter
     ViewList toolViews = new ViewList();
+
+    @Getter
+    DrawerLayout drawer;
 
     List<OnPermissionResponse> onPermissionResponses = new ArrayList<>();
 
@@ -39,17 +47,25 @@ public class MainActivity extends AppCompatActivity {
 //        DotFont.init(getResources());
         DotFont.setDotTypeface(Typeface.createFromAsset(getAssets(), "dotfont.ttf"));
 
-//        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        DrawerLayout drawer = this.drawer = new DrawerLayout(this);
 
-//        this.setContentView(new android.view.View(this));
+        final int id = View.generateViewId();
         FrameLayout base = new FrameLayout(this);
         base.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        base.setId(1);
+        base.setId(id);
+        drawer.addView(base);
+
+        TextView text = new TextView(this);
+        text.setText("Hello Hogehoge!");
+        DrawerLayout.LayoutParams layoutParams = new DrawerLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.LEFT;
+        text.setLayoutParams(layoutParams);
+        drawer.addView(text);
 
 //        LinearLayout layout = new LinearLayout(this);
 //        layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 //        layout.setId(1);
-        this.setContentView(base);
+        this.setContentView(drawer);
 
 //        if (getSupportFragmentManager() != null && getSupportFragmentManager().getBackStackEntryCount() == 0) {
 //            initFragments();
@@ -58,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
-                transaction.add(1, new MainFragment(), MainFragment.tag);
+                transaction.add(id, new MainFragment(), MainFragment.tag);
                 transaction.commit();
             }
 //            {
@@ -92,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         for (int index = onPermissionResponses.size() - 1; index >= 0; index--) {
             OnPermissionResponse onPermissionResponse = onPermissionResponses.get(index);
             if (onPermissionResponse.apply(requestCode, permissions, grantResults)) {
