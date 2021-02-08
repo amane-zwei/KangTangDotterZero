@@ -3,20 +3,14 @@ package com.servebbs.amazarashi.kangtangdotterzero.views.drawer;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 
 import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.Action;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.CallLoadProjectDialogAction;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.CallSaveProjectDialogAction;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.Stack;
-
-import lombok.AllArgsConstructor;
-
-public class DrawerMenuView extends ConstraintLayout {
+public class DrawerMenuView extends ExpandableListView {
     public static final Item[] items = {
             new Item("FILE", new Item[]{
                     new Item("NEW", new CallSaveProjectDialogAction()),
@@ -32,89 +26,88 @@ public class DrawerMenuView extends ConstraintLayout {
     public DrawerMenuView(Context context) {
         super(context);
 
-        DrawerItemView prev;
-        Queue<Tuple> queue = new ArrayDeque<>();
-        Stack<View> views = new Stack<>();
+        setAdapter(new ListAdapter(context, items));
+    }
 
-        {
-            int id = View.generateViewId();
+    private static class ListAdapter extends BaseExpandableListAdapter {
+        private final Context context;
+        private final Item[] items;
 
-            Item item = items[0];
-            DrawerItemView itemView = new DrawerItemView(context);
-            itemView.setId(id);
-            itemView.setText(item.title);
-            itemView.setLevel(0);
-
-            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-            layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
-            itemView.setLayoutParams(layoutParams);
-            views.add(itemView);
-
-            queue.add(new Tuple(1, itemView, item.children));
-            prev = itemView;
+        ListAdapter(Context context, Item[] items) {
+            this.context = context;
+            this.items = items;
         }
 
-        for (int index = 1; index < items.length; index++) {
-            int id = View.generateViewId();
-
-            Item item = items[index];
-            DrawerItemView itemView = new DrawerItemView(context);
-            itemView.setId(id);
-            itemView.setText(item.title);
-            itemView.setLevel(0);
-
-            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-            layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-            layoutParams.topToBottom = prev.getId();
-            itemView.setLayoutParams(layoutParams);
-            views.add(itemView);
-
-            queue.add(new Tuple(1, itemView, item.children));
-            prev = itemView;
+        @Override
+        public int getGroupCount() {
+            return items.length;
         }
 
-        while (queue.size() > 0) {
-            Tuple tuple = queue.remove();
-            Item[] children = tuple.children;
-            DrawerItemView parent = tuple.parent;
+        @Override
+        public int getChildrenCount(int groupPosition) {
+            Item parent = items[groupPosition];
+            return parent.children == null ? 0 : parent.children.length;
+        }
 
-            for (int index = 0; index < children.length; index++) {
-                int id = View.generateViewId();
+        @Override
+        public Object getGroup(int groupPosition) {
+            return items[groupPosition];
+        }
 
-                Item item = children[index];
-                DrawerItemView itemView = new DrawerItemView(context);
-                itemView.setId(id);
-                itemView.setText(item.title);
-                itemView.setLevel(tuple.level);
+        @Override
+        public Object getChild(int groupPosition, int childPosition) {
+            return items[groupPosition].children[childPosition];
+        }
 
-                ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-                layoutParams.topToBottom = parent.getId();
-                itemView.setLayoutParams(layoutParams);
-                views.add(itemView);
+        @Override
+        public long getGroupId(int groupPosition) {
+            return 0;
+        }
 
-                if (item.children != null) {
-                    queue.add(new Tuple(tuple.level, itemView, item.children));
-                }
-                parent = itemView;
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            return 0;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return false;
+        }
+
+        @Override
+        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+            DrawerItemView itemView;
+            if (convertView == null) {
+                itemView = new DrawerItemView(context);
+            } else {
+                itemView = (DrawerItemView) convertView;
             }
 
-            while (views.size() > 0) {
-                addView(views.pop());
+            Item parentItem = items[groupPosition];
+            itemView.setText(parentItem.title);
+            return itemView;
+        }
+
+        @Override
+        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+            DrawerItemView itemView;
+            if (convertView == null) {
+                itemView = new DrawerItemView(context);
+            } else {
+                itemView = (DrawerItemView) convertView;
             }
+
+            Item item = items[groupPosition].children[childPosition];
+            itemView.setText(item.title);
+            return itemView;
+        }
+
+        @Override
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return false;
         }
     }
-    
+
     public static class Item {
         private final String title;
         private final Action action;
@@ -131,12 +124,5 @@ public class DrawerMenuView extends ConstraintLayout {
             this.action = action;
             this.children = null;
         }
-    }
-
-    @AllArgsConstructor
-    public static class Tuple {
-        private final int level;
-        private final DrawerItemView parent;
-        private final Item[] children;
     }
 }
