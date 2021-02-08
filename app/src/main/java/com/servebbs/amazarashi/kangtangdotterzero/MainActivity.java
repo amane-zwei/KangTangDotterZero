@@ -8,7 +8,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +20,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.util.ViewList;
+import com.servebbs.amazarashi.kangtangdotterzero.views.drawer.DrawerMenuView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +55,11 @@ public class MainActivity extends AppCompatActivity {
         base.setId(id);
         drawer.addView(base);
 
-        TextView text = new TextView(this);
-        text.setText("Hello Hogehoge!");
+        DrawerMenuView drawerMenuView = new DrawerMenuView(this);
         DrawerLayout.LayoutParams layoutParams = new DrawerLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.gravity = Gravity.LEFT;
-        text.setLayoutParams(layoutParams);
-        drawer.addView(text);
+        drawerMenuView.setLayoutParams(layoutParams);
+        drawer.addView(drawerMenuView);
 
 //        LinearLayout layout = new LinearLayout(this);
 //        layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
