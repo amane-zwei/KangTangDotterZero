@@ -1,7 +1,6 @@
 package com.servebbs.amazarashi.kangtangdotterzero.domains.tools;
 
-import android.graphics.Rect;
-
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 
 import lombok.AllArgsConstructor;
@@ -13,7 +12,7 @@ public class Tool {
     }
     public void clear() {}
     public void flush(Event event) {}
-    public Rect createIconRect() { return new Rect(); }
+    public DotIcon.DotIconData getIcon() { return DotIcon.empty; }
 
     @AllArgsConstructor
     @Getter

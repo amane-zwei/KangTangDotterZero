@@ -25,7 +25,7 @@ public class SelectToolView extends ActionView {
 
     public SelectToolView(Context context, Tool tool) {
         super(context);
-        drawer = new IconDrawer(tool, tool.createIconRect());
+        drawer = new IconDrawer(tool, tool.getIcon().createRect());
         onClickAction = new ChangeToolAction(tool);
     }
 

@@ -2,6 +2,7 @@ package com.servebbs.amazarashi.kangtangdotterzero.domains.actions;
 
 import android.content.Context;
 
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.ProjectContext;
 
@@ -15,6 +16,8 @@ public class UnRedoAction implements Action {
     public UnRedoAction(int delta) {
         this.delta = delta;
     }
+
+    public DotIcon.DotIconData getIcon() { return DotIcon.undo; }
 
     public void action(Context context) {
         ProjectContext projectContext = ProjectContext.get(context);

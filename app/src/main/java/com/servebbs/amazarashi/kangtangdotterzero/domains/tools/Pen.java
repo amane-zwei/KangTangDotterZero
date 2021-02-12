@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,9 +29,7 @@ public class Pen extends Tool {
     private boolean isDraw;
 
     @Override
-    public Rect createIconRect() {
-        return DotIcon.pen.createRect();
-    }
+    public DotIcon.DotIconData getIcon() { return DotIcon.pen; }
 
     @Override
     public boolean touch(Event event) {

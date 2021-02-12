@@ -4,12 +4,15 @@ import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.dialogs.LoadProjectDialog;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.ProjectContext;
 
 public class CallLoadProjectDialogAction implements Action {
+    public DotIcon.DotIconData getIcon() { return DotIcon.load; }
+
     public void action(Context context) {
         new LoadProjectDialog()
                 .setOnPositive((Project project) -> {

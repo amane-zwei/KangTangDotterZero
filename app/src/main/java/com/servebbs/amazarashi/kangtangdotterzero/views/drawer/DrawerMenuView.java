@@ -3,126 +3,53 @@ package com.servebbs.amazarashi.kangtangdotterzero.views.drawer;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 
-import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.Action;
-import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.CallLoadProjectDialogAction;
-import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.CallSaveProjectDialogAction;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 
-public class DrawerMenuView extends ExpandableListView {
-    public static final Item[] items = {
-            new Item("FILE", new Item[]{
-                    new Item("NEW", new CallSaveProjectDialogAction()),
-                    new Item("SAVE", new CallSaveProjectDialogAction()),
-                    new Item("LOAD", new CallLoadProjectDialogAction())
-            }),
-            new Item("TEST", new Item[]{
-                    new Item("SAMPLE", new CallSaveProjectDialogAction()),
-                    new Item("SAMPLE", new CallSaveProjectDialogAction()),
-            }),
-    };
+public class DrawerMenuView extends LinearLayout {
+
+    private static final int titleHeight = ScreenSize.getIconSize() * 3;
+
+    private final DrawerListView drawerListView;
 
     public DrawerMenuView(Context context) {
         super(context);
 
-        setAdapter(new ListAdapter(context, items));
-    }
+        setOrientation(LinearLayout.VERTICAL);
+        setBackgroundColor(0xffffffff);
 
-    private static class ListAdapter extends BaseExpandableListAdapter {
-        private final Context context;
-        private final Item[] items;
-
-        ListAdapter(Context context, Item[] items) {
-            this.context = context;
-            this.items = items;
+        {
+            TitleView titleView = new TitleView(context);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    titleHeight
+            );
+            titleView.setLayoutParams(layoutParams);
+            addView(titleView);
         }
-
-        @Override
-        public int getGroupCount() {
-            return items.length;
-        }
-
-        @Override
-        public int getChildrenCount(int groupPosition) {
-            Item parent = items[groupPosition];
-            return parent.children == null ? 0 : parent.children.length;
-        }
-
-        @Override
-        public Object getGroup(int groupPosition) {
-            return items[groupPosition];
-        }
-
-        @Override
-        public Object getChild(int groupPosition, int childPosition) {
-            return items[groupPosition].children[childPosition];
-        }
-
-        @Override
-        public long getGroupId(int groupPosition) {
-            return 0;
-        }
-
-        @Override
-        public long getChildId(int groupPosition, int childPosition) {
-            return 0;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return false;
-        }
-
-        @Override
-        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            DrawerItemView itemView;
-            if (convertView == null) {
-                itemView = new DrawerItemView(context);
-            } else {
-                itemView = (DrawerItemView) convertView;
-            }
-
-            Item parentItem = items[groupPosition];
-            itemView.setText(parentItem.title);
-            return itemView;
-        }
-
-        @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-            DrawerItemView itemView;
-            if (convertView == null) {
-                itemView = new DrawerItemView(context);
-            } else {
-                itemView = (DrawerItemView) convertView;
-            }
-
-            Item item = items[groupPosition].children[childPosition];
-            itemView.setText(item.title);
-            return itemView;
-        }
-
-        @Override
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return false;
+        {
+            DrawerListView drawerListView = this.drawerListView = new DrawerListView(context);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    0,
+                    1
+            );
+            drawerListView.setLayoutParams(layoutParams);
+            addView(drawerListView);
         }
     }
 
-    public static class Item {
-        private final String title;
-        private final Action action;
-        private final Item[] children;
+    public void setItemClickListener(DrawerListView.OnItemClick onItemClickListener) {
+        drawerListView.setOnItemClick(onItemClickListener);
+    }
 
-        public Item(String title, Item[] children) {
-            this.title = title;
-            this.action = null;
-            this.children = children;
-        }
+    private static class TitleView extends View {
+        private TitleView(Context context) {
+            super(context);
 
-        public Item(String title, Action action) {
-            this.title = title;
-            this.action = action;
-            this.children = null;
+            setBackgroundColor(0xffd0d0ff);
         }
     }
+
 }

@@ -2,7 +2,6 @@ package com.servebbs.amazarashi.kangtangdotterzero.domains.tools;
 
 import android.graphics.Bitmap;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,9 +22,7 @@ import lombok.Setter;
 
 public class Bucket extends Tool {
     @Override
-    public Rect createIconRect() {
-        return DotIcon.bucket.createRect();
-    }
+    public DotIcon.DotIconData getIcon() { return DotIcon.bucket; }
 
     @Override
     public boolean touch(Event event) {

@@ -21,8 +21,12 @@ public class DotIcon {
         return bitmap;
     }
 
+    public static final DotIconData empty = new DotIconData(0, 0, 0, 0);
+
     public static final DotIconData cursor = new DotIconData(96, 0, 16, 16);
     public static final DotIconData cursorButton = new DotIconData(96, 16, 16, 16);
+
+    public static final DotIconData groupIndicator = new DotIconData(112, 0, 8, 8);
 
     public static final DotIconData pallet = new DotIconData(0, 0, 16, 16);
     public static final DotIconData color = new DotIconData(16, 0, 16, 16);
@@ -61,16 +65,26 @@ public class DotIcon {
             return top + height;
         }
 
-        public Rect createRect() {
-            return new Rect(left, top, getRight(), getBottom());
+        public Rect setRect(Rect rect) {
+            rect.set(left, top, getRight(), getBottom());
+            return rect;
         }
 
-        public Rect createRect(int x, int y) {
-            return new Rect(
+        public Rect setRect(Rect rect, int x, int y) {
+            rect.set(
                     left + x,
                     top + y,
                     getRight() + x,
                     getBottom() + y);
+            return rect;
+        }
+
+        public Rect createRect() {
+            return setRect(new Rect());
+        }
+
+        public Rect createRect(int x, int y) {
+            return setRect(new Rect(), x, y);
         }
     }
 }

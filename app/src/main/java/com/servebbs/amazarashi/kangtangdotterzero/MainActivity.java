@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         drawer.addView(base);
 
         DrawerMenuView drawerMenuView = new DrawerMenuView(this);
+        drawerMenuView.setItemClickListener(this::onMenuItemClick);
         DrawerLayout.LayoutParams layoutParams = new DrawerLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.gravity = Gravity.LEFT;
         drawerMenuView.setLayoutParams(layoutParams);
@@ -118,5 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
     public interface OnPermissionResponse {
         boolean apply(int requestCode, String[] permissions, int[] grantResults);
+    }
+
+    private void onMenuItemClick() {
+        drawer.closeDrawer(Gravity.LEFT);
     }
 }
