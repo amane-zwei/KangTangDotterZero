@@ -8,15 +8,16 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Tool;
 
+import lombok.Setter;
+
 public class ChangeToolAction implements Action {
 
-    private final Tool tool;
+    @Setter
+    private Tool tool;
 
-    public ChangeToolAction(Tool tool) {
-        this.tool = tool;
+    public DotIcon.DotIconData getIcon() {
+        return tool.getIcon();
     }
-
-    public DotIcon.DotIconData getIcon() { return tool.getIcon(); }
 
     public void action(Context context) {
         GlobalContext globalContext = GlobalContext.get(context);

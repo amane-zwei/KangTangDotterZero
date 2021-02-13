@@ -5,28 +5,36 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import androidx.annotation.NonNull;
+
 import com.servebbs.amazarashi.kangtangdotterzero.MainActivity;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.GlobalContext;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.Action;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.ChangeToolAction;
-import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Tool;
+import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotIconDrawable;
+
+import lombok.Setter;
 
 public class SelectToolView extends ActionView {
-    private static Paint backPaint;
+    private static final Paint backPaint;
 
     static {
         backPaint = new Paint();
         backPaint.setColor(0xff000000);
     }
 
-    private SelectToolView(Context context) {
+    public SelectToolView(Context context) {
         super(context);
+        Action action = new ChangeToolAction();
+        setBackground(new ToolIconDrawable());
+        setOnClickAction(action);
     }
 
-    public SelectToolView(Context context, Tool tool) {
-        super(context);
-        drawer = new IconDrawer(tool, tool.getIcon().createRect());
-        onClickAction = new ChangeToolAction(tool);
+    public SelectToolView applyTool(Tool tool) {
+        ((ChangeToolAction) getOnClickAction()).setTool(tool);
+        ((ToolIconDrawable) getBackground()).setTool(tool);
+        return this;
     }
 
     @Override
@@ -41,30 +49,20 @@ public class SelectToolView extends ActionView {
         ((MainActivity) getContext()).getToolViews().remove(this);
     }
 
-    private static class IconDrawer implements Drawer {
+    private class ToolIconDrawable extends DotIconDrawable {
+        @Setter
         Tool tool;
-        Rect rect;
-        Rect subRect;
-
-        protected IconDrawer(Tool tool, Rect rect) {
-            this.tool = tool;
-            this.rect = rect;
-            this.subRect = new Rect(
-                    rect.left,
-                    rect.top + rect.height(),
-                    rect.right,
-                    rect.bottom + rect.height());
-        }
 
         @Override
-        public void draw(Context context, Canvas canvas) {
-            final Rect dstRect = canvas.getClipBounds();
-            if (GlobalContext.get(context).getTool().getClass() == tool.getClass()) {
-                canvas.drawRect(dstRect, backPaint);
-                canvas.drawBitmap(DotIcon.getBitmap(), subRect, dstRect, paint);
+        public void draw(@NonNull Canvas canvas) {
+            final Rect dst = getDst();
+            if (GlobalContext.get(getContext()).getTool().getClass() == tool.getClass()) {
+                canvas.drawRect(dst, backPaint);
+                setSrcRect(tool.getIcon(), 0, tool.getIcon().getHeight());
             } else {
-                canvas.drawBitmap(DotIcon.getBitmap(), rect, dstRect, paint);
+                setSrcRect(tool.getIcon());
             }
+            super.draw(canvas);
         }
     }
 }

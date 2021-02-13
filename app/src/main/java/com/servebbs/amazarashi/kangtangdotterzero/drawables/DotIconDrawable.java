@@ -12,17 +12,26 @@ import androidx.annotation.Nullable;
 
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class DotIconDrawable extends Drawable {
     private final Paint paint = new Paint();
+    @Getter
     private final Rect src = new Rect();
+    @Getter
     private final Rect dst = new Rect();
+
+    public DotIconDrawable(DotIcon.DotIconData dotIconData) {
+        setSrcRect(dotIconData);
+    }
 
     public Rect setSrcRect(DotIcon.DotIconData dotIconData) {
         return dotIconData.setRect(src);
     }
-
-    protected Rect getSrc() {
-        return src;
+    public Rect setSrcRect(DotIcon.DotIconData dotIconData, int x, int y) {
+        return dotIconData.setRect(src, x, y);
     }
 
     @Override

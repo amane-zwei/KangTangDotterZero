@@ -43,12 +43,12 @@ public class HorizontalMenuView extends HorizontalScrollView {
         layout.setLayoutParams(params);
         this.addView(layout);
 
-        addItem(new SelectToolView(context, new Pen()));
-        addItem(new SelectToolView(context, new Eraser()));
-        addItem(new SelectToolView(context, new Bucket()));
+        addItem(new SelectToolView(context).applyTool(new Pen()));
+        addItem(new SelectToolView(context).applyTool(new Eraser()));
+        addItem(new SelectToolView(context).applyTool(new Bucket()));
         addItem(new CallColorPickerDialogView(context));
-        addItem(new UnRedoView(context, UnRedoAction.DELTA_UNDO));
-        addItem(new UnRedoView(context, UnRedoAction.DELTA_REDO));
+        addItem(new UnRedoView(context).applyDelta(UnRedoAction.DELTA_UNDO));
+        addItem(new UnRedoView(context).applyDelta(UnRedoAction.DELTA_REDO));
         addItem(new CallSaveProjectDialogView(context));
         addItem(new CallLoadProjectDialogView(context));
         addItem(new CallDrawerView(context));

@@ -8,7 +8,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.MainActivity;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 
 public class CallDrawerAction implements Action {
-    public DotIcon.DotIconData getIcon() { return DotIcon.pen; }
+    public DotIcon.DotIconData getIcon() { return DotIcon.menu; }
 
     public void action(Context context) {
         ((MainActivity) context)

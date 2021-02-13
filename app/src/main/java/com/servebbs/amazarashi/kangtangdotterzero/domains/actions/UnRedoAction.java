@@ -6,16 +6,15 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.MainFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.ProjectContext;
 
+import lombok.Setter;
+
 public class UnRedoAction implements Action {
 
     public static final int DELTA_UNDO = -1;
     public static final int DELTA_REDO = 1;
 
-    private final int delta;
-
-    public UnRedoAction(int delta) {
-        this.delta = delta;
-    }
+    @Setter
+    private int delta;
 
     public DotIcon.DotIconData getIcon() { return DotIcon.undo; }
 
