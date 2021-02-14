@@ -17,6 +17,8 @@ public class DrawerItemView extends DotTextView {
 
         setTextColor(0xff000000);
         setBackgroundColor(0xffffffff);
+
+        setCompoundDrawablePadding(padding);
     }
 
     public void setLevel(int level) {
