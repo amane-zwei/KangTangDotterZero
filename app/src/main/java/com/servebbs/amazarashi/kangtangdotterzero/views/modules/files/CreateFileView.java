@@ -1,4 +1,4 @@
-package com.servebbs.amazarashi.kangtangdotterzero.views.modules;
+package com.servebbs.amazarashi.kangtangdotterzero.views.modules.files;
 
 import android.content.Context;
 import android.os.Environment;

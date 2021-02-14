@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -21,8 +23,8 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.files.KTDZFile;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
-import com.servebbs.amazarashi.kangtangdotterzero.views.modules.CreateFileView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.HeaderView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.CreateFileView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,7 +55,8 @@ public class SaveProjectDialog extends KTDZDialogFragment {
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle bundle) {
+    @NonNull
+    public Dialog onCreateDialog(@Nullable Bundle bundle) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ((MainActivity) getContext()).addPermissionRequest((int requestCode, String[] permissions, int[] grantResults) -> {

@@ -9,7 +9,7 @@ import lombok.Getter;
 public class ProjectContext {
 
     @Getter
-    private Project project = Project.create();
+    private Project project = Project.createDefault();
 
     public void applyProject(Project project) {
         this.project = project;

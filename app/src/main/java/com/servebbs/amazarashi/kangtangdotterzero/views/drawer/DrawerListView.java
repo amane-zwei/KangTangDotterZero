@@ -8,6 +8,7 @@ import android.widget.ExpandableListView;
 
 import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.Action;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.CallLoadProjectDialogAction;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.CallNewProjectDialogAction;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.actions.CallSaveProjectDialogAction;
 
 import lombok.Setter;
@@ -15,7 +16,7 @@ import lombok.Setter;
 public class DrawerListView extends ExpandableListView {
     public static final Item[] items = {
             new Item("FILE", new Item[]{
-                    new Item("NEW", new CallSaveProjectDialogAction()),
+                    new Item("NEW", new CallNewProjectDialogAction()),
                     new Item("SAVE", new CallSaveProjectDialogAction()),
                     new Item("LOAD", new CallLoadProjectDialogAction())
             }),
