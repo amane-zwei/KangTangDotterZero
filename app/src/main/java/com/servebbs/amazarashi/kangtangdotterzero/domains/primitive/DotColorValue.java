@@ -30,7 +30,7 @@ public class DotColorValue {
     }
 
     public boolean equals(DotColorValue dotColorValue) {
-        return this.value == dotColorValue.value;
+        return dotColorValue != null && this.value == dotColorValue.value;
     }
 
     public boolean equals(int value) {

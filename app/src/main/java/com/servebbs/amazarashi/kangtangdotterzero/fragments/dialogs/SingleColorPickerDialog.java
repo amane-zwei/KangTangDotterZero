@@ -134,8 +134,11 @@ public class SingleColorPickerDialog extends KTDZDialogFragment {
         }
 
         public void applyColor(DotColorValue color) {
-            this.color = color;
-            colorDrawable.setBackgroundColor(color.getValue());
+            if (!color.equals(this.color)) {
+                this.color = color;
+                colorDrawable.setBackgroundColor(color.getValue());
+                getChildAt(0).invalidate();
+            }
         }
     }
 }
