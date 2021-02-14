@@ -60,17 +60,21 @@ public class Project {
     public static Project createDefault() {
         return create(
                 8,
-                8);
+                8,
+                new DotColorValue(0xffffffff),
+                false);
     }
 
     public static Project create(
             int width,
-            int height) {
+            int height,
+            DotColorValue backgroundColor,
+            boolean isIndexedColor) {
         Project project = new Project();
         project.width = width;
         project.height = height;
-        project.isIndexedColor = false;
-        project.backGroundColor = new DotColorValue(0xffffffff);
+        project.isIndexedColor = isIndexedColor;
+        project.backGroundColor = backgroundColor;
 
         project.frames = new ArrayList<>();
         project.addFrame();

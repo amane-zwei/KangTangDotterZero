@@ -10,6 +10,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.HeaderView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.ProjectColorView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.ProjectSizeView;
 
 public class NewProjectDialog extends KTDZDialogFragment {
@@ -30,7 +31,9 @@ public class NewProjectDialog extends KTDZDialogFragment {
     private Project createProject() {
         return Project.create(
                 contentView.sizeView.getWidthValue(),
-                contentView.sizeView.getHeightValue());
+                contentView.sizeView.getHeightValue(),
+                contentView.projectColorView.getBackgroundColor(),
+                contentView.projectColorView.useIndexedColor());
     }
 
     @Override
@@ -52,6 +55,7 @@ public class NewProjectDialog extends KTDZDialogFragment {
     public class ContentView extends LinearLayout {
 
         private final ProjectSizeView sizeView;
+        private final ProjectColorView projectColorView;
 
         public ContentView(Context context) {
             super(context);
@@ -88,6 +92,35 @@ public class NewProjectDialog extends KTDZDialogFragment {
                 layoutParams.setMargins(padding, 0, padding, padding);
                 sizeView.setLayoutParams(layoutParams);
                 addView(sizeView);
+            }
+
+            {
+                HeaderView headerView = new HeaderView(context);
+                headerView.setText("COLOR");
+                LayoutParams layoutParams = new LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                headerView.setLayoutParams(layoutParams);
+                addView(headerView);
+            }
+            {
+                ProjectColorView projectColorView = this.projectColorView = new ProjectColorView(context);
+                projectColorView.set(project.getBackGroundColor(), project.isIndexedColor());
+                projectColorView.setBackground(new DotRoundRectDrawable());
+                projectColorView.setPadding(
+                        DotRoundRectDrawable.paddingLeft,
+                        DotRoundRectDrawable.paddingTop,
+                        DotRoundRectDrawable.paddingRight,
+                        DotRoundRectDrawable.paddingBottom);
+
+                LayoutParams layoutParams = new LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                layoutParams.setMargins(padding, 0, padding, padding);
+                projectColorView.setLayoutParams(layoutParams);
+                addView(projectColorView);
             }
         }
     }

@@ -55,6 +55,7 @@ public class DotRoundRectDrawable extends Drawable {
         setShadowColor(shadowColor);
     }
 
+    public int getBackgroundColor() { return backgroundPaint.getColor(); }
     public void setBackgroundColor(int color) {
         backgroundPaint.setColor(color);
     }

@@ -2,6 +2,7 @@ package com.servebbs.amazarashi.kangtangdotterzero.views.drawer;
 
 import android.content.Context;
 
+import com.servebbs.amazarashi.kangtangdotterzero.KTDZTheme;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotIcon;
@@ -15,14 +16,10 @@ public class DrawerItemView extends DotTextView {
     public DrawerItemView(Context context) {
         super(context);
 
-        setTextColor(0xff000000);
+        setTextColor(KTDZTheme.textColor);
         setBackgroundColor(0xffffffff);
 
         setCompoundDrawablePadding(padding);
-    }
-
-    public void setLevel(int level) {
-        setPadding(level * indent, padding, 0, padding);
     }
 
     public static class ChildItemView extends DrawerItemView {
