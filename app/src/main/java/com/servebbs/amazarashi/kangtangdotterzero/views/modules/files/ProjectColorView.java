@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.servebbs.amazarashi.kangtangdotterzero.KTDZTheme;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColorValue;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
@@ -28,6 +29,7 @@ public class ProjectColorView extends LinearLayout {
         {
             BackgroundColorView backgroundColorView = this.backgroundColorView = new BackgroundColorView(context);
             backgroundColorView.setText("background color");
+            backgroundColorView.setFocusable(true);
             backgroundColorView.setOnClickListener(this::onClick);
             LayoutParams layoutParams = new LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -74,6 +76,7 @@ public class ProjectColorView extends LinearLayout {
     private static class BackgroundColorView extends DotTextView {
         private static final int iconSize = ScreenSize.getIconSize() / 2;
         private static final int textSize = DotFont.normalHeight / 2;
+        private static final int padding = ScreenSize.getDotSize() * 2;
 
         private DotColorValue color;
         private final GradientDrawable colorDrawable;
@@ -82,10 +85,14 @@ public class ProjectColorView extends LinearLayout {
             super(context);
 
             setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            setTextColor(KTDZTheme.textColor);
+            setPadding(padding, 0, 0, 0);
+
             GradientDrawable colorDrawable = this.colorDrawable = new GradientDrawable();
             colorDrawable.setStroke(ScreenSize.getDotSize() / 2, 0xff000000);
             colorDrawable.setBounds(0, 0, textSize, textSize);
             setCompoundDrawables(colorDrawable, null, null, null);
+            setCompoundDrawablePadding(padding);
         }
 
         public void applyColor(DotColorValue color) {

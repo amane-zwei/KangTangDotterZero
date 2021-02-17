@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class DotIconDrawable extends Drawable {
-    private final Paint paint = new Paint();
+    private static final Paint paint = new Paint();
     @Getter
     private final Rect src = new Rect();
     @Getter

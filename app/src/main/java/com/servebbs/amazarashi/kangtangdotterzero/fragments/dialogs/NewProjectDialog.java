@@ -86,7 +86,7 @@ public class NewProjectDialog extends KTDZDialogFragment {
                         DotRoundRectDrawable.paddingBottom);
 
                 LayoutParams layoutParams = new LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
                 layoutParams.setMargins(padding, 0, padding, padding);
@@ -115,7 +115,7 @@ public class NewProjectDialog extends KTDZDialogFragment {
                         DotRoundRectDrawable.paddingBottom);
 
                 LayoutParams layoutParams = new LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
                 layoutParams.setMargins(padding, 0, padding, padding);
