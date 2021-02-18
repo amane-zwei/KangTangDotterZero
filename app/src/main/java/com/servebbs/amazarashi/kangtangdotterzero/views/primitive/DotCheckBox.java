@@ -23,7 +23,8 @@ import lombok.Setter;
 public class DotCheckBox extends androidx.appcompat.widget.AppCompatCheckBox {
 
     private static final int padding = ScreenSize.getDotSize() * 2;
-    private static final int size = DotFont.normalHeight / 2;
+    public static final int size = ScreenSize.getIconSize() / 2;
+    private static final int textSize = DotFont.normalHeight / 2;
 
     public DotCheckBox(Context context) {
         super(context);
@@ -36,7 +37,7 @@ public class DotCheckBox extends androidx.appcompat.widget.AppCompatCheckBox {
         setTypeface(DotFont.getDotTypeface());
         setTextColor(KTDZTheme.textColor);
         setIncludeFontPadding(false);
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
 
     public static class CheckBoxDrawable extends Drawable {
