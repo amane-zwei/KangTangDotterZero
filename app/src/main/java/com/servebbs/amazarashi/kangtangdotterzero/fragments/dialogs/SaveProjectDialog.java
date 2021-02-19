@@ -23,7 +23,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.files.KTDZFile;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
-import com.servebbs.amazarashi.kangtangdotterzero.views.modules.HeaderView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.setting.HeaderView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.CreateFileView;
 
 import java.io.File;
@@ -57,9 +57,13 @@ public class SaveProjectDialog extends KTDZDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(@Nullable Bundle bundle) {
+        MainActivity activity = (MainActivity) getContext();
+        if (activity == null) {
+            return super.onCreateDialog(bundle);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ((MainActivity) getContext()).addPermissionRequest((int requestCode, String[] permissions, int[] grantResults) -> {
+            activity.addPermissionRequest((int requestCode, String[] permissions, int[] grantResults) -> {
                 if (requestCode == REQUEST_EXTERNAL_STORAGE) {
                     if (grantResults.length < 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                         dismiss();
@@ -69,7 +73,7 @@ public class SaveProjectDialog extends KTDZDialogFragment {
                 return false;
             });
             ActivityCompat.requestPermissions(
-                    (AppCompatActivity) getContext(),
+                    activity,
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
@@ -88,23 +92,28 @@ public class SaveProjectDialog extends KTDZDialogFragment {
             return false;
         }
 
+        AppCompatActivity activity = (AppCompatActivity) getContext();
+        if (activity == null) {
+            return false;
+        }
+
         File file = ktdzFile.translateToFile();
         if (file.exists()) {
             new ConfirmDialog()
                     .setMessage("the file is exist.")
                     .setOnPositive(() -> {
-                        saveFile(ktdzFile, file);
+                        saveFile(activity, ktdzFile, file);
                         dismiss();
                         return true;
                     })
-                    .show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "action_confirm_overwrite");
+                    .show((activity).getSupportFragmentManager(), "action_confirm_overwrite");
             return false;
         } else {
-            return saveFile(ktdzFile, file);
+            return saveFile(activity, ktdzFile, file);
         }
     }
 
-    private boolean saveFile(KTDZFile ktdzFile, File file) {
+    private boolean saveFile(Context context, KTDZFile ktdzFile, File file) {
         try (OutputStream outputStream = new FileOutputStream(file)){
             ktdzFile.getExtension().getRepository().save(project, outputStream);
         } catch (IOException e) {
@@ -117,7 +126,7 @@ public class SaveProjectDialog extends KTDZDialogFragment {
             contentValues.put(MediaStore.Images.Media.MIME_TYPE, ktdzFile.getExtension().getMimeType());
             contentValues.put(MediaStore.Images.Media.DATA, file.getPath());
 
-            getContext().getContentResolver()
+            context.getContentResolver()
                     .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
         }
         return true;

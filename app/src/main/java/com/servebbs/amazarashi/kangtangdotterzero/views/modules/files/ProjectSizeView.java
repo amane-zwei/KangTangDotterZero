@@ -1,16 +1,22 @@
 package com.servebbs.amazarashi.kangtangdotterzero.views.modules.files;
 
 import android.content.Context;
+import android.text.Editable;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.servebbs.amazarashi.kangtangdotterzero.KTDZTheme;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotFont;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotEditText;
 import com.servebbs.amazarashi.kangtangdotterzero.views.primitive.DotTextView;
 
 public class ProjectSizeView extends LinearLayout {
+    private static final int marginLeft = ScreenSize.getDotSize() * 2;
+    private static final int marginRight = ScreenSize.getDotSize();
+
     private final SizeEditView widthView;
     private final SizeEditView heightView;
 
@@ -32,12 +38,15 @@ public class ProjectSizeView extends LinearLayout {
         {
             DotTextView dotTextView = new DotTextView(context);
             dotTextView.setText("x");
-            dotTextView.setTextColor(0xff000000);
+            dotTextView.setTextColor(KTDZTheme.textColor);
+            dotTextView.setGravity(Gravity.BOTTOM);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
             layoutParams.gravity = Gravity.BOTTOM;
+            layoutParams.leftMargin = marginLeft;
+            layoutParams.rightMargin = marginRight;
             dotTextView.setLayoutParams(layoutParams);
             addView(dotTextView);
         }
@@ -76,7 +85,11 @@ public class ProjectSizeView extends LinearLayout {
         }
 
         private int getValue() {
-            return Integer.parseInt(getText().toString());
+            Editable text = getText();
+            if (text == null) {
+                return 1;
+            }
+            return Integer.parseInt(text.toString());
         }
 
         private void setValue(int value) {

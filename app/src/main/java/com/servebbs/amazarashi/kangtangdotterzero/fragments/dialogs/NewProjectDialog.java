@@ -2,16 +2,12 @@ package com.servebbs.amazarashi.kangtangdotterzero.fragments.dialogs;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
-import com.servebbs.amazarashi.kangtangdotterzero.domains.ScreenSize;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
-import com.servebbs.amazarashi.kangtangdotterzero.drawables.DotRoundRectDrawable;
 import com.servebbs.amazarashi.kangtangdotterzero.fragments.KTDZDialogFragment;
-import com.servebbs.amazarashi.kangtangdotterzero.views.modules.HeaderView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.ProjectColorView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.files.ProjectSizeView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.modules.setting.SettingView;
 
 public class NewProjectDialog extends KTDZDialogFragment {
 
@@ -52,7 +48,7 @@ public class NewProjectDialog extends KTDZDialogFragment {
         boolean onPositiveButton(Project project);
     }
 
-    public class ContentView extends LinearLayout {
+    public class ContentView extends SettingView {
 
         private final ProjectSizeView sizeView;
         private final ProjectColorView projectColorView;
@@ -60,67 +56,15 @@ public class NewProjectDialog extends KTDZDialogFragment {
         public ContentView(Context context) {
             super(context);
 
-            final int iconSize = ScreenSize.getIconSize();
-            final int padding = ScreenSize.getPadding();
-
-            setOrientation(LinearLayout.VERTICAL);
-
-            {
-                HeaderView headerView = new HeaderView(context);
-                headerView.setText("SIZE");
-                LayoutParams layoutParams = new LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                headerView.setLayoutParams(layoutParams);
-                addView(headerView);
-            }
             {
                 ProjectSizeView sizeView = this.sizeView = new ProjectSizeView(context);
                 sizeView.set(project.getWidth(), project.getHeight());
-                sizeView.setBackground(new DotRoundRectDrawable());
-                sizeView.setPadding(
-                        DotRoundRectDrawable.paddingLeft,
-                        DotRoundRectDrawable.paddingTop,
-                        DotRoundRectDrawable.paddingRight,
-                        DotRoundRectDrawable.paddingBottom);
-
-                LayoutParams layoutParams = new LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                layoutParams.setMargins(padding, 0, padding, padding);
-                sizeView.setLayoutParams(layoutParams);
-                addView(sizeView);
-            }
-
-            {
-                HeaderView headerView = new HeaderView(context);
-                headerView.setText("COLOR");
-                LayoutParams layoutParams = new LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                headerView.setLayoutParams(layoutParams);
-                addView(headerView);
+                addItem("SIZE", sizeView);
             }
             {
                 ProjectColorView projectColorView = this.projectColorView = new ProjectColorView(context);
                 projectColorView.set(project.getBackGroundColor(), project.isIndexedColor());
-                projectColorView.setBackground(new DotRoundRectDrawable());
-                projectColorView.setPadding(
-                        DotRoundRectDrawable.paddingLeft,
-                        DotRoundRectDrawable.paddingTop,
-                        DotRoundRectDrawable.paddingRight,
-                        DotRoundRectDrawable.paddingBottom);
-
-                LayoutParams layoutParams = new LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                layoutParams.setMargins(padding, 0, padding, padding);
-                projectColorView.setLayoutParams(layoutParams);
-                addView(projectColorView);
+                addItem("COLOR", projectColorView);
             }
         }
     }

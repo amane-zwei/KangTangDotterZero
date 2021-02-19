@@ -17,7 +17,7 @@ public class SingleDividerDrawable extends Drawable {
     private final Paint paint = new Paint();
     private final Rect rect = new Rect();
     private final Rect dst = new Rect();
-    private int size = ScreenSize.getDotSize();
+    private final int size = ScreenSize.getDotSize();
 
     public SingleDividerDrawable() {
         setColor(0xff000000);
