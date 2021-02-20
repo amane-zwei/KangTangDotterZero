@@ -28,6 +28,7 @@ public class ProjectRepository extends FileRepository {
     private final String thumbnailFileName = "thumbnail.png";
     private final String projectFileName = "project.json";
     private final String paletteFileName = "palette.json";
+    private final String historyFileName = "history.json";
     private final String imagesDirectoryName = "images/";
 
     @Override
@@ -52,6 +53,13 @@ public class ProjectRepository extends FileRepository {
         putFile(zipOutputStream, paletteFileName,
                 tmpStream -> {
                     String json = objectMapper.writeValueAsString(project.getPalette());
+                    tmpStream.write(json.getBytes(charset));
+                });
+
+        // put history
+        putFile(zipOutputStream, historyFileName,
+                tmpStream -> {
+                    String json = objectMapper.writeValueAsString(project.getHistory());
                     tmpStream.write(json.getBytes(charset));
                 });
 

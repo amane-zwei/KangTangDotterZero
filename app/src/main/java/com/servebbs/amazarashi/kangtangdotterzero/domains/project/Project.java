@@ -46,6 +46,7 @@ public class Project {
 
     @JsonIgnore
     private int paletteOnHistoryIndex;
+    @Getter
     @JsonIgnore
     private HistoryList history;
 

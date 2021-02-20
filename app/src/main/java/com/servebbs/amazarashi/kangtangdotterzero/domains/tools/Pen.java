@@ -7,6 +7,8 @@ import android.graphics.PorterDuffXfermode;
 import android.view.MotionEvent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.lowlevel.Point;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColor;
@@ -18,6 +20,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class Pen extends Tool {
@@ -138,8 +141,12 @@ public class Pen extends Tool {
     }
 
     @NoArgsConstructor
+    @JsonTypeName("pen")
     public static class PenHistory extends History {
+        @Getter
         private DotColor color;
+        @Getter
+        @JsonProperty("points")
         private List<Point> buff;
         @JsonIgnore
         private Paint paint;

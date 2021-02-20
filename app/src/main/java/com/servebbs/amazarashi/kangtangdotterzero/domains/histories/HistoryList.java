@@ -1,6 +1,7 @@
 package com.servebbs.amazarashi.kangtangdotterzero.domains.histories;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Layer;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 
@@ -29,7 +30,7 @@ public class HistoryList {
     }
 
     private boolean applyHistory(Project project, int start, int end) {
-        for ( ; start < end; start++) {
+        for (; start < end; start++) {
             History history = list.get(start);
             Layer layer = project.findLayer(history.getLayerId());
             history.draw(layer, project.getPalette());
@@ -38,9 +39,11 @@ public class HistoryList {
         return true;
     }
 
+    @JsonIgnore
     public History get(int index) {
         return list.get(index);
     }
+
     public void add(History history) {
         if (list.size() > index) {
             list.subList(index, list.size()).clear();
@@ -48,6 +51,7 @@ public class HistoryList {
         list.add(history);
         index++;
     }
+
     public void clear() {
         list.clear();
         index = 0;

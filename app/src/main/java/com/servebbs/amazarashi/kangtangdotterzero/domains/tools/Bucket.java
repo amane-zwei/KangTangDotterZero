@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.bitmap.IndexedBitmap;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColor;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 public class Bucket extends Tool {
     @Override
@@ -187,12 +187,13 @@ public class Bucket extends Tool {
     }
 
     @NoArgsConstructor
+    @JsonTypeName("bucket")
     public static class BucketHistory extends History {
-        @Setter
+        @Getter
         private DotColor color;
-        @Setter
+        @Getter
         private int x;
-        @Setter
+        @Getter
         private int y;
 
         @JsonIgnore
