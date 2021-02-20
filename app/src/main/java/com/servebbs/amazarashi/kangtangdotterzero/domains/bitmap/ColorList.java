@@ -16,19 +16,21 @@ import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonSerialize(using = ColorList.ColorListSerializer.class)
 @JsonDeserialize(using = ColorList.ColorListDeserializer.class)
 public class ColorList {
-    public static final int colorMax = 256;
+    public static final int colorMax = 1024;
 
     private List<DotColorValue> array;
 
-    public ColorList(int[] colors) {
+    protected ColorList() {
         array = new ArrayList<>();
+    }
+
+    public ColorList(int[] colors) {
+        array = new ArrayList<>(colors.length);
         addColors(colors);
     }
 

@@ -86,7 +86,7 @@ public class ProjectRepository extends FileRepository {
         options.inMutable = true;
 
         // get project data
-        ZipEntry zipEntry = null;
+        ZipEntry zipEntry;
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             String fileName = zipEntry.getName();
 
@@ -104,7 +104,9 @@ public class ProjectRepository extends FileRepository {
             throw new IOException("project not found.");
         }
         if (palette == null) {
-            palette = Palette.createDefault();
+            palette = Palette.createDefault(project.isIndexedColor());
+        } else {
+            palette.normalizeIndex(project.isIndexedColor());
         }
 
         zipInputStream.close();

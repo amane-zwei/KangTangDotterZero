@@ -8,22 +8,29 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Palette extends ColorList {
-    public static Palette createDefault() {
-        final int[] colors = {
-                0xff000000,
-                0xffffffff,
-                0xffff0000,
-                0xff00ff00,
-                0xff0000ff,
-                0xffffff00,
-                0xff00ffff,
-                0xffff00ff,
-        };
-        return new Palette(colors);
+    private static final int[] defaultColors = {
+            0xff000000,
+            0xffffffff,
+            0xffff0000,
+            0xff00ff00,
+            0xff0000ff,
+            0xffffff00,
+            0xff00ffff,
+            0xffff00ff,
+    };
+
+    public static Palette createDefault(boolean useClearColor) {
+        Palette palette = new Palette();
+        if (useClearColor) {
+            palette.addColor(0x00000000);
+            palette.index = 1;
+        }
+        palette.addColors(defaultColors);
+        palette.normalizeIndex(useClearColor);
+        return palette;
     }
 
-    public static Palette empty() {
-        return new Palette(new int[0]);
+    private Palette() {
     }
 
     public Palette(ColorList src) {
@@ -56,6 +63,10 @@ public class Palette extends ColorList {
             index = size() -1;
         }
         return color;
+    }
+
+    public void normalizeIndex(boolean useClearColor) {
+        index = useClearColor ? 1 : 0;
     }
 
     @Getter

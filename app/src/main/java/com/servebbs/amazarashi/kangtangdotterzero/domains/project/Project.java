@@ -80,7 +80,7 @@ public class Project {
         project.addFrame();
         project.frameIndex = 0;
 
-        project.palette = Palette.createDefault();
+        project.palette = Palette.createDefault(isIndexedColor);
 
         project.createDestination();
 
