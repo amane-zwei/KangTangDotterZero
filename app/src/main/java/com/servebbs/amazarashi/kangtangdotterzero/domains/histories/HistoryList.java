@@ -1,23 +1,22 @@
 package com.servebbs.amazarashi.kangtangdotterzero.domains.histories;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Layer;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class HistoryList {
-    @JsonIgnore
     @Getter
-    @Setter
     private int index;
-    @Getter
     private final List<History> list;
+
+    public boolean applyHistory(Project project) {
+        return applyHistory(project, list.size());
+    }
 
     public boolean applyHistory(Project project, int delta) {
         int end = this.index + delta;
@@ -39,7 +38,6 @@ public class HistoryList {
         return true;
     }
 
-    @JsonIgnore
     public History get(int index) {
         return list.get(index);
     }
@@ -52,6 +50,16 @@ public class HistoryList {
         index++;
     }
 
+    public void setHistory(History[] histories) {
+        if (histories == null) {
+            return;
+        }
+        for (History history : histories) {
+            history.restore();
+        }
+        list.addAll(Arrays.asList(histories));
+    }
+
     public void clear() {
         list.clear();
         index = 0;
@@ -60,5 +68,9 @@ public class HistoryList {
     public HistoryList() {
         list = new ArrayList<>();
         index = 0;
+    }
+
+    public History[] toArray() {
+        return list.toArray(new History[0]);
     }
 }

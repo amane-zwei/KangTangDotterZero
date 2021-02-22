@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.bitmap.ColorList;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.files.Extension;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.histories.History;
+import com.servebbs.amazarashi.kangtangdotterzero.domains.histories.HistoryList;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Layer;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Palette;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
@@ -15,7 +17,6 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Project;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -23,8 +24,6 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ProjectRepository extends FileRepository {
-    private static final Charset charset = Charset.forName("UTF-8");
-
     private final String thumbnailFileName = "thumbnail.png";
     private final String projectFileName = "project.json";
     private final String paletteFileName = "palette.json";
@@ -44,24 +43,15 @@ public class ProjectRepository extends FileRepository {
 
         // put project data
         putFile(zipOutputStream, projectFileName,
-                tmpStream -> {
-                    String json = objectMapper.writeValueAsString(project);
-                    tmpStream.write(json.getBytes(charset));
-                });
+                tmpStream -> tmpStream.write(objectMapper.writeValueAsBytes(project)));
 
         // put palette
         putFile(zipOutputStream, paletteFileName,
-                tmpStream -> {
-                    String json = objectMapper.writeValueAsString(project.getPalette());
-                    tmpStream.write(json.getBytes(charset));
-                });
+                tmpStream -> tmpStream.write(objectMapper.writeValueAsBytes(project.getPalette())));
 
         // put history
         putFile(zipOutputStream, historyFileName,
-                tmpStream -> {
-                    String json = objectMapper.writeValueAsString(project.getHistory());
-                    tmpStream.write(json.getBytes(charset));
-                });
+                tmpStream -> tmpStream.write(objectMapper.writeValueAsBytes(project.getHistory().toArray())));
 
         // put layer bitmaps
         for (Layer layer : project.layers()) {
@@ -88,6 +78,7 @@ public class ProjectRepository extends FileRepository {
 
         Project project = null;
         Palette palette = null;
+        HistoryList history = new HistoryList();
         Map<String, Bitmap> bitmaps = new HashMap<>();
 
         BitmapFactory.Options options = new  BitmapFactory.Options();
@@ -102,23 +93,19 @@ public class ProjectRepository extends FileRepository {
                 project = objectMapper.readValue(zipInputStream, Project.class);
             } else if (paletteFileName.equals(fileName)) {
                 palette = new Palette(objectMapper.readValue(zipInputStream, ColorList.class));
+            } else if (historyFileName.equals(fileName)) {
+                history.setHistory(objectMapper.readValue(zipInputStream, History[].class));
             } else if (fileName.startsWith(imagesDirectoryName) && !zipEntry.isDirectory()) {
                 bitmaps.put(extractFileName(fileName), BitmapFactory.decodeStream(zipInputStream, null, options));
             }
             zipInputStream.closeEntry();
         }
+        zipInputStream.close();
 
         if (project == null) {
             throw new IOException("project not found.");
         }
-        if (palette == null) {
-            palette = Palette.createDefault(project.isIndexedColor());
-        } else {
-            palette.normalizeIndex(project.isIndexedColor());
-        }
-
-        zipInputStream.close();
-        return project.restore(palette, bitmaps);
+        return project.restore(palette, history, bitmaps);
     }
 
     @Override

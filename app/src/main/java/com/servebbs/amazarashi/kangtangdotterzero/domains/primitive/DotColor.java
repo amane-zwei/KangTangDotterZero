@@ -1,9 +1,15 @@
 package com.servebbs.amazarashi.kangtangdotterzero.domains.primitive;
 
+import androidx.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.bitmap.IndexedBitmap;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.project.Palette;
@@ -15,6 +21,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonSerialize(using = DotColor.DotColorSerializer.class)
+@JsonDeserialize(using = DotColor.DotColorDeserializer.class)
 public class DotColor {
     private int value;
     private final int index;
@@ -58,12 +65,26 @@ public class DotColor {
     }
 
     @Override
+    @NonNull
     public String toString() {
         if (isIndexedColor()) {
             return Integer.toString(plainIndex());
         } else {
             return String.format("#%08x", value);
         }
+    }
+
+    public static DotColor fromString(String src) {
+        int value;
+        int index;
+        if (src.startsWith("#")) {
+            value = (int) Long.parseLong(src.replace("#", ""), 16);
+            index = 0;
+        } else {
+            value = 0;
+            index = (int) Long.parseLong(src);
+        }
+        return new DotColor(value, index);
     }
 
     public static class DotColorSerializer extends StdSerializer<DotColor> {
@@ -81,6 +102,24 @@ public class DotColor {
                 throws IOException {
 
             jsonGenerator.writeString(value.toString());
+        }
+    }
+
+    public static class DotColorDeserializer extends StdDeserializer<DotColor> {
+        public DotColorDeserializer() {
+            this(null);
+        }
+
+        public DotColorDeserializer(Class<DotColor> dotColor) {
+            super(dotColor);
+        }
+
+        @Override
+        public DotColor deserialize(
+                JsonParser jsonParser, DeserializationContext deserializationContext)
+                throws IOException {
+
+            return fromString(jsonParser.getText());
         }
     }
 }

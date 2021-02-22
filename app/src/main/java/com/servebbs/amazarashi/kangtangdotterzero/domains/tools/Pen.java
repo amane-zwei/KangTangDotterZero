@@ -8,7 +8,6 @@ import android.view.MotionEvent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.lowlevel.Point;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColor;
@@ -141,7 +140,6 @@ public class Pen extends Tool {
     }
 
     @NoArgsConstructor
-    @JsonTypeName("pen")
     public static class PenHistory extends History {
         @Getter
         private DotColor color;
@@ -170,6 +168,7 @@ public class Pen extends Tool {
             }
         }
 
+        @Override
         public void draw(Layer layer, Palette palette) {
             if (layer.isIndexedColor()) {
                 paint.setColor(palette.getColor(color.plainIndex()).getValue());
@@ -178,6 +177,11 @@ public class Pen extends Tool {
             } else {
                 innerDraw(layer.getDisplayCanvas(), buff, paint);
             }
+        }
+
+        @Override
+        public void restore() {
+            set();
         }
     }
 }

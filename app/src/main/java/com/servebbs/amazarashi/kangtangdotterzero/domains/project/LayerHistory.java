@@ -3,13 +3,16 @@ package com.servebbs.amazarashi.kangtangdotterzero.domains.project;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LayerHistory {
     @Getter
     private int index;
 
-    private final List<LayerData> list;
+    private List<LayerData> list;
 
     public LayerHistory(LayerData src) {
         list = new ArrayList<>();

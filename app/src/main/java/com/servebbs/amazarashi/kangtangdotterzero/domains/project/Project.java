@@ -96,23 +96,38 @@ public class Project {
         layerMap = new HashMap<>();
     }
 
-    public Project restore(Palette palette, Map<String, Bitmap> bitmaps) throws IOException{
+    public Project restore(Palette palette, HistoryList history, Map<String, Bitmap> bitmaps) throws IOException{
 
-        history = new HistoryList();
-
+        if (palette == null) {
+            palette = Palette.createDefault(isIndexedColor);
+            // TODO indexed-colorで色数が足りない時の処理を考えないとなー
+        }
+        palette.normalizeIndex(isIndexedColor);
         this.palette = palette;
 
-        for (Frame frame : frames) {
-            frame.restore(this);
-
-            for (Layer layer : frame.getLayers()) {
-                Bitmap bitmap = bitmaps.get(Integer.toString(layer.getId()));
-                if (bitmap == null) {
-                    throw new IOException("image not found: " + layer.getId());
+        if (history == null) {
+            this.history = new HistoryList();
+            for (Frame frame : frames) {
+                frame.restore(this);
+                for (Layer layer : frame.getLayers()) {
+                    Bitmap bitmap = bitmaps.get(Integer.toString(layer.getId()));
+                    if (bitmap == null) {
+                        throw new IOException("image not found: " + layer.getId());
+                    }
+                    layer.restore(palette, bitmap, isIndexedColor);
+                    layerMap.put(layer.getId(), layer);
                 }
-                layer.restore(palette, bitmap, isIndexedColor);
-                layerMap.put(layer.getId(), layer);
             }
+        } else {
+            this.history = history;
+            for (Frame frame : frames) {
+                frame.restore(this);
+                for (Layer layer : frame.getLayers()) {
+                    layer.restoreEmpty(width, height, isIndexedColor);
+                    layerMap.put(layer.getId(), layer);
+                }
+            }
+            history.applyHistory(this);
         }
 
         createDestination();

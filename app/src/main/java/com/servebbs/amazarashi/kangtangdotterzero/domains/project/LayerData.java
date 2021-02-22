@@ -83,11 +83,12 @@ public class LayerData {
         }
     }
 
-    public void clear() {
+    public LayerData clear() {
         new Canvas(display).drawColor(0x00000000, PorterDuff.Mode.SRC);
         if (indexed != null) {
             indexed.clear();
         }
+        return this;
     }
 
     public void resize(int width, int height) {

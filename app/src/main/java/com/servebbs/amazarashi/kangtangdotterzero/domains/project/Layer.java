@@ -50,12 +50,23 @@ public class Layer extends LayerData {
         history = new LayerHistory(this);
     }
 
+    public Layer restoreEmpty(int width, int height, boolean isIndexedColor) {
+        if (isIndexedColor) {
+            useIndexedColor();
+        }
+        resize(width, height);
+        written = 0;
+        history = new LayerHistory(this);
+        return this;
+    }
+
     public Layer restore(ColorList colorList, Bitmap src, boolean isIndexedColor) {
         super.restore(colorList, src, isIndexedColor);
         displayCanvas = new Canvas(display);
         if (isIndexedColor()) {
             indexedCanvas = new Canvas(indexed.getBitmap());
         }
+        written = 0;
         history = new LayerHistory(this);
         return this;
     }

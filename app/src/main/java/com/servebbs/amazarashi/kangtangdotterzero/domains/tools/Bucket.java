@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.bitmap.IndexedBitmap;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.histories.History;
 import com.servebbs.amazarashi.kangtangdotterzero.domains.primitive.DotColor;
@@ -187,7 +186,6 @@ public class Bucket extends Tool {
     }
 
     @NoArgsConstructor
-    @JsonTypeName("bucket")
     public static class BucketHistory extends History {
         @Getter
         private DotColor color;
