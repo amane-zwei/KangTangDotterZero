@@ -17,6 +17,8 @@ import com.servebbs.amazarashi.kangtangdotterzero.views.modules.FloatingButtonVi
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 public class MainView extends FrameLayout {
 
     private final List<ProjectView> projectViews;
@@ -25,7 +27,10 @@ public class MainView extends FrameLayout {
     private final Cursor cursorView;
     private FloatingButtonView cursorButtonView;
 
+    @Getter
     private boolean isCursorMode;
+    @Getter
+    private final List<View> cursorModeViews;
 
     public MainView(Context context) {
         super(context);
@@ -34,8 +39,6 @@ public class MainView extends FrameLayout {
         currentProjectView = addProjectView(context).attachProject(Project.get(context));
         addMenuView(context);
 
-        isCursorMode = false;
-
         {
             final int size = ScreenSize.getIconSize();
             cursorView = new Cursor(getContext());
@@ -43,10 +46,10 @@ public class MainView extends FrameLayout {
                     size,
                     size)
             );
-        }
-        if (isCursorMode) {
             summonCursor();
         }
+        cursorModeViews = new ArrayList<>();
+        flipCursor(false);
     }
 
     public void applyProject(Project project) {
@@ -76,7 +79,23 @@ public class MainView extends FrameLayout {
         return menuView;
     }
 
-    public void summonCursor() {
+    public void flipCursor() {
+        flipCursor(!isCursorMode);
+    }
+
+    private void flipCursor(boolean useCursor) {
+        isCursorMode = useCursor;
+        int visibility = useCursor ? VISIBLE : GONE;
+        cursorView.setVisibility(visibility);
+        cursorButtonView.setVisibility(visibility);
+        currentProjectView.attachCursor(useCursor ? cursorView : null);
+
+        for (View view : cursorModeViews) {
+            view.invalidate();
+        }
+    }
+
+    private void summonCursor() {
         if (cursorButtonView == null) {
             final int size = ScreenSize.getIconSize();
             cursorButtonView = new FloatingButtonView(getContext());
@@ -95,10 +114,8 @@ public class MainView extends FrameLayout {
                 cursorButtonView.addView(contentView);
             }
         }
-        isCursorMode = true;
         addView(cursorButtonView);
         addView(cursorView);
-        currentProjectView.attachCursor(cursorView);
     }
 
     public void invalidateProjectViews() {

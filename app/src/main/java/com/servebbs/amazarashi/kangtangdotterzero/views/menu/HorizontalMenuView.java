@@ -16,8 +16,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.domains.tools.Pen;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.ActionView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallColorPickerDialogView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallDrawerView;
-import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallLoadProjectDialogView;
-import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.CallSaveProjectDialogView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.FlipCursorModeView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.SelectToolView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.actionviews.UnRedoView;
 
@@ -49,8 +48,7 @@ public class HorizontalMenuView extends HorizontalScrollView {
         addItem(new CallColorPickerDialogView(context));
         addItem(new UnRedoView(context).applyDelta(UnRedoAction.DELTA_UNDO));
         addItem(new UnRedoView(context).applyDelta(UnRedoAction.DELTA_REDO));
-        addItem(new CallSaveProjectDialogView(context));
-        addItem(new CallLoadProjectDialogView(context));
+        addItem(new FlipCursorModeView(context));
         addItem(new CallDrawerView(context));
 
         this.detector = new GestureDetector(context, new GestureListener());

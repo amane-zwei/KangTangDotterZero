@@ -44,6 +44,7 @@ public class DotIcon {
     public static final DotIconData colorPicker = new DotIconData(16, 64, 16, 16);
     public static final DotIconData undo = new DotIconData(32, 64, 16, 16);
     public static final DotIconData redo = new DotIconData(48, 64, 16, 16);
+    public static final DotIconData flipCursor = new DotIconData(64, 64, 16, 16);
     public static final DotIconData newPaper = new DotIconData(80, 64, 16, 16);
     public static final DotIconData save = new DotIconData(96, 64, 16, 16);
     public static final DotIconData load = new DotIconData(112, 64, 16, 16);
