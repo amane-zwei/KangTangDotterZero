@@ -13,6 +13,7 @@ import com.servebbs.amazarashi.kangtangdotterzero.views.menu.HorizontalMenuView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.CursorButtonView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.CursorView;
 import com.servebbs.amazarashi.kangtangdotterzero.views.modules.FloatingButtonView;
+import com.servebbs.amazarashi.kangtangdotterzero.views.project.ProjectView;
 
 import java.util.ArrayList;
 import java.util.List;
